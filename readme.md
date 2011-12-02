@@ -1,4 +1,4 @@
-jboss-javaee6-poh5-webapp-src
+ticket-monster
 ========================
 
 What is it?
