@@ -155,6 +155,19 @@
          <scope>test</scope>
       </dependency>
 
+       <dependency>
+           <groupId>org.jboss.solder</groupId>
+           <artifactId>solder-api</artifactId>
+           <version>3.1.0.Beta4</version>
+       </dependency>
+
+       <dependency>
+           <groupId>org.jboss.solder</groupId>
+           <artifactId>solder-impl</artifactId>
+           <version>3.1.0.Beta4</version>
+           <scope>runtime</scope>
+       </dependency>
+
    </dependencies>
 
    <build>
@@ -189,6 +202,8 @@
             <artifactId>jboss-as-maven-plugin</artifactId>
             <version>7.0.2.Final</version>
          </plugin>
+
+
       </plugins>
    </build>
 
