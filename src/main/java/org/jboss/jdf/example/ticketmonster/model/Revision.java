@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 /**
  * Stores a single revision of a document.  A document may have multiple
  * revisions, only one of them being active at one time.  This allows the
@@ -21,6 +23,7 @@ import javax.persistence.ManyToOne;
  *
  */
 @Entity
+@JsonIgnoreProperties(value = "document")
 public class Revision implements Serializable
 {
    private static final long serialVersionUID = 6197879518040782042L;

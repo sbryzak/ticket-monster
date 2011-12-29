@@ -4,9 +4,33 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <title></title>
+    <title>Event viewer</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>
+
+    <script type="text/javascript" src="resources/js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="resources/js/jquery-ui-1.8.14.custom.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.getJSON("rest/events", {"first":0,"maxResults":2}, function(events) {
+                $.each(events, function(i, event) {
+					$("#events").append("Event: " + event.name).append("&lt;p&gt;");
+                    })
+            })
+        });
+    </script>
 </head>
 <body>
+<div class="section">
+    <div class="sectionHeader">Events</div>
+    <div class="sectionContent">
+            <div id="events">
+            </div>
+    </div>
+</div>
+
+<div id="dialog" title="Loaded">Page Loaded</div>
 
 </body>
 </html>

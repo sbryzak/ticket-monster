@@ -16,10 +16,6 @@ import org.jboss.jdf.example.ticketmonster.model.Allocation;
 import org.jboss.jdf.example.ticketmonster.model.Section;
 import org.jboss.jdf.example.ticketmonster.model.SectionRow;
 import org.jboss.jdf.example.ticketmonster.model.Show;
-import org.jboss.jdf.example.ticketmonster.qualifier.RowCache;
-import org.jboss.jdf.example.ticketmonster.qualifier.SectionCache;
-import org.jboss.jdf.example.ticketmonster.qualifier.SectionRowCache;
-import org.jboss.jdf.example.ticketmonster.util.AvailabilityUtils;
 
 /**
  * Magically coordinates all the ticket booking logic  

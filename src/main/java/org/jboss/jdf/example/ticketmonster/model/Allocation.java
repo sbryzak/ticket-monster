@@ -23,7 +23,6 @@ public class Allocation implements Serializable
    private Long id;
    private Date assigned;
    
-   private User user;
    private Show show;
    private SectionRow row;
    private int quantity;
@@ -49,17 +48,6 @@ public class Allocation implements Serializable
    public void setAssigned(Date assigned)
    {
       this.assigned = assigned;
-   }
-   
-   @ManyToOne
-   public User getUser()
-   {
-      return user;
-   }
-   
-   public void setUser(User user)
-   {
-      this.user = user;
    }
    
    @ManyToOne
