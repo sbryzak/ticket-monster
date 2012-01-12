@@ -61,7 +61,9 @@ public abstract class BaseEntityService<T> {
 		return query.getResultList();
     }
 
-    protected abstract Predicate[] extractPredicates(UriInfo uriInfo, CriteriaBuilder criteriaBuilder, Root<T> root);
+    protected Predicate[] extractPredicates(UriInfo uriInfo, CriteriaBuilder criteriaBuilder, Root<T> root) {
+        return new Predicate[]{};
+    }
 
     @GET
     @Path("/{id:[0-9][0-9]*}")
