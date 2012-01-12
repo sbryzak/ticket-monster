@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <title>Event viewer</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <script type="text/javascript" src="resources/js/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript" src="resources/js/jquery-ui-1.8.14.custom.min.js"></script>
+    <script type="text/javascript">
+        function updateEvents() {
+            $.getJSON("rest/events", function (events) {
+                var eventListContent = '';
+                $.each(events, function (i, event) {
+                    eventListContent += ("<tr onclick='showDetails(" + event.id + ")'>")
+                    eventListContent += "<td>" + event.name + "</td>"
+                    eventListContent += "<td>" + event.category.description + "</td>"
+                    eventListContent += "</tr>"
+                })
+                $("#events").empty().append(eventListContent)
+
+            })
+        }
+        function showDetails(eventId) {
+            $.getJSON("rest/events/" + eventId, function (event) {
+                console.log(event.description.activeRevision.content)
+                $("#eventDetails").empty().append(event.description.activeRevision.content)
+
+            })
+            $.getJSON("rest/shows?event=" + eventId, function (shows) {
+                $("#showDetails").empty()
+                $.each(shows, function(i, show) {
+                    console.log(show.venue.name + " " + new Date(show.showDate).toDateString() + " ")
+                    $("#showDetails").append(show.venue.name)
+                    $("#showDetails").append("<p>")
+                    $("#showDetails").append(new Date(show.showDate).toDateString())
+                })
+
+            })
+        }
+        $(document).ready(function () {
+            updateEvents();
+        });
+
+    </script>
+</head>
+<body>
+<div>
+    <div>
+        <table border="true">
+            <thead>
+            <tr>
+                <td>Event name</td>
+                <td>Category</td>
+            </tr>
+            </thead>
+            <tbody id="events">
+            <tr>
+                <td>Not loaded</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="eventDetails">
+        
+    </div>
+
+    <div id="showDetails">
+
+        </div>
+
+</div>
+</body>
+</html>

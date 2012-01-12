@@ -2,7 +2,7 @@ insert into Document (id) values (50);
 insert into Revision (id, document_id, created, createdBy, modified, modifiedBy, content) values (50, 50, '2010-01-01', 'sbryzak', null, null, 'Set adjacent to Grand Central Square, this magnificent concert hall can seat up to 50000 people');
 
 insert into Document (id) values (51);
-insert into Revision (id, document_id, created, createdBy, modified, modifiedBy, content) values (51, 51, '2010-01-01', 'sbryzak', null, null, '');
+insert into Revision (id, document_id, created, createdBy, modified, modifiedBy, content) values (51, 51, '2010-01-01', 'sbryzak', null, null, 'Quite big');
 
 insert into Venue (id, name, address, description_id) values (1, 'City Central Concert Hall', '123 Main St, Metropolis', 50);
 update Document set revision_id = 50 where id = 50;

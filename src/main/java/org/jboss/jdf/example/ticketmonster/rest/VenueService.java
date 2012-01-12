@@ -19,9 +19,5 @@ public class VenueService extends BaseEntityService<Venue> {
         super(Venue.class);
     }
 
-    @Override
-    protected Predicate[] extractPredicates(UriInfo uriInfo, CriteriaBuilder criteriaBuilder, Root<Venue> root) {
-        return new Predicate[0];
-    }
 
 }
