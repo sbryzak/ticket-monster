@@ -13,7 +13,6 @@ import javax.persistence.PersistenceContext;
 
 import org.jboss.jdf.example.ticketmonster.model.Document;
 import org.jboss.jdf.example.ticketmonster.model.Event;
-import org.jboss.jdf.example.ticketmonster.model.Revision;
 
 /**
  * Event management related operations
@@ -44,7 +43,7 @@ public @Stateful @Named @ConversationScoped class EventAction implements Seriali
       {      
          conversation.begin();      
          event = entityManager.find(Event.class, Long.valueOf(eventId));
-         description = event.getDescription().getActiveRevision().getContent();
+         description = event.getDescription().getContent();
       }
       
       return false;
@@ -56,15 +55,9 @@ public @Stateful @Named @ConversationScoped class EventAction implements Seriali
       {
          entityManager.merge(event);
          
-         if (!description.equals(event.getDescription().getActiveRevision().getContent()))
+         if (!description.equals(event.getDescription().getContent()))
          {
-            Revision rev = new Revision();
-            rev.setContent(description);
-            rev.setDocument(event.getDescription());
-            rev.setCreated(new Date());
-            
-            entityManager.persist(rev);
-            event.getDescription().setActiveRevision(rev);
+            event.getDescription().setContent(description);
             entityManager.merge(event.getDescription());            
          }
       }
@@ -75,12 +68,8 @@ public @Stateful @Named @ConversationScoped class EventAction implements Seriali
          
          if (description != null)
          {
-            Revision rev = new Revision();
-            rev.setContent(description);
-            rev.setDocument(event.getDescription());
-            doc.setActiveRevision(rev);
+            doc.setContent(description);
             entityManager.persist(doc);
-            entityManager.persist(rev);
          }
          else
          {

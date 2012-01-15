@@ -24,7 +24,7 @@
         function showDetails(eventId) {
             $.getJSON("rest/events/" + eventId, function (event) {
                 console.log(event.description.activeRevision.content)
-                $("#eventDetails").empty().append(event.description.activeRevision.content)
+                $("#eventDetails").empty().append(event.description.content)
 
             })
             $.getJSON("rest/shows?event=" + eventId, function (shows) {
@@ -33,7 +33,9 @@
                     console.log(show.venue.name + " " + new Date(show.showDate).toDateString() + " ")
                     $("#showDetails").append(show.venue.name)
                     $("#showDetails").append("<p>")
-                    $("#showDetails").append(new Date(show.showDate).toDateString())
+                    $.each(show.performances, function (i, performance) {
+                        $("#showDetails").append(new Date(performance.date).toString()).append("<p>")
+                    })
                 })
 
             })

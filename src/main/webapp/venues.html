@@ -15,7 +15,7 @@
                     venueListContent += "<tr>"
                     venueListContent += "<td>" + venue.name + "</td>"
                     venueListContent += "<td>" + venue.address + "</td>"
-                    venueListContent += "<td>" + venue.description.activeRevision.content + "</td>"
+                    venueListContent += "<td>" + venue.description.content + "</td>"
                     venueListContent += "</tr>"
                 })
                 $("#venues").empty().append(venueListContent)

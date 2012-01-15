@@ -2,12 +2,17 @@ package org.jboss.jdf.example.ticketmonster.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import com.sun.xml.internal.ws.api.FeatureConstructor;
 
 /**
  * A show is a single instance of an event, at a particular time and venue.
@@ -23,8 +28,9 @@ public class Show implements Serializable
    private Long id;
    private Event event;
    private Venue venue;
-   private Date showDate;   
    private VenueLayout venueLayout;
+
+   private List<Performance> performances;
    
    @Id @GeneratedValue
    public Long getId()
@@ -53,21 +59,21 @@ public class Show implements Serializable
    {
       return venue;
    }
+
    
    public void setVenue(Venue venue)
    {
       this.venue = venue;
    }
-   
-   public Date getShowDate()
-   {
-      return showDate;
-   }
-   
-   public void setShowDate(Date showDate)
-   {
-      this.showDate = showDate;
-   }
+
+    @OneToMany(fetch = FetchType.EAGER) @JoinColumn(name = "SHOW_ID")
+    public List<Performance> getPerformances() {
+        return performances;
+    }
+
+    public void setPerformances(List<Performance> performances) {
+        this.performances = performances;
+    }
    
    @ManyToOne @JoinColumn(name = "LAYOUT_ID")
    public VenueLayout getVenueLayout()
