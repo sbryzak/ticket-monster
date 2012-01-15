@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * @author Marius Bogoevici
  */
@@ -18,6 +20,8 @@ public class Performance implements Serializable {
     private Long id;
 
     private Date date;
+    
+    private Show show;
 
     @Id @GeneratedValue
     public Long getId() {
@@ -26,6 +30,15 @@ public class Performance implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setShow(Show show) {
+        this.show = show;
+    }
+
+    @JsonIgnore
+    public Show getShow() {
+        return show;
     }
 
     public Date getDate() {
