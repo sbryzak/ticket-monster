@@ -1,8 +1,16 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import java.io.Serializable;
 
-import javax.persistence.*;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Lob;
 
 /**
  * A reference to a media object such as images, sound bites, video recordings, that can
@@ -11,6 +19,7 @@ import javax.persistence.*;
  * @author Marius Bogoevici
  */
 @Entity
+@JsonIgnoreProperties("content")
 public class MediaItem implements Serializable {
 
     private static final long serialVersionUID = -3190368407410663590L;
