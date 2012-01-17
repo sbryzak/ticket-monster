@@ -34,7 +34,7 @@
                     $("#showDetails").append(show.venue.name)
                     $("#showDetails").append("<p>")
                     $.each(show.performances, function (i, performance) {
-                        $("#showDetails").append(new Date(performance.date).toString()).append("<p>")
+                        $("#showDetails").append("Performance on " + new Date(performance.date).toString()).append("<p>")
                     })
                 })
 
