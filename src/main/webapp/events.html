@@ -23,9 +23,8 @@
         }
         function showDetails(eventId) {
             $.getJSON("rest/events/" + eventId, function (event) {
-                console.log(event.description.activeRevision.content)
-                $("#eventDetails").empty().append(event.description.content)
-
+                $("#eventDetails").empty()
+                $("#eventDetails").append("<img src='rest/media/"+event.picture.id + "'/><p/>" + event.description)
             })
             $.getJSON("rest/shows?event=" + eventId, function (shows) {
                 $("#showDetails").empty()
