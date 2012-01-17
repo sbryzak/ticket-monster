@@ -1,7 +1,6 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -12,10 +11,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import com.sun.xml.internal.ws.api.FeatureConstructor;
 
 /**
- * A show is a single instance of an event, at a particular time and venue.
+ * A show is an instance of an event taking plac at a particular venue. A show can have multiple
+ * performances.
  * 
  * @author Shane Bryzak
  *
@@ -28,6 +27,7 @@ public class Show implements Serializable
    private Long id;
    private Event event;
    private Venue venue;
+  
    private VenueLayout venueLayout;
 
    private List<Performance> performances;

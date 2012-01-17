@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 /**
@@ -22,7 +23,8 @@ public class Venue implements Serializable
    private Long id;
    private String name;
    private String address;
-   private Document description;
+   private String description;
+   private MediaItem picture;
    
    @Id @GeneratedValue
    public Long getId()
@@ -55,15 +57,22 @@ public class Venue implements Serializable
       this.address = address;
    }
    
-   @OneToOne @JoinColumn(name = "DESCRIPTION_ID")
-   public Document getDescription()
+   @ManyToOne @JoinColumn(name = "PICTURE_ID")
+   public MediaItem getPicture()
    {
-      return description;
+      return picture;
    }
    
-   public void setDescription(Document description)
+   public void setPicture(MediaItem description)
    {
-      this.description = description;
+      this.picture = description;
    }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
