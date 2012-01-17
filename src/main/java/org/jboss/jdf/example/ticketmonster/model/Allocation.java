@@ -1,7 +1,6 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,10 +8,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 /**
- * Seat allocations for a show. An allocation consists of one or more seats
+ * An allocation consists of one or more contiguous sold seats
  * within a SectionRow.
  * 
  * @author Shane Bryzak
+ * @author Marius Bogoevici
  *
  */
 @Entity
@@ -20,48 +20,34 @@ public class Allocation implements Serializable
 {
    private static final long serialVersionUID = 8738724150877088864L;
    
+   @Id @GeneratedValue
    private Long id;
-   private Date assigned;
-   
-   private Show show;
+
+   @ManyToOne
+   private Performance performance;
+
+   @ManyToOne
    private SectionRow row;
-   private int quantity;
+
    private int startSeat;
+
    private int endSeat;
    
-   @Id @GeneratedValue
    public Long getId()
    {
       return id;
    }
-   
-   public void setId(Long id)
+
+   public Performance getPerformance()
    {
-      this.id = id;
+      return performance;
    }
    
-   public Date getAssigned()
+   public void setPerformance(Performance performance)
    {
-      return assigned;
+      this.performance = performance;
    }
-   
-   public void setAssigned(Date assigned)
-   {
-      this.assigned = assigned;
-   }
-   
-   @ManyToOne
-   public Show getShow()
-   {
-      return show;
-   }
-   
-   public void setShow(Show show)
-   {
-      this.show = show;
-   }
-   
-   @ManyToOne
+
    public SectionRow getRow()
    {
       return row;
@@ -74,12 +60,7 @@ public class Allocation implements Serializable
    
    public int getQuantity()
    {
-      return quantity;
-   }
-   
-   public void setQuantity(int quantity)
-   {
-      this.quantity = quantity;
+      return endSeat - startSeat + 1;
    }
    
    public int getStartSeat()
