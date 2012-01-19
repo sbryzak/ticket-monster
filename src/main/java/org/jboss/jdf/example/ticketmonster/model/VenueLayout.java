@@ -14,63 +14,55 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * Represents a single seating layout for a venue.  A venue may be capable of
  * multiple seating layouts, depending on the type of event.  A layout can
  * contain many sections.
- * 
- * @author Shane Bryzak
  *
+ * @author Shane Bryzak
  */
 @Entity
-public class VenueLayout implements Serializable
-{
-   private static final long serialVersionUID = -6988617479016327717L;
+public class VenueLayout implements Serializable {
+    private static final long serialVersionUID = -6988617479016327717L;
 
-   @Id @GeneratedValue
-   private Long id;
+    @Id
+    @GeneratedValue
+    private Long id;
 
-   @ManyToOne @JoinColumn(name = "VENUE_ID")
-   @JsonIgnore
-   private Venue venue;
+    @ManyToOne
+    @JoinColumn(name = "VENUE_ID")
+    @JsonIgnore
+    private Venue venue;
 
-   private String name;
-   private int capacity;
-   
+    private String name;
+    private int capacity;
 
-   public Long getId()
-   {
-      return id;
-   }
-   
-   public void setId(Long id)
-   {
-      this.id = id;
-   }
 
-   public Venue getVenue()
-   {
-      return venue;
-   }
-   
-   public void setVenue(Venue venue)
-   {
-      this.venue = venue;
-   }
-   
-   public String getName()
-   {
-      return name;
-   }
-   
-   public void setName(String name)
-   {
-      this.name = name;
-   }
-   
-   public int getCapacity()
-   {
-      return capacity;
-   }
-   
-   public void setCapacity(int capacity)
-   {
-      this.capacity = capacity;
-   }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Venue getVenue() {
+        return venue;
+    }
+
+    public void setVenue(Venue venue) {
+        this.venue = venue;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
 }

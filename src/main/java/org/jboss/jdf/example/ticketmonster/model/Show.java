@@ -16,58 +16,62 @@ import javax.persistence.OneToMany;
 /**
  * A show is an instance of an event taking plac at a particular venue. A show can have multiple
  * performances.
- * 
- * @author Shane Bryzak
  *
+ * @author Shane Bryzak
  */
 @Entity
-public class Show implements Serializable
-{
-   private static final long serialVersionUID = -108405033615497885L;
-   
-   private Long id;
-   private Event event;
-   private Venue venue;
-  
-   private VenueLayout venueLayout;
+public class Show implements Serializable {
+    private static final long serialVersionUID = -108405033615497885L;
 
-   private Set<Performance> performances;
-   
-   @Id @GeneratedValue
-   public Long getId()
-   {
-      return id;
-   }
-   
-   public void setId(Long id)
-   {
-      this.id = id;
-   }
-   
-   @ManyToOne @JoinColumn(name = "EVENT_ID")
-   public Event getEvent()
-   {
-      return event;
-   }
-   
-   public void setEvent(Event event)
-   {
-      this.event = event;
-   }
-   
-   @ManyToOne @JoinColumn(name = "VENUE_ID")
-   public Venue getVenue()
-   {
-      return venue;
-   }
 
-   
-   public void setVenue(Venue venue)
-   {
-      this.venue = venue;
-   }
+    @Id
+    @GeneratedValue
+    private Long id;
 
-    @OneToMany(fetch = FetchType.EAGER) @JoinColumn(name = "SHOW_ID")
+    @ManyToOne
+    @JoinColumn(name = "EVENT_ID")
+    private Event event;
+
+
+    @ManyToOne
+    @JoinColumn(name = "VENUE_ID")
+    private Venue venue;
+
+    @ManyToOne
+    @JoinColumn(name = "LAYOUT_ID")
+    private VenueLayout venueLayout;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "SHOW_ID")
+    private Set<Performance> performances;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
+    }
+
+    public Venue getVenue() {
+        return venue;
+    }
+
+
+    public void setVenue(Venue venue) {
+        this.venue = venue;
+    }
+
+
     public Set<Performance> getPerformances() {
         return performances;
     }
@@ -75,16 +79,14 @@ public class Show implements Serializable
     public void setPerformances(Set<Performance> performances) {
         this.performances = performances;
     }
-   
-   @ManyToOne @JoinColumn(name = "LAYOUT_ID")
-   public VenueLayout getVenueLayout()
-   {
-      return venueLayout;
-   }
-   
-   public void setVenueLayout(VenueLayout venueLayout)
-   {
-      this.venueLayout = venueLayout;
-   }
-   
+
+
+    public VenueLayout getVenueLayout() {
+        return venueLayout;
+    }
+
+    public void setVenueLayout(VenueLayout venueLayout) {
+        this.venueLayout = venueLayout;
+    }
+
 }

@@ -14,12 +14,14 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 /**
  * @author Marius Bogoevici
  */
-@Entity @JsonIgnoreProperties("show")
+@Entity
+@JsonIgnoreProperties("show")
 public class Performance implements Serializable {
 
     private static final long serialVersionUID = -108405033615497885L;
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
 
     private Date date;

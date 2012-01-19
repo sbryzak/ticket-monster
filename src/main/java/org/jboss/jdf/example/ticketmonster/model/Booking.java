@@ -11,13 +11,14 @@ import java.util.Date;
 
 /**
  * A Booking represents a set of tickets purchased for a performance.
- * 
+ *
  * @author Marius Bogoevici
  */
 @Entity
 public class Booking {
-    
-   	@Id @GeneratedValue
+
+    @Id
+    @GeneratedValue
     private Long id;
 
     @OneToMany(fetch = FetchType.EAGER)
@@ -25,35 +26,35 @@ public class Booking {
 
     @ManyToOne
     private Customer customer;
-    
+
     private Date createdOn;
 
-	public Long getId() {
-		return id;
-	}
-	
+    public Long getId() {
+        return id;
+    }
+
     public Collection<Allocation> getAllocations() {
-		return allocations;
-	}
+        return allocations;
+    }
 
-	public void setAllocations(Collection<Allocation> allocations) {
-		this.allocations = allocations;
-	}
+    public void setAllocations(Collection<Allocation> allocations) {
+        this.allocations = allocations;
+    }
 
-	public Customer getCustomer() {
-		return customer;
-	}
+    public Customer getCustomer() {
+        return customer;
+    }
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
 
-	public Date getCreatedOn() {
-		return createdOn;
-	}
+    public Date getCreatedOn() {
+        return createdOn;
+    }
 
-	public void setCreatedOn(Date createdOn) {
-		this.createdOn = createdOn;
-	}
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
 
 }

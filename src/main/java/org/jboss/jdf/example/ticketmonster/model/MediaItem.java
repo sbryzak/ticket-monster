@@ -24,7 +24,8 @@ public class MediaItem implements Serializable {
 
     private static final long serialVersionUID = -3190368407410663590L;
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
 
     @Column(name = "MEDIA_TYPE")
@@ -38,13 +39,13 @@ public class MediaItem implements Serializable {
         return id;
     }
 
-	public String getMediaType() {
-		return mediaType;
-	}
+    public String getMediaType() {
+        return mediaType;
+    }
 
-	public void setMediaType(String mediaType) {
-		this.mediaType = mediaType;
-	}
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
+    }
 
     public byte[] getContent() {
         return content;
