@@ -24,6 +24,6 @@ wait;
 @/* Deploy this to JBoss AS 7 to see the result */;
 build clean package jboss-as:deploy;
 
-echo Examine the app so far at http://localhost:8080/ticket-monster
+echo Examine the app so far at http://localhost:8080/ticket-monster;
 
 wait;
