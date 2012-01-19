@@ -44,6 +44,10 @@
                             $("#performanceTimes").append("<option value='" + performance.id + "'>" + new Date(performance.date).toDateString() + "</option>")
                         })
                     }
+                    if ($("#performanceTimes").val) {
+                        $("#book").empty().append("<input type='button' onclick='beginBookTicket()' value='Book'/>");
+                    }
+
                 })
                 if ($("#venueSelector").val) {
                     $("#venueSelector").change()
@@ -61,7 +65,8 @@
                 var selectedShow = loadedShows[showId];
                 $.getJSON("rest/venues/layouts/" + selectedShow.venueLayout.id + "/sections", function (sections) {
                     $.each(sections, function (i, section) {
-                        $("#bookTickets").append("Section " + section.name + ": <input type='number' name='section" +section.id+ "value='0'/><p/>")
+                        $("#bookTickets").append("Section " + section.name + ": <input type='number' name='tickets' value='0'/>" +
+                                "<input type='hidden' name='sections' value='"+section.id+"'/<p/>")
                     })
                     $("#bookTickets").append("<fieldset id='personalData'/>")
                     $("#personalData").append("Email: <input type='email' name='email'/>");

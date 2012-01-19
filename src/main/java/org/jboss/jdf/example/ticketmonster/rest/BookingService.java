@@ -2,6 +2,7 @@ package org.jboss.jdf.example.ticketmonster.rest;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
@@ -32,37 +34,47 @@ import org.jboss.jdf.example.ticketmonster.model.VenueLayout;
 @Path("/bookings")
 @Stateful
 @RequestScoped
-public class BookingService {
+public class BookingService extends BaseEntityService<Booking> {
    
     @Inject
     EntityManager entityManager;
-    
+
+    public BookingService() {
+        super(Booking.class);    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response createBooking(MultivaluedMap<String, String> formInput) {
-        String email = formInput.getFirst("email");
+    public Response createBooking(@FormParam("email") String email,
+                @FormParam("performance") Long performanceId,
+                @FormParam("sections") Long[] sectionIds,
+                @FormParam("tickets") int[] ticketCounts
+                ) {
         Customer customer = new Customer();
         customer.setEmail(email);
         entityManager.persist(customer);
-        Long performanceId = Long.valueOf(formInput.getFirst("performance"));
         Performance performance = entityManager.find(Performance.class, performanceId);
         VenueLayout venueLayout = performance.getShow().getVenueLayout();
-        List<Section> sections = (List<Section>) entityManager.createQuery("select s from Section s where s.layout.id = :id").setParameter("id", venueLayout.getId()).getResultList();
         Booking booking = new Booking();
         booking.setCustomer(customer);
         booking.setCreatedOn(new Date());
         booking.setAllocations(new ArrayList<Allocation>());
-        for (Section section : sections) {
-            final String ticketCountString = formInput.getFirst("section" + section.getId());
-            if (ticketCountString == null) {
-                // no tickets for this section
-                continue;
-            }
-            Integer ticketCount = Integer.valueOf(ticketCountString);
-            List<SectionRow> rows = (List<SectionRow>) entityManager.createQuery("select r from SectionRow r where r.section.id = :id").setParameter("id", section.getId()).getResultList();
+        if (ticketCounts.length != sectionIds.length) {
+            Map<String, String> entity = new HashMap<String, String>();
+            entity.put("cause", "There must be as many sections as tickets");
+            Response response = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
+        }
+        for (int i=0; i<ticketCounts.length; i++) {
+
+        if (ticketCounts[i] == 0) {
+            continue;
+        }
+
+            Integer ticketCount = ticketCounts[i];
+            List<SectionRow> rows = (List<SectionRow>) entityManager.createQuery("select r from SectionRow r where r.section.id = :id").setParameter("id", sectionIds[i]).getResultList();
             Allocation createdAllocation = null;
             for (SectionRow row : rows) {
-                List<Allocation> allocations = (List<Allocation>) entityManager.createQuery("select a from Allocation a  where a.performance.id = :perfId and a.row.id = :rowId").setParameter("perfId", performanceId).setParameter("rowId", row.getId());
+                List<Allocation> allocations = (List<Allocation>) entityManager.createQuery("select a from Allocation a  where a.performance.id = :perfId and a.row.id = :rowId").setParameter("perfId", performanceId).setParameter("rowId", row.getId()).getResultList();
                 if (allocations.size() > 0) {
                     int confirmedCandidate = 0;
                     int nextCandidate = 1;
@@ -81,7 +93,7 @@ public class BookingService {
                         createdAllocation = new Allocation();
                         createdAllocation.setRow(row);
                         createdAllocation.setStartSeat(nextCandidate);
-                        createdAllocation.setEndSeat(nextCandidate+ticketCount+1);
+                        createdAllocation.setEndSeat(nextCandidate+ticketCount-1);
                         break;
                     }
                 }
@@ -91,6 +103,7 @@ public class BookingService {
                     createdAllocation.setRow(row);
                     createdAllocation.setStartSeat(1);
                     createdAllocation.setEndSeat(ticketCount);
+                    break;
                 }
             }
             if (createdAllocation == null) {
@@ -100,6 +113,7 @@ public class BookingService {
             entityManager.persist(createdAllocation);
             booking.getAllocations().add(createdAllocation);
         }
+        entityManager.persist(booking);
         return Response.ok().build();
     }
 }
