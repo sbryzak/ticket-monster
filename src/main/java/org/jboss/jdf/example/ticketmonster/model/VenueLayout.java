@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
  * Represents a single seating layout for a venue.  A venue may be capable of
@@ -17,7 +18,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  *
  * @author Shane Bryzak
  */
-@Entity
+@Entity @JsonIgnoreProperties("venue")
 public class VenueLayout implements Serializable {
     private static final long serialVersionUID = -6988617479016327717L;
 
@@ -26,7 +27,6 @@ public class VenueLayout implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JsonIgnore
     private Venue venue;
 
     private String name;

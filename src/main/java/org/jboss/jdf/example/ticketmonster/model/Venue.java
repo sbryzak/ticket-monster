@@ -1,21 +1,18 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 import java.io.Serializable;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 /**
  * Represents a single venue
  *
  * @author Shane Bryzak
  */
-@Entity
+@Entity @JsonIgnoreProperties("layouts")
 public class Venue implements Serializable {
     private static final long serialVersionUID = -6588912817518967721L;
 
