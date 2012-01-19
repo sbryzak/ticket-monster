@@ -60,7 +60,7 @@
         function beginBookTicket(performanceId) {
             if ($("#performanceTimes").val()) {
                 $("#book").empty();
-                $("#book").append("<form id='bookTickets'/>");
+                $("#book").append("<form id='bookTickets' name='bookTickets'/>");
                 var showId = $("#venueSelector option:selected").val();
                 var selectedShow = loadedShows[showId];
                 $.getJSON("rest/venues/layouts/" + selectedShow.venueLayout.id + "/sections", function (sections) {
@@ -68,15 +68,27 @@
                         $("#bookTickets").append("Section " + section.name + ": <input type='number' name='tickets' min='0'  title='Numeric value'/>" +
                                 "<input type='hidden' name='sections' value='"+section.id+"'/<p/>")
                     })
-                    $("#bookTickets").append("<fieldset id='personalData'/>")
-                    $("#personalData").append("Email: <input type='email' name='email' required/>");
+
+                    $("#bookTickets").append("Email: <input type='email' name='email' required/>");
                     $("#bookTickets").append("<input type='hidden' name='performance' value='"+ $("#performanceTimes").val()+ "'/>")
-                    $("#bookTickets").append("<input id='createBooking' type='submit' value='Book!'/>")
-                    $("#createBooking").submit(function(event) {
+                    $("#bookTickets").append("<input name='createBooking' type='submit' value='Book!'/>")
+                    $("#bookTickets").submit(function(event) {
                         event.preventDefault()
-                        $.post("rest/bookings", $("#bookTickets").serialize, function(response) {
-                            alert("back")
-                        })
+                        $.post("rest/bookings", $(this).serialize(), function(booking) {
+                            $("#book").empty()
+
+                            $("#book").append("Booked ticket " + booking.id + " as follows: ")
+                            $.each(booking.allocations, function(i, allocation) {
+                                if (allocation.quantity > 1) {
+                                   $("#book").append("<p/> Row " + allocation.row.name + ", seats " + allocation.startSeat + "-" + allocation.endSeat)
+                                } else {
+                                    $("#book").append("<p/> Row " + allocation.row.name + ", seat " + allocation.startSeat)
+                                }
+                            })
+
+                        }).error(function(error) {
+
+                     })
                     })
                 })
             }
