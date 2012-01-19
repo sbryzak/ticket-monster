@@ -80,9 +80,9 @@
                             $("#book").append("Booked ticket " + booking.id + " as follows: ")
                             $.each(booking.allocations, function(i, allocation) {
                                 if (allocation.quantity > 1) {
-                                   $("#book").append("<p/> Row " + allocation.row.name + ", seats " + allocation.startSeat + "-" + allocation.endSeat)
+                                   $("#book").append("<p/> Section " + allocation.row.section.name + " Row " + allocation.row.name + ", seats " + allocation.startSeat + "-" + allocation.endSeat)
                                 } else {
-                                    $("#book").append("<p/> Row " + allocation.row.name + ", seat " + allocation.startSeat)
+                                    $("#book").append("<p/> Section " + allocation.row.section.name + " Row " + allocation.row.name + ", seat " + allocation.startSeat)
                                 }
                             })
 
