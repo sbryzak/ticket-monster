@@ -3,7 +3,6 @@ package org.jboss.jdf.example.ticketmonster.rest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +15,6 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 
@@ -24,7 +22,6 @@ import org.jboss.jdf.example.ticketmonster.model.Allocation;
 import org.jboss.jdf.example.ticketmonster.model.Booking;
 import org.jboss.jdf.example.ticketmonster.model.Customer;
 import org.jboss.jdf.example.ticketmonster.model.Performance;
-import org.jboss.jdf.example.ticketmonster.model.Section;
 import org.jboss.jdf.example.ticketmonster.model.SectionRow;
 import org.jboss.jdf.example.ticketmonster.model.VenueLayout;
 
@@ -35,7 +32,7 @@ import org.jboss.jdf.example.ticketmonster.model.VenueLayout;
 @Stateful
 @RequestScoped
 public class BookingService extends BaseEntityService<Booking> {
-   
+
     @Inject
     EntityManager entityManager;
 
@@ -46,10 +43,10 @@ public class BookingService extends BaseEntityService<Booking> {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response createBooking(@FormParam("email") String email,
-                @FormParam("performance") Long performanceId,
-                @FormParam("sections") Long[] sectionIds,
-                @FormParam("tickets") int[] ticketCounts
-                ) {
+                                  @FormParam("performance") Long performanceId,
+                                  @FormParam("sections") Long[] sectionIds,
+                                  @FormParam("tickets") String[] ticketCounts
+    ) {
         Customer customer = new Customer();
         customer.setEmail(email);
         entityManager.persist(customer);
@@ -64,13 +61,16 @@ public class BookingService extends BaseEntityService<Booking> {
             entity.put("cause", "There must be as many sections as tickets");
             Response response = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
         }
-        for (int i=0; i<ticketCounts.length; i++) {
+        for (int i = 0; i < ticketCounts.length; i++) {
 
-        if (ticketCounts[i] == 0) {
-            continue;
-        }
+            if (ticketCounts[i] == null || "".equals(ticketCounts[i].trim())) {
+                continue;
+            }
 
-            Integer ticketCount = ticketCounts[i];
+            Integer ticketCount = Integer.valueOf(ticketCounts[i]);
+            if (ticketCount == 0) {
+                continue;
+            }
             List<SectionRow> rows = (List<SectionRow>) entityManager.createQuery("select r from SectionRow r where r.section.id = :id").setParameter("id", sectionIds[i]).getResultList();
             Allocation createdAllocation = null;
             for (SectionRow row : rows) {
@@ -80,7 +80,6 @@ public class BookingService extends BaseEntityService<Booking> {
                     int nextCandidate = 1;
                     for (Allocation allocation : allocations) {
                         if (allocation.getStartSeat() - nextCandidate >= ticketCount) {
-                            System.out.println("Found row " + row.getName());
                             confirmedCandidate = nextCandidate;
                             break;
                         }
@@ -93,16 +92,16 @@ public class BookingService extends BaseEntityService<Booking> {
                         createdAllocation = new Allocation();
                         createdAllocation.setRow(row);
                         createdAllocation.setStartSeat(nextCandidate);
-                        createdAllocation.setEndSeat(nextCandidate+ticketCount-1);
+                        createdAllocation.setQuantity(ticketCount);
+                        createdAllocation.setEndSeat(nextCandidate + ticketCount - 1);
                         break;
                     }
-                }
-                else {
-                    System.out.println("Found row " + row.getName());
+                } else {
                     createdAllocation = new Allocation();
                     createdAllocation.setRow(row);
                     createdAllocation.setStartSeat(1);
                     createdAllocation.setEndSeat(ticketCount);
+                    createdAllocation.setQuantity(ticketCount);
                     break;
                 }
             }
@@ -114,6 +113,6 @@ public class BookingService extends BaseEntityService<Booking> {
             booking.getAllocations().add(createdAllocation);
         }
         entityManager.persist(booking);
-        return Response.ok().build();
+        return Response.ok().entity(booking).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
 }

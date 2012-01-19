@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html>
 <head>
     <title>Event viewer</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -60,18 +60,24 @@
         function beginBookTicket(performanceId) {
             if ($("#performanceTimes").val()) {
                 $("#book").empty();
-                $("#book").append("<form id='bookTickets' action='rest/bookings' method='post'/>");
+                $("#book").append("<form id='bookTickets'/>");
                 var showId = $("#venueSelector option:selected").val();
                 var selectedShow = loadedShows[showId];
                 $.getJSON("rest/venues/layouts/" + selectedShow.venueLayout.id + "/sections", function (sections) {
                     $.each(sections, function (i, section) {
-                        $("#bookTickets").append("Section " + section.name + ": <input type='number' name='tickets' value='0'/>" +
+                        $("#bookTickets").append("Section " + section.name + ": <input type='number' name='tickets' min='0'  title='Numeric value'/>" +
                                 "<input type='hidden' name='sections' value='"+section.id+"'/<p/>")
                     })
                     $("#bookTickets").append("<fieldset id='personalData'/>")
-                    $("#personalData").append("Email: <input type='email' name='email'/>");
+                    $("#personalData").append("Email: <input type='email' name='email' required/>");
                     $("#bookTickets").append("<input type='hidden' name='performance' value='"+ $("#performanceTimes").val()+ "'/>")
-                    $("#bookTickets").append("<input type='submit' value='Book!'/>")
+                    $("#bookTickets").append("<input id='createBooking' type='submit' value='Book!'/>")
+                    $("#createBooking").submit(function(event) {
+                        event.preventDefault()
+                        $.post("rest/bookings", $("#bookTickets").serialize, function(response) {
+                            alert("back")
+                        })
+                    })
                 })
             }
             else {

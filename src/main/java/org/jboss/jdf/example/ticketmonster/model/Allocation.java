@@ -32,6 +32,9 @@ public class Allocation implements Serializable {
 
     private int endSeat;
 
+
+    private int quantity;
+
     public Long getId() {
         return id;
     }
@@ -53,7 +56,11 @@ public class Allocation implements Serializable {
     }
 
     public int getQuantity() {
-        return endSeat - startSeat + 1;
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public int getStartSeat() {
