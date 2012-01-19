@@ -24,12 +24,8 @@ public class PriceCategory implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "EVENT_ID")
-    private Event event;
-
-    @ManyToOne
-    @JoinColumn(name = "VENUE_ID")
-    private Venue venue;
+    @JoinColumn(name = "SHOW_ID")
+    private Show show;
 
     @ManyToOne
     @JoinColumn(name = "SECTION_ID")
@@ -49,21 +45,12 @@ public class PriceCategory implements Serializable {
         this.id = id;
     }
 
-    public Event getEvent() {
-        return event;
+    public Show getShow() {
+        return show;
     }
 
-    public void setEvent(Event event) {
-        this.event = event;
-    }
-
-
-    public Venue getVenue() {
-        return venue;
-    }
-
-    public void setVenue(Venue venue) {
-        this.venue = venue;
+    public void setShow(Show show) {
+        this.show = show;
     }
 
     public Section getSection() {
