@@ -340,8 +340,10 @@ insert into event (id, name, description, picture_id, category_id, major) values
 insert into show (id, event_id, venue_id, layout_id) values (1, 1, 1, 1);
 insert into performance (id, show_id, date) values (1, 1, '2011-01-01 19:00:00');
 insert into performance (id, show_id, date) values (2, 1, '2011-01-02 19:00:00');
-insert into performance (id, show_id, date) values (3, 1, '2011-01-03 19:30:00');
-insert into performance (id, show_id, date) values (4, 1, '2011-01-04 19:30:00');
+
+insert into show (id, event_id, venue_id, layout_id) values (2, 1, 2, 2);
+insert into performance (id, show_id, date) values (3, 2, '2011-01-03 19:30:00');
+insert into performance (id, show_id, date) values (4, 2, '2011-01-04 19:30:00');
 
 insert into TicketCategory (id, description) values (1, 'Adult');
 insert into TicketCategory (id, description) values (2, 'Child 0-14yrs');

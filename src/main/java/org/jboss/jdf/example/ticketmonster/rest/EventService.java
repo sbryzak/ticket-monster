@@ -25,9 +25,12 @@ public class EventService extends BaseEntityService<Event> {
     }
 
     @Override
-    protected Predicate[] extractPredicates(@Context UriInfo uriInfo, CriteriaBuilder criteriaBuilder, Root<Event> root) {
+    protected Predicate[] extractPredicates(
+            MultivaluedMap<String, String> queryParameters, 
+            CriteriaBuilder criteriaBuilder, 
+            Root<Event> root) {
         List<Predicate> predicates = new ArrayList<Predicate>() ;
-        final MultivaluedMap<String,String> queryParameters = uriInfo.getQueryParameters();
+        
         if (queryParameters.containsKey("category")) {
             String category = queryParameters.getFirst("category");
             predicates.add(criteriaBuilder.equal(root.get("category").get("id"), category));
@@ -36,6 +39,7 @@ public class EventService extends BaseEntityService<Event> {
             String major = queryParameters.getFirst("major");
             predicates.add(criteriaBuilder.equal(root.get("major"), Boolean.parseBoolean(major)));
         }
+        
         return predicates.toArray(new Predicate[]{});
     }
 }

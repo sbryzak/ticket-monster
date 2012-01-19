@@ -27,9 +27,12 @@ public class ShowService extends BaseEntityService<Show> {
     }
 
     @Override
-    protected Predicate[] extractPredicates(UriInfo uriInfo, CriteriaBuilder criteriaBuilder, Root<Show> root) {
+    protected Predicate[] extractPredicates(MultivaluedMap<String,
+            String> queryParameters,
+            CriteriaBuilder criteriaBuilder,
+            Root<Show> root) {
+
         List<Predicate> predicates = new ArrayList<Predicate>();
-        final MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters();
 
         if (queryParameters.containsKey("venue")) {
             String venue = queryParameters.getFirst("venue");
