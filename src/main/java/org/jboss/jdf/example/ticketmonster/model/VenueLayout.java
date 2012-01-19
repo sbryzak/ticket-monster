@@ -26,7 +26,6 @@ public class VenueLayout implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "VENUE_ID")
     @JsonIgnore
     private Venue venue;
 

@@ -1,13 +1,14 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 
 /**
  * Represents a single venue
@@ -26,6 +27,9 @@ public class Venue implements Serializable {
     private String name;
     private String address;
     private String description;
+    
+    @OneToMany
+    private Collection<VenueLayout> layouts;
 
     @ManyToOne
     @JoinColumn(name = "PICTURE_ID")
