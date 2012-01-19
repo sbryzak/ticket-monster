@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * Represents a single seating layout for a venue.  A venue may be capable of
  * multiple seating layouts, depending on the type of event.  A layout can
@@ -20,13 +22,18 @@ import javax.persistence.ManyToOne;
 public class VenueLayout implements Serializable
 {
    private static final long serialVersionUID = -6988617479016327717L;
-   
+
+   @Id @GeneratedValue
    private Long id;
+
+   @ManyToOne @JoinColumn(name = "VENUE_ID")
+   @JsonIgnore
    private Venue venue;
+
    private String name;
    private int capacity;
    
-   @Id @GeneratedValue
+
    public Long getId()
    {
       return id;
@@ -36,8 +43,7 @@ public class VenueLayout implements Serializable
    {
       this.id = id;
    }
-   
-   @ManyToOne @JoinColumn(name = "VENUE_ID")
+
    public Venue getVenue()
    {
       return venue;

@@ -2,6 +2,7 @@ package org.jboss.jdf.example.ticketmonster.model;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -30,7 +31,7 @@ public class Show implements Serializable
   
    private VenueLayout venueLayout;
 
-   private List<Performance> performances;
+   private Set<Performance> performances;
    
    @Id @GeneratedValue
    public Long getId()
@@ -67,11 +68,11 @@ public class Show implements Serializable
    }
 
     @OneToMany(fetch = FetchType.EAGER) @JoinColumn(name = "SHOW_ID")
-    public List<Performance> getPerformances() {
+    public Set<Performance> getPerformances() {
         return performances;
     }
 
-    public void setPerformances(List<Performance> performances) {
+    public void setPerformances(Set<Performance> performances) {
         this.performances = performances;
     }
    

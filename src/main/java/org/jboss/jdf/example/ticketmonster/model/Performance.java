@@ -6,24 +6,28 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
  * @author Marius Bogoevici
  */
-@Entity
+@Entity @JsonIgnoreProperties("show")
 public class Performance implements Serializable {
 
     private static final long serialVersionUID = -108405033615497885L;
-    
+
+    @Id @GeneratedValue
     private Long id;
 
     private Date date;
-    
+
+    @ManyToOne
     private Show show;
 
-    @Id @GeneratedValue
+
     public Long getId() {
         return id;
     }
@@ -36,7 +40,7 @@ public class Performance implements Serializable {
         this.show = show;
     }
 
-    @JsonIgnore
+
     public Show getShow() {
         return show;
     }

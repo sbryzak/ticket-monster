@@ -12,7 +12,7 @@
             $.getJSON("rest/events", function (events) {
                 var eventListContent = '';
                 $.each(events, function (i, event) {
-                    eventListContent += ("<tr onclick='showDetails(" + event.id + ")'>")
+                    eventListContent += ("<tr onclick='loadEventShowDetails(" + event.id + ")'>")
                     eventListContent += "<td>" + event.name + "</td>"
                     eventListContent += "<td>" + event.category.description + "</td>"
                     eventListContent += "</tr>"
@@ -21,23 +21,57 @@
 
             })
         }
-        function showDetails(eventId) {
+        var loadedShows = null
+        function loadEventShowDetails(eventId) {
             $.getJSON("rest/events/" + eventId, function (event) {
                 $("#eventDetails").empty()
-                $("#eventDetails").append("<img src='rest/media/"+event.picture.id + "'/><p/>" + event.description)
+                $("#eventDetails").append("<img src='rest/media/" + event.picture.id + "'/><p/>" + event.description)
             })
             $.getJSON("rest/shows?event=" + eventId, function (shows) {
-                $("#showDetails").empty()
-                $.each(shows, function(i, show) {
-                    console.log(show.venue.name + " " + new Date(show.showDate).toDateString() + " ")
-                    $("#showDetails").append(show.venue.name)
-                    $("#showDetails").append("<p>")
-                    $.each(show.performances, function (i, performance) {
-                        $("#showDetails").append("Performance on " + new Date(performance.date).toString()).append("<p>")
-                    })
+                loadedShows = new Object()
+                $("#venueSelectorDiv").empty().append("<select id='venueSelector' />")
+                $.each(shows, function (i, show) {
+                    $("#venueSelector").append("<option value='" + show.id + "'>" + show.venue.name + "</option>")
+                    loadedShows[show.id] = show
                 })
+                $("#venueSelector").change(function (selectElement) {
+                    var showId = $("#venueSelector option:selected").val();
+                    var selectedShow = loadedShows[showId];
+                    $("#performanceTimeSelectorDiv").empty().append("<select id='performanceTimes'/>")
+                    if (selectedShow) {
 
+                        $.each(selectedShow.performances, function (i, performance) {
+                            $("#performanceTimes").append("<option value='" + performance.id + "'>" + new Date(performance.date).toDateString() + "</option>")
+                        })
+                    }
+                })
+                if ($("#venueSelector").val) {
+                    $("#venueSelector").change()
+                }
+                if ($("#performanceTimes").val) {
+                    $("#book").empty().append("<input type='button' onclick='beginBookTicket()' value='Book'/>");
+                }
             })
+        }
+        function beginBookTicket(performanceId) {
+            if ($("#performanceTimes").val()) {
+                $("#book").empty();
+                $("#book").append("<form id='bookTickets' action='rest/bookings' method='post'/>");
+                var showId = $("#venueSelector option:selected").val();
+                var selectedShow = loadedShows[showId];
+                $.getJSON("rest/venues/layouts/" + selectedShow.venueLayout.id + "/sections", function (sections) {
+                    $.each(sections, function (i, section) {
+                        $("#bookTickets").append("Section " + section.name + ": <input type='number' name='section" +section.id+ "value='0'/><p/>")
+                    })
+                    $("#bookTickets").append("<fieldset id='personalData'/>")
+                    $("#personalData").append("Email: <input type='email' name='email'/>");
+                    $("#bookTickets").append("<input type='hidden' name='performance' value='"+ $("#performanceTimes").val()+ "'/>")
+                    $("#bookTickets").append("<input type='submit' value='Book!'/>")
+                })
+            }
+            else {
+               alert("nothing selected")
+            }
         }
         $(document).ready(function () {
             updateEvents();
@@ -57,19 +91,27 @@
             </thead>
             <tbody id="events">
             <tr>
-                <td>Not loaded</td>
+                <td>Loading!</td>
             </tr>
             </tbody>
         </table>
     </div>
     <div id="eventDetails">
-        
+
     </div>
 
-    <div id="showDetails">
 
-        </div>
+    <div id="venueSelectorDiv">
 
+    </div>
+
+    <div id="performanceTimeSelectorDiv">
+
+    </div>
+
+    <div id="book">
+
+    </div>
 </div>
 </body>
 </html>

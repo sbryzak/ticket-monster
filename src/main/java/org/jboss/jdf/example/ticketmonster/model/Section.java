@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * A section is a specific area within a venue layout.  A venue layout may 
  * consist of multiple sections, each with its own pricing scheme. 
@@ -19,7 +21,8 @@ import javax.persistence.ManyToOne;
 public class Section implements Serializable
 {
    private static final long serialVersionUID = 4293585694763708395L;
-   
+
+   @Id @GeneratedValue
    private Long id;
    
    /**
@@ -40,9 +43,9 @@ public class Section implements Serializable
    /**
     * The layout to which this section belongs
     */
+   @ManyToOne @JoinColumn(name = "LAYOUT_ID") @JsonIgnore
    private VenueLayout layout;
-   
-   @Id @GeneratedValue
+
    public Long getId()
    {
       return id;
@@ -83,7 +86,6 @@ public class Section implements Serializable
       this.capacity = capacity;
    }
    
-   @ManyToOne @JoinColumn(name = "LAYOUT_ID")
    public VenueLayout getLayout()
    {
       return layout;
