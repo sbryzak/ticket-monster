@@ -1,7 +1,7 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,8 +28,8 @@ public class Venue implements Serializable {
     private String address;
     private String description;
     
-    @OneToMany
-    private Collection<VenueLayout> layouts;
+    @OneToMany(mappedBy="venue")
+    private Set<VenueLayout> layouts;
 
     @ManyToOne
     @JoinColumn(name = "PICTURE_ID")
@@ -75,4 +75,12 @@ public class Venue implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+    
+    public Set<VenueLayout> getLayouts() {
+      return layouts;
+   }
+    
+    public void setLayouts(Set<VenueLayout> layouts) {
+      this.layouts = layouts;
+   }
 }
