@@ -57,6 +57,17 @@
                 }
             })
         }
+
+        function checkAvailability(quantity, sectionId) {
+            if ('' === quantity || quantity == 0) {
+                return
+            }
+            $.getJSON("rest/availability", {"performance":$("#performanceTimes").val(),"quantity":quantity,"section":sectionId}, function(result) {
+                var divId = "#sectionAvailability"+sectionId;
+               $(divId).empty().append(result?"<div style='color:#00FF00'>available</div>":"<div style='color:#FF0000'>unavailable</div>")
+            })
+        }
+
         function beginBookTicket(performanceId) {
             if ($("#performanceTimes").val()) {
                 $("#book").empty();
@@ -65,8 +76,9 @@
                 var selectedShow = loadedShows[showId];
                 $.getJSON("rest/venues/layouts/" + selectedShow.venueLayout.id + "/sections", function (sections) {
                     $.each(sections, function (i, section) {
-                        $("#bookTickets").append("Section " + section.name + ": <input type='number' name='tickets' min='0'  title='Numeric value'/>" +
-                                "<input type='hidden' name='sections' value='"+section.id+"'/<p/>")
+                        $("#bookTickets").append("Section " + section.name + ": <input type='number' name='tickets' min='0' onchange='checkAvailability(this.value,"+section.id+")' title='Numeric value'/> " +
+                                " <input type='hidden' name='sections' value='"+section.id+"'/>" +
+                                " <div id='sectionAvailability"+ section.id + "'/> <p/>")
                     })
 
                     $("#bookTickets").append("Email: <input type='email' name='email' required/>");
