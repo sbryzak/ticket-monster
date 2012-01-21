@@ -28,6 +28,9 @@ public class Allocation implements Serializable {
     @ManyToOne
     private SectionRow row;
 
+    @ManyToOne
+    private Booking booking;
+
     private int startSeat;
 
     private int endSeat;
@@ -77,5 +80,13 @@ public class Allocation implements Serializable {
 
     public void setEndSeat(int endSeat) {
         this.endSeat = endSeat;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
     }
 }

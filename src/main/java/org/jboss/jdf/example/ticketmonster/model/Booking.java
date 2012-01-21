@@ -21,7 +21,7 @@ public class Booking {
     @GeneratedValue
     private Long id;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "booking")
     private Collection<Allocation> allocations;
 
     @ManyToOne
