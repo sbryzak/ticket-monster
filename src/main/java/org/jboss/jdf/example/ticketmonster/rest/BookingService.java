@@ -3,6 +3,7 @@ package org.jboss.jdf.example.ticketmonster.rest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ import org.jboss.jdf.example.ticketmonster.model.Allocation;
 import org.jboss.jdf.example.ticketmonster.model.Booking;
 import org.jboss.jdf.example.ticketmonster.model.Customer;
 import org.jboss.jdf.example.ticketmonster.model.Performance;
+import org.jboss.jdf.example.ticketmonster.model.PriceCategory;
 import org.jboss.jdf.example.ticketmonster.model.SectionRow;
 import org.jboss.jdf.example.ticketmonster.model.VenueLayout;
 
@@ -44,6 +46,7 @@ public class BookingService extends BaseEntityService<Booking> {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response createBooking(@FormParam("email") String email,
                                   @FormParam("performance") Long performanceId,
+                                  @FormParam("priceCategories") Long[] priceCategoryIds,
                                   @FormParam("sections") Long[] sectionIds,
                                   @FormParam("tickets") String[] ticketCounts
     ) {
@@ -51,27 +54,31 @@ public class BookingService extends BaseEntityService<Booking> {
         customer.setEmail(email);
         entityManager.persist(customer);
         Performance performance = entityManager.find(Performance.class, performanceId);
-        VenueLayout venueLayout = performance.getShow().getVenueLayout();
         Booking booking = new Booking();
         booking.setCustomer(customer);
         booking.setCreatedOn(new Date());
         booking.setAllocations(new ArrayList<Allocation>());
-        if (ticketCounts.length != sectionIds.length) {
+        if (ticketCounts.length != priceCategoryIds.length) {
             Map<String, String> entity = new HashMap<String, String>();
-            entity.put("cause", "There must be as many sections as tickets");
+            entity.put("cause", "There must be as many pr as tickets");
             Response response = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
         }
+        Map<Long, Integer> ticketCountsPerSection = new LinkedHashMap<Long, Integer>();
         for (int i = 0; i < ticketCounts.length; i++) {
-
-            if (ticketCounts[i] == null || "".equals(ticketCounts[i].trim())) {
+            if (ticketCounts[i] == null || "".equals(ticketCounts[i].trim()))
                 continue;
+            Integer ticketCountAsInteger = Integer.valueOf(ticketCounts[i]);
+            if (!ticketCountsPerSection.containsKey(sectionIds[i])) {
+                ticketCountsPerSection.put(sectionIds[i], 0);
             }
-
-            Integer ticketCount = Integer.valueOf(ticketCounts[i]);
+            ticketCountsPerSection.put(sectionIds[i], ticketCountsPerSection.get(sectionIds[i]) + ticketCountAsInteger);
+        }
+        for (Long sectionId : ticketCountsPerSection.keySet()) {
+            int ticketCount = ticketCountsPerSection.get(sectionId);
             if (ticketCount == 0) {
                 continue;
             }
-            List<SectionRow> rows = (List<SectionRow>) entityManager.createQuery("select r from SectionRow r where r.section.id = :id").setParameter("id", sectionIds[i]).getResultList();
+            List<SectionRow> rows = (List<SectionRow>) entityManager.createQuery("select r from SectionRow r where r.section.id = :id").setParameter("id", sectionId).getResultList();
             Allocation createdAllocation = null;
             for (SectionRow row : rows) {
                 List<Allocation> allocations = (List<Allocation>) entityManager.createQuery("select a from Allocation a  where a.performance.id = :perfId and a.row.id = :rowId").setParameter("perfId", performanceId).setParameter("rowId", row.getId()).getResultList();

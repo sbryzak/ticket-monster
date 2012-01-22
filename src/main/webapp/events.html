@@ -22,6 +22,8 @@
             })
         }
         var loadedShows = null
+        var loadedSections = null
+        var loadedPrices = null
         function loadEventShowDetails(eventId) {
             $.getJSON("rest/events/" + eventId, function (event) {
                 $("#eventDetails").empty()
@@ -58,10 +60,22 @@
             })
         }
 
-        function checkAvailability(quantity, sectionId) {
+        function checkAvailability(sectionId) {
+            var quantity = 0
+            var ticketInputs = $("#booking" + sectionId + ">input[type='number']");
+            var priceIds = $("#booking" + sectionId + ">input[name='priceCategories']");
+            var sectionPrice = 0
+            $.each(ticketInputs, function(i, element) {
+                if (''!== element.value) {
+                    quantity += parseInt(element.value);
+                    sectionPrice += loadedPrices[priceIds[i].value]
+                }
+            })
             if ('' === quantity || quantity == 0) {
+                $("#sectionQuantity" + sectionId).empty()
                 return
             }
+            $("#sectionQuantity" + sectionId).empty().append(quantity.toString() + " for " + sectionPrice)
             $.getJSON("rest/availability", {"performance":$("#performanceTimes").val(),"quantity":quantity,"section":sectionId}, function(result) {
                 var divId = "#sectionAvailability"+sectionId;
                $(divId).empty().append(result?"<div style='color:#00FF00'>available</div>":"<div style='color:#FF0000'>unavailable</div>")
@@ -69,17 +83,29 @@
         }
 
         function beginBookTicket(performanceId) {
+            loadedSections = new Object()
+            loadedPrices = new Object()
             if ($("#performanceTimes").val()) {
                 $("#book").empty();
                 $("#book").append("<form id='bookTickets' name='bookTickets'/>");
                 var showId = $("#venueSelector option:selected").val();
                 var selectedShow = loadedShows[showId];
                 $.getJSON("rest/venues/layouts/" + selectedShow.venueLayout.id + "/sections", function (sections) {
-                    $.each(sections, function (i, section) {
-                        $("#bookTickets").append("Section " + section.name + ": <input type='number' name='tickets' min='0' onchange='checkAvailability(this.value,"+section.id+")' title='Numeric value'/> " +
-                                " <input type='hidden' name='sections' value='"+section.id+"'/>" +
-                                " <div id='sectionAvailability"+ section.id + "'/> <p/>")
+                     sections.forEach(function(section){
+                         loadedSections[section.id] = section
+                     })
+                })
+                $.getJSON("rest/shows/" + selectedShow.id + "/pricing", function (pricingMap) {
+                    for (sectionId in pricingMap)  {
+                        $("#bookTickets").append("<fieldset id='booking" + sectionId +"'><legend>"+loadedSections[sectionId].name+"</legend><div id='sectionQuantity"+ sectionId + "'/> <div id='sectionAvailability"+ sectionId + "'/> </fieldset>");
+                    $.each(pricingMap[sectionId], function (i, price_category) {
+                        $("#booking" + sectionId).append(price_category.category.description + "(" + price_category.price + ")"+ ": <input type='number' name='tickets' min='0' onkeyup='checkAvailability("+sectionId+")' title='Numeric value'/> " +
+                                " <input type='hidden' name='priceCategories' value='"+price_category.id+"'/>" +
+                                " <input type='hidden' name='sections' value='"+sectionId+"'/>" +
+                                " <p/>")
+                        loadedPrices[price_category.id] = price_category.price
                     })
+                    }
 
                     $("#bookTickets").append("Email: <input type='email' name='email' required/>");
                     $("#bookTickets").append("<input type='hidden' name='performance' value='"+ $("#performanceTimes").val()+ "'/>")
@@ -89,7 +115,7 @@
                         $.post("rest/bookings", $(this).serialize(), function(booking) {
                             $("#book").empty()
 
-                            $("#book").append("Booked ticket " + booking.id + " as follows: ")
+                            $("#book").append("Created booking " + booking.id + " with tickets as follows: ")
                             $.each(booking.allocations, function(i, allocation) {
                                 if (allocation.quantity > 1) {
                                    $("#book").append("<p/> Section " + allocation.row.section.name + " Row " + allocation.row.name + ", seats " + allocation.startSeat + "-" + allocation.endSeat)

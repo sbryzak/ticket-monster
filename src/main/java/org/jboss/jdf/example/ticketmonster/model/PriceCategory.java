@@ -32,7 +32,6 @@ public class PriceCategory implements Serializable {
     private Section section;
 
     @ManyToOne
-    @JoinColumn(name = "CATEGORY_ID")
     private TicketCategory category;
 
     private float price;
