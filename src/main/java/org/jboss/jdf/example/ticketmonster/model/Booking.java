@@ -27,6 +27,8 @@ public class Booking {
     @ManyToOne
     private Customer customer;
 
+    private String cancelationCode;
+
     private Date createdOn;
 
     public Long getId() {
@@ -57,4 +59,11 @@ public class Booking {
         this.createdOn = createdOn;
     }
 
+    public String getCancelationCode() {
+        return cancelationCode;
+    }
+
+    public void setCancelationCode(String cancelationCode) {
+        this.cancelationCode = cancelationCode;
+    }
 }

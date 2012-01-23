@@ -68,7 +68,7 @@
             $.each(ticketInputs, function(i, element) {
                 if (''!== element.value) {
                     quantity += parseInt(element.value);
-                    sectionPrice += loadedPrices[priceIds[i].value]
+                    sectionPrice += quantity*loadedPrices[priceIds[i].value]
                 }
             })
             if ('' === quantity || quantity == 0) {
@@ -122,6 +122,9 @@
                                 } else {
                                     $("#book").append("<p/> Section " + allocation.row.section.name + " Row " + allocation.row.name + ", seat " + allocation.startSeat)
                                 }
+                                $.each(allocation.ticketsPerCategory, function(i, entry){
+                                    $("#book").append("<p/> " + entry.ticketCount + " " + entry.ticketCategory.description)
+                                })
                             })
 
                         }).error(function(error) {
