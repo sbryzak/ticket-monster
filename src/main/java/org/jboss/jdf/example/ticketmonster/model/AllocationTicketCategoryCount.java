@@ -4,22 +4,23 @@ import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
 
 /**
-* @author Marius Bogoevici
-*/
+ *
+ * @author Marius Bogoevici
+ */
 @Embeddable
-public class TicketCategoryCount {
+public class AllocationTicketCategoryCount {
 
     @ManyToOne
     private TicketCategory ticketCategory;
 
     private int ticketCount;
 
-    public TicketCategoryCount(TicketCategory ticketCategory, int ticketCount) {
+    public AllocationTicketCategoryCount(TicketCategory ticketCategory, int ticketCount) {
         this.ticketCategory = ticketCategory;
         this.ticketCount = ticketCount;
     }
 
-    public TicketCategoryCount() {
+    public AllocationTicketCategoryCount() {
     }
 
     public TicketCategory getTicketCategory() {

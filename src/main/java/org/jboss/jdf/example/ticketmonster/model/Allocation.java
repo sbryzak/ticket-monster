@@ -34,7 +34,7 @@ public class Allocation implements Serializable {
     private Booking booking;
 
     @ElementCollection
-    public List<TicketCategoryCount> ticketsPerCategory;
+    public List<AllocationTicketCategoryCount> ticketsPerCategory;
 
     private int startSeat;
 
@@ -95,11 +95,11 @@ public class Allocation implements Serializable {
         this.booking = booking;
     }
 
-    public List<TicketCategoryCount> getTicketsPerCategory() {
+    public List<AllocationTicketCategoryCount> getTicketsPerCategory() {
         return ticketsPerCategory;
     }
 
-    public void setTicketsPerCategory(List<TicketCategoryCount> ticketsPerCategory) {
+    public void setTicketsPerCategory(List<AllocationTicketCategoryCount> ticketsPerCategory) {
         this.ticketsPerCategory = ticketsPerCategory;
     }
 
