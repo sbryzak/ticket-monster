@@ -1,7 +1,5 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-
 import java.io.Serializable;
 
 import javax.persistence.Basic;
@@ -11,6 +9,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
  * A reference to a media object such as images, sound bites, video recordings, that can
