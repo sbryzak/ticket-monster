@@ -27,7 +27,7 @@ public class Booking {
     @ManyToOne
     private Customer customer;
 
-    private String cancelationCode;
+    private String cancellationCode;
 
     private Date createdOn;
 
@@ -59,11 +59,11 @@ public class Booking {
         this.createdOn = createdOn;
     }
 
-    public String getCancelationCode() {
-        return cancelationCode;
+    public String getCancellationCode() {
+        return cancellationCode;
     }
 
-    public void setCancelationCode(String cancelationCode) {
-        this.cancelationCode = cancelationCode;
+    public void setCancellationCode(String cancellationCode) {
+        this.cancellationCode = cancellationCode;
     }
 }
