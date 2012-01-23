@@ -26,6 +26,7 @@ import org.jboss.jdf.example.ticketmonster.model.Performance;
 import org.jboss.jdf.example.ticketmonster.model.PriceCategory;
 import org.jboss.jdf.example.ticketmonster.model.AllocationTicketCategoryCount;
 import org.jboss.jdf.example.ticketmonster.model.Row;
+import org.jboss.jdf.example.ticketmonster.model.Section;
 
 /**
  * @author Marius Bogoevici
@@ -84,14 +85,15 @@ public class BookingService extends BaseEntityService<Booking> {
             }
             ticketCountsPerSection.put(sectionIds[i], ticketCountsPerSection.get(sectionIds[i]) + ticketCountAsInteger);
             final PriceCategory priceCategory = getEntityManager().find(PriceCategory.class, priceCategoryIds[i]);
-            ticketsPerCategory.get(sectionIds[i]).add(new AllocationTicketCategoryCount(priceCategory.getCategory(), ticketCountAsInteger));
+            ticketsPerCategory.get(sectionIds[i]).add(new AllocationTicketCategoryCount(priceCategory.getTicketCategory(), ticketCountAsInteger));
         }
         for (Long sectionId : ticketCountsPerSection.keySet()) {
             int ticketCount = ticketCountsPerSection.get(sectionId);
             if (ticketCount == 0) {
                 continue;
             }
-            List<Row> rows = (List<Row>) getEntityManager().createQuery("select r from SectionRow r where r.section.id = :id").setParameter("id", sectionId).getResultList();
+            Section section = getEntityManager().find(Section.class, sectionId);
+            List<Row> rows = section.getSectionRows();
             Allocation createdAllocation = null;
             for (Row row : rows) {
                 List<Allocation> allocations = (List<Allocation>) getEntityManager().createQuery("select a from Allocation a  where a.performance.id = :perfId and a.row.id = :rowId").setParameter("perfId", performanceId).setParameter("rowId", row.getId()).getResultList();

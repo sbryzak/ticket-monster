@@ -33,7 +33,7 @@
                 loadedShows = new Object()
                 $("#venueSelectorDiv").empty().append("<select id='venueSelector' />")
                 $.each(shows, function (i, show) {
-                    $("#venueSelector").append("<option value='" + show.id + "'>" + show.venuelayout.venue.name + "</option>")
+                    $("#venueSelector").append("<option value='" + show.id + "'>" + show.venueLayout.venue.name + "</option>")
                     loadedShows[show.id] = show
                 })
                 $("#venueSelector").change(function (selectElement) {
@@ -99,7 +99,7 @@
                     for (sectionId in pricingMap)  {
                         $("#bookTickets").append("<fieldset id='booking" + sectionId +"'><legend>"+loadedSections[sectionId].name+"</legend><div id='sectionQuantity"+ sectionId + "'/> <div id='sectionAvailability"+ sectionId + "'/> </fieldset>");
                     $.each(pricingMap[sectionId], function (i, price_category) {
-                        $("#booking" + sectionId).append(price_category.category.description + "(" + price_category.price + ")"+ ": <input type='number' name='tickets' min='0' onkeyup='checkAvailability("+sectionId+")' title='Numeric value'/> " +
+                        $("#booking" + sectionId).append(price_category.ticketCategory.description + "(" + price_category.price + ")"+ ": <input type='number' name='tickets' min='0' onkeyup='checkAvailability("+sectionId+")' title='Numeric value'/> " +
                                 " <input type='hidden' name='priceCategories' value='"+price_category.id+"'/>" +
                                 " <input type='hidden' name='sections' value='"+sectionId+"'/>" +
                                 " <p/>")

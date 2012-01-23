@@ -6,8 +6,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import java.util.Collection;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
+import java.util.Set;
 import java.util.Date;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * A Booking represents a set of tickets purchased for a performance.
@@ -22,24 +27,29 @@ public class Booking {
     private Long id;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "booking")
-    private Collection<Allocation> allocations;
+    @NotEmpty
+    @Valid
+    private Set<Allocation> allocations;
 
     @ManyToOne
+    @Valid
     private Customer customer;
 
+    @NotEmpty
     private String cancellationCode;
 
+    @NotNull
     private Date createdOn;
 
     public Long getId() {
         return id;
     }
 
-    public Collection<Allocation> getAllocations() {
+    public Set<Allocation> getAllocations() {
         return allocations;
     }
 
-    public void setAllocations(Collection<Allocation> allocations) {
+    public void setAllocations(Set<Allocation> allocations) {
         this.allocations = allocations;
     }
 

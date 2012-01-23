@@ -13,6 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.hibernate.validator.constraints.NotEmpty;
+
 
 /**
  * A show is an instance of an event taking plac at a particular venue. A show can have multiple
@@ -20,10 +24,10 @@ import javax.persistence.OneToMany;
  *
  * @author Shane Bryzak
  */
-@Entity
+@Entity @JsonIgnoreProperties("priceCategories")
 public class Show implements Serializable {
-    private static final long serialVersionUID = -108405033615497885L;
 
+    private static final long serialVersionUID = -108405033615497885L;
 
     @Id
     @GeneratedValue
@@ -36,7 +40,12 @@ public class Show implements Serializable {
     private VenueLayout venueLayout;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "show", cascade = {CascadeType.ALL})
+    @NotEmpty
     private Set<Performance> performances;
+
+    @OneToMany(mappedBy = "show")
+    @NotEmpty
+    private Set<PriceCategory> priceCategories;
 
     public Long getId() {
         return id;
@@ -63,7 +72,6 @@ public class Show implements Serializable {
         this.performances = performances;
     }
 
-
     public VenueLayout getVenueLayout() {
         return venueLayout;
     }
@@ -72,4 +80,11 @@ public class Show implements Serializable {
         this.venueLayout = venueLayout;
     }
 
+    public Set<PriceCategory> getPriceCategories() {
+        return priceCategories;
+    }
+
+    public void setPriceCategories(Set<PriceCategory> priceCategories) {
+        this.priceCategories = priceCategories;
+    }
 }

@@ -10,6 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * Represents an event, which may have multiple performances with different dates and
@@ -26,8 +30,12 @@ public class Event implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @NotNull @NotEmpty
+    @Size(min = 5, max = 50, message = "An event's name must contain between 5 and 50 characters")
     private String name;
 
+    @NotNull @NotEmpty
+    @Size(min = 20, max = 1000, message = "An event's name must contain between 20 and 1000 characters")
     private String description;
 
     /**
@@ -36,7 +44,7 @@ public class Event implements Serializable {
     @ManyToOne
     private MediaItem picture;
 
-    @ManyToOne
+    @ManyToOne @NotNull
     private EventCategory category;
 
     private boolean major;

@@ -7,6 +7,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * Represents a single row of seats within a section.  May also be used to
@@ -25,7 +29,10 @@ public class Row implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @NotNull @NotEmpty
     private String name;
+
+    @Min(0)
     private int capacity;
 
 

@@ -5,8 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * Contains price categories - each category represents the price for a ticket
@@ -16,6 +17,7 @@ import javax.persistence.ManyToOne;
  * @author Shane Bryzak
  */
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"SECTION_ID","SHOW_ID","TICKETCATEGORY_ID"}))
 public class PriceCategory implements Serializable {
     private static final long serialVersionUID = 6649855367578381386L;
 
@@ -24,15 +26,13 @@ public class PriceCategory implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "SHOW_ID")
     private Show show;
 
     @ManyToOne
-    @JoinColumn(name = "SECTION_ID")
     private Section section;
 
     @ManyToOne
-    private TicketCategory category;
+    private TicketCategory ticketCategory;
 
     private float price;
 
@@ -60,12 +60,12 @@ public class PriceCategory implements Serializable {
         this.section = section;
     }
 
-    public TicketCategory getCategory() {
-        return category;
+    public TicketCategory getTicketCategory() {
+        return ticketCategory;
     }
 
-    public void setCategory(TicketCategory category) {
-        this.category = category;
+    public void setTicketCategory(TicketCategory ticketCategory) {
+        this.ticketCategory = ticketCategory;
     }
 
     public float getPrice() {

@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * Lookup table containing event categories
@@ -19,6 +22,7 @@ public class EventCategory implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @NotNull @NotEmpty
     private String description;
 
 

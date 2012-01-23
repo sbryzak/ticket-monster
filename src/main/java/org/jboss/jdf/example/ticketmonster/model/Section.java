@@ -3,13 +3,19 @@ package org.jboss.jdf.example.ticketmonster.model;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.hibernate.validator.constraints.NotEmpty;
 
 /**
  * A section is a specific area within a venue layout.  A venue layout may
@@ -17,7 +23,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  *
  * @author Shane Bryzak
  */
-@Entity
+@Entity @JsonIgnoreProperties({"layout", "sectionRows"})
 public class Section implements Serializable {
     private static final long serialVersionUID = 4293585694763708395L;
 
@@ -33,22 +39,23 @@ public class Section implements Serializable {
     /**
      * The description of the section, such as 'Rear Balcony', etc.
      */
+    @NotEmpty
     private String description;
 
     /**
      * The total seating capacity of the section
      */
+    @Min(0)
     private int capacity;
 
     /**
      * The layout to which this section belongs
      */
     @ManyToOne
-    @JsonIgnore
     private VenueLayout layout;
 
-    @OneToMany(mappedBy = "section")
-    @JsonIgnore
+    @OneToMany(mappedBy = "section", cascade = CascadeType.ALL)
+    @NotEmpty
     private List<Row> sectionRows;
 
     public Long getId() {

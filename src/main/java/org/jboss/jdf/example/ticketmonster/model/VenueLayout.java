@@ -1,12 +1,15 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
@@ -18,7 +21,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
  *
  * @author Shane Bryzak
  */
-@Entity @JsonIgnoreProperties("venue")
+@Entity @JsonIgnoreProperties({"sections"})
 public class VenueLayout implements Serializable {
     private static final long serialVersionUID = -6988617479016327717L;
 
@@ -28,8 +31,12 @@ public class VenueLayout implements Serializable {
 
     @ManyToOne
     private Venue venue;
+    
+    @OneToMany(mappedBy = "layout", cascade = CascadeType.ALL)
+    private Set<Section> sections;
 
     private String name;
+
     private int capacity;
 
 
@@ -63,5 +70,13 @@ public class VenueLayout implements Serializable {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    public Set<Section> getSections() {
+        return sections;
+    }
+
+    public void setSections(Set<Section> sections) {
+        this.sections = sections;
     }
 }
