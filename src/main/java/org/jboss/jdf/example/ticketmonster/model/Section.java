@@ -1,12 +1,13 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
@@ -43,9 +44,12 @@ public class Section implements Serializable {
      * The layout to which this section belongs
      */
     @ManyToOne
-    @JoinColumn(name = "LAYOUT_ID")
     @JsonIgnore
     private VenueLayout layout;
+
+    @OneToMany(mappedBy = "section")
+    @JsonIgnore
+    private List<Row> sectionRows;
 
     public Long getId() {
         return id;
@@ -85,5 +89,13 @@ public class Section implements Serializable {
 
     public void setLayout(VenueLayout layout) {
         this.layout = layout;
+    }
+
+    public List<Row> getSectionRows() {
+        return sectionRows;
+    }
+
+    public void setSectionRows(List<Row> sectionRows) {
+        this.sectionRows = sectionRows;
     }
 }

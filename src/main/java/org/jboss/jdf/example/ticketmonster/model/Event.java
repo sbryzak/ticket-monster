@@ -30,14 +30,13 @@ public class Event implements Serializable {
 
     private String description;
 
-
+    /**
+     * TODO: revise this, consider whether the Event owns the picture or media items can be shared between events
+     */
     @ManyToOne
-    @JoinColumn(name = "PICTURE_ID")
     private MediaItem picture;
 
-
     @ManyToOne
-    @JoinColumn(name = "CATEGORY_ID")
     private EventCategory category;
 
     private boolean major;

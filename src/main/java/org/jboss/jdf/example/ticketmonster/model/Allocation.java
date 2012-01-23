@@ -28,7 +28,7 @@ public class Allocation implements Serializable {
     private Performance performance;
 
     @ManyToOne
-    private SectionRow row;
+    private Row row;
 
     @ManyToOne
     private Booking booking;
@@ -55,11 +55,11 @@ public class Allocation implements Serializable {
         this.performance = performance;
     }
 
-    public SectionRow getRow() {
+    public Row getRow() {
         return row;
     }
 
-    public void setRow(SectionRow row) {
+    public void setRow(Row row) {
         this.row = row;
     }
 

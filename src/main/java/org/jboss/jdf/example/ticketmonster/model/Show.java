@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,20 +30,12 @@ public class Show implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "EVENT_ID")
     private Event event;
 
-
     @ManyToOne
-    @JoinColumn(name = "VENUE_ID")
-    private Venue venue;
-
-    @ManyToOne
-    @JoinColumn(name = "LAYOUT_ID")
     private VenueLayout venueLayout;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "SHOW_ID")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "show", cascade = {CascadeType.ALL})
     private Set<Performance> performances;
 
     public Long getId() {
@@ -61,16 +54,6 @@ public class Show implements Serializable {
     public void setEvent(Event event) {
         this.event = event;
     }
-
-    public Venue getVenue() {
-        return venue;
-    }
-
-
-    public void setVenue(Venue venue) {
-        this.venue = venue;
-    }
-
 
     public Set<Performance> getPerformances() {
         return performances;

@@ -15,9 +15,10 @@ import javax.persistence.ManyToOne;
  * Seat allocations within the row are given a number, starting with 1.
  *
  * @author Shane Bryzak
+ * @author Marius Bogoevici
  */
 @Entity
-public class SectionRow implements Serializable {
+public class Row implements Serializable {
     private static final long serialVersionUID = 8180924487630451004L;
 
     @Id
@@ -29,7 +30,6 @@ public class SectionRow implements Serializable {
 
 
     @ManyToOne
-    @JoinColumn(name = "SECTION_ID")
     private Section section;
 
     public Long getId() {

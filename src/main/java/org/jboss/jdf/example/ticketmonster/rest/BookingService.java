@@ -25,7 +25,7 @@ import org.jboss.jdf.example.ticketmonster.model.Customer;
 import org.jboss.jdf.example.ticketmonster.model.Performance;
 import org.jboss.jdf.example.ticketmonster.model.PriceCategory;
 import org.jboss.jdf.example.ticketmonster.model.AllocationTicketCategoryCount;
-import org.jboss.jdf.example.ticketmonster.model.SectionRow;
+import org.jboss.jdf.example.ticketmonster.model.Row;
 
 /**
  * @author Marius Bogoevici
@@ -91,9 +91,9 @@ public class BookingService extends BaseEntityService<Booking> {
             if (ticketCount == 0) {
                 continue;
             }
-            List<SectionRow> rows = (List<SectionRow>) getEntityManager().createQuery("select r from SectionRow r where r.section.id = :id").setParameter("id", sectionId).getResultList();
+            List<Row> rows = (List<Row>) getEntityManager().createQuery("select r from SectionRow r where r.section.id = :id").setParameter("id", sectionId).getResultList();
             Allocation createdAllocation = null;
-            for (SectionRow row : rows) {
+            for (Row row : rows) {
                 List<Allocation> allocations = (List<Allocation>) getEntityManager().createQuery("select a from Allocation a  where a.performance.id = :perfId and a.row.id = :rowId").setParameter("perfId", performanceId).setParameter("rowId", row.getId()).getResultList();
                 if (allocations.size() > 0) {
                     int confirmedCandidate = 0;

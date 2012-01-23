@@ -16,7 +16,6 @@ import javax.persistence.*;
 public class Venue implements Serializable {
     private static final long serialVersionUID = -6588912817518967721L;
 
-
     @Id
     @GeneratedValue
     private Long id;

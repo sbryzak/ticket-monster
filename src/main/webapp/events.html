@@ -33,7 +33,7 @@
                 loadedShows = new Object()
                 $("#venueSelectorDiv").empty().append("<select id='venueSelector' />")
                 $.each(shows, function (i, show) {
-                    $("#venueSelector").append("<option value='" + show.id + "'>" + show.venue.name + "</option>")
+                    $("#venueSelector").append("<option value='" + show.id + "'>" + show.venuelayout.venue.name + "</option>")
                     loadedShows[show.id] = show
                 })
                 $("#venueSelector").change(function (selectElement) {
