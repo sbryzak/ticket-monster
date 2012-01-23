@@ -9,8 +9,6 @@ import java.util.Map;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -26,7 +24,7 @@ import org.jboss.jdf.example.ticketmonster.model.Booking;
 import org.jboss.jdf.example.ticketmonster.model.Customer;
 import org.jboss.jdf.example.ticketmonster.model.Performance;
 import org.jboss.jdf.example.ticketmonster.model.PriceCategory;
-import org.jboss.jdf.example.ticketmonster.model.TicketCategoryCount;
+import org.jboss.jdf.example.ticketmonster.model.AllocationTicketCategoryCount;
 import org.jboss.jdf.example.ticketmonster.model.SectionRow;
 
 /**
@@ -36,7 +34,6 @@ import org.jboss.jdf.example.ticketmonster.model.SectionRow;
 @Stateful
 @RequestScoped
 public class BookingService extends BaseEntityService<Booking> {
-
 
 
     public BookingService() {
@@ -61,8 +58,7 @@ public class BookingService extends BaseEntityService<Booking> {
                                   @FormParam("performance") Long performanceId,
                                   @FormParam("priceCategories") Long[] priceCategoryIds,
                                   @FormParam("sections") Long[] sectionIds,
-                                  @FormParam("tickets") String[] ticketCounts
-    ) {
+                                  @FormParam("tickets") String[] ticketCounts) {
         Customer customer = new Customer();
         customer.setEmail(email);
         getEntityManager().persist(customer);
@@ -77,18 +73,18 @@ public class BookingService extends BaseEntityService<Booking> {
             Response response = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
         }
         Map<Long, Integer> ticketCountsPerSection = new LinkedHashMap<Long, Integer>();
-        Map<Long, List<TicketCategoryCount>> ticketsPerCategory = new LinkedHashMap<Long, List<TicketCategoryCount>>();
+        Map<Long, List<AllocationTicketCategoryCount>> ticketsPerCategory = new LinkedHashMap<Long, List<AllocationTicketCategoryCount>>();
         for (int i = 0; i < ticketCounts.length; i++) {
             if (ticketCounts[i] == null || "".equals(ticketCounts[i].trim()))
                 continue;
             Integer ticketCountAsInteger = Integer.valueOf(ticketCounts[i]);
             if (!ticketCountsPerSection.containsKey(sectionIds[i])) {
                 ticketCountsPerSection.put(sectionIds[i], 0);
-                ticketsPerCategory.put(sectionIds[i], new ArrayList<TicketCategoryCount>());
+                ticketsPerCategory.put(sectionIds[i], new ArrayList<AllocationTicketCategoryCount>());
             }
             ticketCountsPerSection.put(sectionIds[i], ticketCountsPerSection.get(sectionIds[i]) + ticketCountAsInteger);
             final PriceCategory priceCategory = getEntityManager().find(PriceCategory.class, priceCategoryIds[i]);
-            ticketsPerCategory.get(sectionIds[i]).add(new TicketCategoryCount(priceCategory.getCategory(), ticketCountAsInteger));
+            ticketsPerCategory.get(sectionIds[i]).add(new AllocationTicketCategoryCount(priceCategory.getCategory(), ticketCountAsInteger));
         }
         for (Long sectionId : ticketCountsPerSection.keySet()) {
             int ticketCount = ticketCountsPerSection.get(sectionId);
@@ -137,7 +133,7 @@ public class BookingService extends BaseEntityService<Booking> {
             getEntityManager().persist(createdAllocation);
             booking.getAllocations().add(createdAllocation);
         }
-        booking.setCancelationCode("abc");
+        booking.setCancellationCode("abc");
         getEntityManager().persist(booking);
         return Response.ok().entity(booking).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
