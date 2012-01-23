@@ -1,7 +1,9 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -27,6 +29,12 @@ public class Allocation implements Serializable {
 
     @ManyToOne
     private SectionRow row;
+
+    @ManyToOne
+    private Booking booking;
+
+    @ElementCollection
+    public List<TicketCategoryCount> ticketsPerCategory;
 
     private int startSeat;
 
@@ -78,4 +86,21 @@ public class Allocation implements Serializable {
     public void setEndSeat(int endSeat) {
         this.endSeat = endSeat;
     }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
+
+    public List<TicketCategoryCount> getTicketsPerCategory() {
+        return ticketsPerCategory;
+    }
+
+    public void setTicketsPerCategory(List<TicketCategoryCount> ticketsPerCategory) {
+        this.ticketsPerCategory = ticketsPerCategory;
+    }
+
 }

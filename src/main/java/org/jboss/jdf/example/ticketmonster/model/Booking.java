@@ -21,11 +21,13 @@ public class Booking {
     @GeneratedValue
     private Long id;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "booking")
     private Collection<Allocation> allocations;
 
     @ManyToOne
     private Customer customer;
+
+    private String cancelationCode;
 
     private Date createdOn;
 
@@ -57,4 +59,11 @@ public class Booking {
         this.createdOn = createdOn;
     }
 
+    public String getCancelationCode() {
+        return cancelationCode;
+    }
+
+    public void setCancelationCode(String cancelationCode) {
+        this.cancelationCode = cancelationCode;
+    }
 }
