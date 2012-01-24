@@ -1,6 +1,5 @@
 package org.jboss.jdf.example.ticketmonster.rest;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -91,7 +90,7 @@ public class BookingService extends BaseEntityService<Booking> {
                 continue;
             }
             Section section = getEntityManager().find(Section.class, sectionId);
-            List<Row> rows = section.getSectionRows();
+            Set<Row> rows = section.getSectionRows();
             Allocation createdAllocation = null;
             for (Row row : rows) {
                 List<Allocation> allocations = (List<Allocation>) getEntityManager().createQuery("select a from Allocation a  where a.performance.id = :perfId and a.row.id = :rowId").setParameter("perfId", performanceId).setParameter("rowId", row.getId()).getResultList();
