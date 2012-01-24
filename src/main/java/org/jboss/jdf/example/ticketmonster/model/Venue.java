@@ -1,6 +1,7 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Embedded;
@@ -34,7 +35,7 @@ public class Venue implements Serializable {
     private String description;
     
     @OneToMany(mappedBy="venue")
-    private Set<VenueLayout> layouts;
+    private Set<VenueLayout> layouts = new HashSet<VenueLayout>();
 
     @ManyToOne
     @JoinColumn(name = "PICTURE_ID")

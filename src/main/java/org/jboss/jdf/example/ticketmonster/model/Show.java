@@ -1,6 +1,7 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -38,11 +39,11 @@ public class Show implements Serializable {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "show", cascade = {CascadeType.ALL})
     @NotEmpty
-    private Set<Performance> performances;
+    private Set<Performance> performances = new HashSet<Performance>();
 
     @OneToMany(mappedBy = "show")
     @NotEmpty
-    private Set<PriceCategory> priceCategories;
+    private Set<PriceCategory> priceCategories = new HashSet<PriceCategory>();
 
     public Long getId() {
         return id;

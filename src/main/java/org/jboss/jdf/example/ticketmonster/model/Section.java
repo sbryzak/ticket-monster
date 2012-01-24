@@ -1,7 +1,9 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -53,7 +55,7 @@ public class Section implements Serializable {
 
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL)
     @NotEmpty
-    private List<Row> sectionRows;
+    private Set<Row> sectionRows = new HashSet<Row>();
 
     public Long getId() {
         return id;
@@ -95,11 +97,11 @@ public class Section implements Serializable {
         this.layout = layout;
     }
 
-    public List<Row> getSectionRows() {
+    public Set<Row> getSectionRows() {
         return sectionRows;
     }
 
-    public void setSectionRows(List<Row> sectionRows) {
+    public void setSectionRows(Set<Row> sectionRows) {
         this.sectionRows = sectionRows;
     }
 }
