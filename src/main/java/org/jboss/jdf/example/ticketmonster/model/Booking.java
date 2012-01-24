@@ -77,4 +77,9 @@ public class Booking {
     public void setCancellationCode(String cancellationCode) {
         this.cancellationCode = cancellationCode;
     }
+
+    public void addAllocation(Allocation allocation) {
+        this.getAllocations().add(allocation);
+        allocation.setBooking(this);
+    }
 }

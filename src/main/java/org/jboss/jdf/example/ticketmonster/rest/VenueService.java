@@ -13,7 +13,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriInfo;
 
 import org.jboss.jdf.example.ticketmonster.model.Section;
 import org.jboss.jdf.example.ticketmonster.model.Venue;

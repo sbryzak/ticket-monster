@@ -1,6 +1,9 @@
 package org.jboss.jdf.example.ticketmonster.rest;
 
-import org.jboss.jdf.example.ticketmonster.model.MediaItem;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -12,10 +15,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.jboss.jdf.example.ticketmonster.model.MediaItem;
 
 @Path("/media")
 @RequestScoped

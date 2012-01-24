@@ -1,7 +1,6 @@
 package org.jboss.jdf.example.ticketmonster.rest;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +17,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriInfo;
 
 import org.jboss.jdf.example.ticketmonster.model.PriceCategory;
-import org.jboss.jdf.example.ticketmonster.model.Section;
 import org.jboss.jdf.example.ticketmonster.model.Show;
 
 /**

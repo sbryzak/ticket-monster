@@ -1,12 +1,12 @@
 package org.jboss.jdf.example.ticketmonster.rest;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -19,13 +19,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-
 import org.jboss.jdf.example.ticketmonster.model.Allocation;
+import org.jboss.jdf.example.ticketmonster.model.AllocationTicketCategoryCount;
 import org.jboss.jdf.example.ticketmonster.model.Booking;
 import org.jboss.jdf.example.ticketmonster.model.Customer;
 import org.jboss.jdf.example.ticketmonster.model.Performance;
 import org.jboss.jdf.example.ticketmonster.model.PriceCategory;
-import org.jboss.jdf.example.ticketmonster.model.AllocationTicketCategoryCount;
 import org.jboss.jdf.example.ticketmonster.model.Row;
 import org.jboss.jdf.example.ticketmonster.model.Section;
 
@@ -73,14 +72,14 @@ public class BookingService extends BaseEntityService<Booking> {
             Response response = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
         }
         Map<Long, Integer> ticketCountsPerSection = new LinkedHashMap<Long, Integer>();
-        Map<Long, List<AllocationTicketCategoryCount>> ticketsPerCategory = new LinkedHashMap<Long, List<AllocationTicketCategoryCount>>();
+        Map<Long, Set<AllocationTicketCategoryCount>> ticketsPerCategory = new LinkedHashMap<Long, Set<AllocationTicketCategoryCount>>();
         for (int i = 0; i < ticketCounts.length; i++) {
             if (ticketCounts[i] == null || "".equals(ticketCounts[i].trim()))
                 continue;
             Integer ticketCountAsInteger = Integer.valueOf(ticketCounts[i]);
             if (!ticketCountsPerSection.containsKey(sectionIds[i])) {
                 ticketCountsPerSection.put(sectionIds[i], 0);
-                ticketsPerCategory.put(sectionIds[i], new ArrayList<AllocationTicketCategoryCount>());
+                ticketsPerCategory.put(sectionIds[i], new LinkedHashSet<AllocationTicketCategoryCount>());
             }
             ticketCountsPerSection.put(sectionIds[i], ticketCountsPerSection.get(sectionIds[i]) + ticketCountAsInteger);
             final PriceCategory priceCategory = getEntityManager().find(PriceCategory.class, priceCategoryIds[i]);
