@@ -21,7 +21,10 @@ public class Venue implements Serializable {
     private Long id;
 
     private String name;
-    private String address;
+
+    @Embedded
+    private Address address;
+
     private String description;
     
     @OneToMany(mappedBy="venue")
@@ -47,14 +50,13 @@ public class Venue implements Serializable {
         this.name = name;
     }
 
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Address address) {
         this.address = address;
     }
-
 
     public MediaItem getPicture() {
         return picture;

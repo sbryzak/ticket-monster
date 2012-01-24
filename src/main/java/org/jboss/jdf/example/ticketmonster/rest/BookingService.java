@@ -3,6 +3,7 @@ package org.jboss.jdf.example.ticketmonster.rest;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class BookingService extends BaseEntityService<Booking> {
         Booking booking = new Booking();
         booking.setCustomer(customer);
         booking.setCreatedOn(new Date());
-        booking.setAllocations(new ArrayList<Allocation>());
+        booking.setAllocations(new HashSet<Allocation> ());
         if (ticketCounts.length != priceCategoryIds.length) {
             Map<String, String> entity = new HashMap<String, String>();
             entity.put("cause", "There must be as many pr as tickets");
