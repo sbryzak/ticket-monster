@@ -1,5 +1,9 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -8,9 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
-import java.util.Set;
-import java.util.Date;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -29,7 +30,7 @@ public class Booking {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "booking")
     @NotEmpty
     @Valid
-    private Set<Allocation> allocations;
+    private Set<Allocation> allocations = new HashSet<Allocation>();
 
     @ManyToOne
     @Valid
@@ -39,7 +40,7 @@ public class Booking {
     private String cancellationCode;
 
     @NotNull
-    private Date createdOn;
+    private Date createdOn = new Date();
 
     public Long getId() {
         return id;

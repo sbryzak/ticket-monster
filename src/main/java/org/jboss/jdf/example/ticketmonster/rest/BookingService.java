@@ -67,8 +67,6 @@ public class BookingService extends BaseEntityService<Booking> {
         Performance performance = getEntityManager().find(Performance.class, performanceId);
         Booking booking = new Booking();
         booking.setCustomer(customer);
-        booking.setCreatedOn(new Date());
-        booking.setAllocations(new HashSet<Allocation> ());
         if (ticketCounts.length != priceCategoryIds.length) {
             Map<String, String> entity = new HashMap<String, String>();
             entity.put("cause", "There must be as many pr as tickets");

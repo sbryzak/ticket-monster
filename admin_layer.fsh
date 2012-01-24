@@ -12,14 +12,7 @@ scaffold setup;
 
 @/* Scaffold CRUD views for the entities that an admin would start drilling down into the data model from */;
 
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Event.java;
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.EventCategory.java;
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.TicketCategory.java;
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Venue.java;
-
-
-echo Due to a bug in Forge Scaffold, we need to manually fix some source errors at this point;
-wait;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.*
 
 @/* Deploy this to JBoss AS 7 to see the result */;
 build clean package jboss-as:deploy;
