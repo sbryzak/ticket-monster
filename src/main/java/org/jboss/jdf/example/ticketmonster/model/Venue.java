@@ -30,7 +30,7 @@ public class Venue implements Serializable {
     private String name;
 
     @Embedded
-    private Address address;
+    private Address address = new Address();
 
     private String description;
     
