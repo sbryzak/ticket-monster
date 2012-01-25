@@ -27,9 +27,6 @@ public class Allocation implements Serializable {
     private Long id;
 
     @ManyToOne
-    private Performance performance;
-
-    @ManyToOne
     private Row row;
 
     @ManyToOne
@@ -47,14 +44,6 @@ public class Allocation implements Serializable {
 
     public Long getId() {
         return id;
-    }
-
-    public Performance getPerformance() {
-        return performance;
-    }
-
-    public void setPerformance(Performance performance) {
-        this.performance = performance;
     }
 
     public Row getRow() {
@@ -104,5 +93,6 @@ public class Allocation implements Serializable {
     public void setTicketsPerCategory(Set<AllocationTicketCategoryCount> ticketsPerCategory) {
         this.ticketsPerCategory = ticketsPerCategory;
     }
+
 
 }

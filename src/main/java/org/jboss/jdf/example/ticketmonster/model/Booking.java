@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
@@ -33,14 +34,18 @@ public class Booking {
     private Set<Allocation> allocations = new HashSet<Allocation>();
 
     @ManyToOne
-    @Valid
-    private Customer customer;
+    private Performance performance;
 
     @NotEmpty
     private String cancellationCode;
 
     @NotNull
     private Date createdOn = new Date();
+
+    @NotNull
+    @NotEmpty
+    @Email(message = "Not a valid email format")
+    private String contactEmail;
 
     public Long getId() {
         return id;
@@ -52,14 +57,6 @@ public class Booking {
 
     public void setAllocations(Set<Allocation> allocations) {
         this.allocations = allocations;
-    }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
     }
 
     public Date getCreatedOn() {
@@ -78,8 +75,41 @@ public class Booking {
         this.cancellationCode = cancellationCode;
     }
 
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
     public void addAllocation(Allocation allocation) {
         this.getAllocations().add(allocation);
         allocation.setBooking(this);
+    }
+
+    public Performance getPerformance() {
+        return performance;
+    }
+
+    public void setPerformance(Performance performance) {
+        this.performance = performance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Booking booking = (Booking) o;
+
+        if (id != null ? !id.equals(booking.id) : booking.id != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

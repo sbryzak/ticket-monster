@@ -21,7 +21,6 @@ import javax.ws.rs.core.Response;
 import org.jboss.jdf.example.ticketmonster.model.Allocation;
 import org.jboss.jdf.example.ticketmonster.model.AllocationTicketCategoryCount;
 import org.jboss.jdf.example.ticketmonster.model.Booking;
-import org.jboss.jdf.example.ticketmonster.model.Customer;
 import org.jboss.jdf.example.ticketmonster.model.Performance;
 import org.jboss.jdf.example.ticketmonster.model.PriceCategory;
 import org.jboss.jdf.example.ticketmonster.model.Row;
@@ -59,12 +58,9 @@ public class BookingService extends BaseEntityService<Booking> {
                                   @FormParam("priceCategories") Long[] priceCategoryIds,
                                   @FormParam("sections") Long[] sectionIds,
                                   @FormParam("tickets") String[] ticketCounts) {
-        Customer customer = new Customer();
-        customer.setEmail(email);
-        getEntityManager().persist(customer);
         Performance performance = getEntityManager().find(Performance.class, performanceId);
         Booking booking = new Booking();
-        booking.setCustomer(customer);
+        booking.setContactEmail(email);
         if (ticketCounts.length != priceCategoryIds.length) {
             Map<String, String> entity = new HashMap<String, String>();
             entity.put("cause", "There must be as many pr as tickets");
@@ -93,7 +89,7 @@ public class BookingService extends BaseEntityService<Booking> {
             Set<Row> rows = section.getSectionRows();
             Allocation createdAllocation = null;
             for (Row row : rows) {
-                List<Allocation> allocations = (List<Allocation>) getEntityManager().createQuery("select a from Allocation a  where a.performance.id = :perfId and a.row.id = :rowId").setParameter("perfId", performanceId).setParameter("rowId", row.getId()).getResultList();
+                List<Allocation> allocations = (List<Allocation>) getEntityManager().createQuery("select a from Allocation a  where a.booking.performance.id = :perfId and a.row.id = :rowId").setParameter("perfId", performanceId).setParameter("rowId", row.getId()).getResultList();
                 if (allocations.size() > 0) {
                     int confirmedCandidate = 0;
                     int nextCandidate = 1;
@@ -127,11 +123,11 @@ public class BookingService extends BaseEntityService<Booking> {
             if (createdAllocation == null) {
                 return Response.status(Response.Status.NOT_MODIFIED).build();
             }
-            createdAllocation.setPerformance(performance);
             createdAllocation.setTicketsPerCategory(ticketsPerCategory.get(sectionId));
             getEntityManager().persist(createdAllocation);
             booking.getAllocations().add(createdAllocation);
         }
+        booking.setPerformance(performance);
         booking.setCancellationCode("abc");
         getEntityManager().persist(booking);
         return Response.ok().entity(booking).type(MediaType.APPLICATION_JSON_TYPE).build();
