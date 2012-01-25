@@ -54,4 +54,21 @@ public class MediaItem implements Serializable {
     public void setContent(byte[] content) {
         this.content = content;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MediaItem mediaItem = (MediaItem) o;
+
+        if (id != null ? !id.equals(mediaItem.id) : mediaItem.id != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

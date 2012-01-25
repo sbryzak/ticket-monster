@@ -53,4 +53,24 @@ public class Performance implements Serializable {
     public void setDate(Date date) {
         this.date = date;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Performance that = (Performance) o;
+
+        if (date != null ? !date.equals(that.date) : that.date != null) return false;
+        if (show != null ? !show.equals(that.show) : that.show != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = date != null ? date.hashCode() : 0;
+        result = 31 * result + (show != null ? show.hashCode() : 0);
+        return result;
+    }
 }

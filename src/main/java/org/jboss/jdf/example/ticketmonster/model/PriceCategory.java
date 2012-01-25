@@ -75,4 +75,27 @@ public class PriceCategory implements Serializable {
     public void setPrice(float price) {
         this.price = price;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PriceCategory that = (PriceCategory) o;
+
+        if (section != null ? !section.equals(that.section) : that.section != null) return false;
+        if (show != null ? !show.equals(that.show) : that.show != null) return false;
+        if (ticketCategory != null ? !ticketCategory.equals(that.ticketCategory) : that.ticketCategory != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = show != null ? show.hashCode() : 0;
+        result = 31 * result + (section != null ? section.hashCode() : 0);
+        result = 31 * result + (ticketCategory != null ? ticketCategory.hashCode() : 0);
+        return result;
+    }
 }

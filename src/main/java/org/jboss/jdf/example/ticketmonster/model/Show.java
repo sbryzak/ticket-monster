@@ -85,4 +85,24 @@ public class Show implements Serializable {
     public void setPriceCategories(Set<PriceCategory> priceCategories) {
         this.priceCategories = priceCategories;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Show show = (Show) o;
+
+        if (event != null ? !event.equals(show.event) : show.event != null) return false;
+        if (venueLayout != null ? !venueLayout.equals(show.venueLayout) : show.venueLayout != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = event != null ? event.hashCode() : 0;
+        result = 31 * result + (venueLayout != null ? venueLayout.hashCode() : 0);
+        return result;
+    }
 }

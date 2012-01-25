@@ -104,4 +104,25 @@ public class Section implements Serializable {
     public void setSectionRows(Set<Row> sectionRows) {
         this.sectionRows = sectionRows;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Section section = (Section) o;
+
+        if (layout != null ? !layout.equals(section.layout) : section.layout != null) return false;
+        if (name != null ? !name.equals(section.name) : section.name != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (layout != null ? layout.hashCode() : 0);
+        return result;
+    }
+
 }

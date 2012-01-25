@@ -19,7 +19,8 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
  *
  * @author Shane Bryzak
  */
-@Entity @JsonIgnoreProperties("layouts")
+@Entity
+@JsonIgnoreProperties("layouts")
 public class Venue implements Serializable {
     private static final long serialVersionUID = -6588912817518967721L;
 
@@ -33,8 +34,8 @@ public class Venue implements Serializable {
     private Address address = new Address();
 
     private String description;
-    
-    @OneToMany(mappedBy="venue")
+
+    @OneToMany(mappedBy = "venue")
     private Set<VenueLayout> layouts = new HashSet<VenueLayout>();
 
     @ManyToOne
@@ -80,12 +81,32 @@ public class Venue implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
     public Set<VenueLayout> getLayouts() {
-      return layouts;
-   }
-    
+        return layouts;
+    }
+
     public void setLayouts(Set<VenueLayout> layouts) {
-      this.layouts = layouts;
-   }
+        this.layouts = layouts;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Venue venue = (Venue) o;
+
+        if (address != null ? !address.equals(venue.address) : venue.address != null) return false;
+        if (name != null ? !name.equals(venue.name) : venue.name != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (address != null ? address.hashCode() : 0);
+        return result;
+    }
 }
