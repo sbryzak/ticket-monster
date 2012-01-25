@@ -1,5 +1,6 @@
 package org.jboss.jdf.example.ticketmonster.rest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -67,14 +68,14 @@ public class BookingService extends BaseEntityService<Booking> {
             Response response = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
         }
         Map<Long, Integer> ticketCountsPerSection = new LinkedHashMap<Long, Integer>();
-        Map<Long, Set<AllocationTicketCategoryCount>> ticketsPerCategory = new LinkedHashMap<Long, Set<AllocationTicketCategoryCount>>();
+        Map<Long, List<AllocationTicketCategoryCount>> ticketsPerCategory = new LinkedHashMap<Long, List<AllocationTicketCategoryCount>>();
         for (int i = 0; i < ticketCounts.length; i++) {
             if (ticketCounts[i] == null || "".equals(ticketCounts[i].trim()))
                 continue;
             Integer ticketCountAsInteger = Integer.valueOf(ticketCounts[i]);
             if (!ticketCountsPerSection.containsKey(sectionIds[i])) {
                 ticketCountsPerSection.put(sectionIds[i], 0);
-                ticketsPerCategory.put(sectionIds[i], new LinkedHashSet<AllocationTicketCategoryCount>());
+                ticketsPerCategory.put(sectionIds[i], new ArrayList<AllocationTicketCategoryCount> ());
             }
             ticketCountsPerSection.put(sectionIds[i], ticketCountsPerSection.get(sectionIds[i]) + ticketCountAsInteger);
             final PriceCategory priceCategory = getEntityManager().find(PriceCategory.class, priceCategoryIds[i]);

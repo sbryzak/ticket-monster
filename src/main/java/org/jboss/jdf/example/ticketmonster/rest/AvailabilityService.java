@@ -32,7 +32,7 @@ public class AvailabilityService {
                                @QueryParam("quantity") int quantity) {
 
         final Query query = entityManager.createQuery("select sum(allocation.quantity) from Allocation allocation where " +
-                "allocation.performance.id = :performanceId and allocation.row.section.id = :sectionId");
+                "allocation.booking.performance.id = :performanceId and allocation.row.section.id = :sectionId");
         Section section = null;
         try {
             section = (Section) entityManager.createQuery("select s from Section s where s.id = :sectionId and exists(select p from Performance p where s.layout.id = p.show.venueLayout.id and p.id = :performanceId)")
