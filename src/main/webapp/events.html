@@ -4,9 +4,13 @@
 <head>
     <title>Event viewer</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>
 
     <script type="text/javascript" src="resources/js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="resources/js/jquery-ui-1.8.14.custom.min.js"></script>
+    <script type="text/javascript" src="resources/js/underscore-min.js"></script>
+    <script type="text/javascript" src="resources/js/backbone-min.js"></script>
+
     <script type="text/javascript">
         function updateEvents() {
             $.getJSON("rest/events", function (events) {
