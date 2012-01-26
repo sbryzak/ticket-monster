@@ -157,8 +157,13 @@ TicketMonster.EventSummaryView = Backbone.View.extend({
     render:function (data) {
         if (data) {
             $(this.el).empty()
-            $(this.el).append("<h1>" + data.get('name') + "</h1><p/><img src='rest/media/" + data.get('picture').id + "'/><p/>" + data.get("description"))
-            $(this.el).append("<a href='#/events/" + data.get('id') + "'>Get details</a>")
+            if(data.get('picture') == null) {
+                $(this.el).append("<h1>" + data.get('name') + "</h1><p/><img src='rest/media/" + data.get('picture').id + "'/><p/>" + data.get("description"))
+            }
+            else {
+                $(this.el).append("<h1>" + data.get('name') + "</h1><p/>We cannot show you a picture, but trust us, it is very cool<p/>" + data.get("description"))
+            }
+            $(this.el).append("<p><a href='#/events/" + data.get('id') + "'>Get details</a>")
         }
         else {
             $(this.el).empty()
