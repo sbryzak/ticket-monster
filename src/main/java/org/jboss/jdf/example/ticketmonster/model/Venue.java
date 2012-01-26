@@ -1,5 +1,7 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
+import static javax.persistence.CascadeType.ALL;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -35,7 +37,7 @@ public class Venue implements Serializable {
 
     private String description;
 
-    @OneToMany(mappedBy = "venue")
+    @OneToMany(mappedBy = "venue", cascade = ALL)
     private Set<VenueLayout> layouts = new HashSet<VenueLayout>();
 
     @ManyToOne

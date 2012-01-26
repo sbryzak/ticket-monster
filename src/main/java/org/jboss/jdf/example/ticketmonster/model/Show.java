@@ -1,12 +1,13 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -37,11 +38,11 @@ public class Show implements Serializable {
     @ManyToOne
     private VenueLayout venueLayout;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "show", cascade = {CascadeType.ALL})
+    @OneToMany(fetch = EAGER, mappedBy = "show", cascade = ALL)
     @NotEmpty
     private Set<Performance> performances = new HashSet<Performance>();
 
-    @OneToMany(mappedBy = "show")
+    @OneToMany(mappedBy = "show", cascade = ALL)
     @NotEmpty
     private Set<PriceCategory> priceCategories = new HashSet<PriceCategory>();
 

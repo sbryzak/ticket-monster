@@ -1,9 +1,13 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
+import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -28,7 +32,7 @@ public class Booking {
     @GeneratedValue
     private Long id;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "booking")
+    @OneToMany(fetch = EAGER, mappedBy = "booking", cascade = ALL)
     @NotEmpty
     @Valid
     private Set<Allocation> allocations = new HashSet<Allocation>();
