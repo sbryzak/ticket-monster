@@ -29,7 +29,7 @@
         </table>
     </div>
     <div id="content">
-        
+
     </div>
 </div>
 <footer>
@@ -40,6 +40,10 @@
     TicketMonster.views = new Object()
     TicketMonster.models = new Object()
 
+    TicketMonster.eventBus = _.extend({}, Backbone.Events);
+
+    var summaryView = null
+
     TicketMonster.Event = Backbone.Model.extend({
         initialize:function () {
             console.log("Creating an event")
@@ -49,41 +53,86 @@
     TicketMonster.Events = Backbone.Collection.extend({
         url:"rest/events",
         model:TicketMonster.Event,
-        id: "id",
+        id:"id",
         comparator:function (model) {
             return model.get('category').id;
         }
     });
 
     TicketMonster.MainView = Backbone.View.extend({
-
         render:function (data) {
-            $(this.el).empty().append("<div id='events'/>");
-            var current_category = -1
-            _.each(TicketMonster.models.events.models, function (model) {
-                var model_category = model.get('category')
+            $(this.el).empty().append("<table width='100%'><tr><td id='eventMenu' width='30%'/><td id='eventSummary' width='70%'/></tr></table>")
+            summaryView = new TicketMonster.EventSummaryView();
+            $("#eventSummary").append(summaryView.render().el)
+            this.menuView = new TicketMonster.MenuView();
+            $("#eventMenu").append(this.menuView.el)
+            this.menuView.render(data)
+
+
+        }
+    })
+
+    TicketMonster.MenuView = Backbone.View.extend({
+        tagName:'div',
+        render:function (data) {
+            $(this.el).empty().append('<div id="eventsAccordion"/>');
+
+            var current_category = null
+            _.each(data, function (event) {
+                var model_category = event.get('category')
                 if (current_category !== model_category.id) {
-                    $("#events").append('<h3><a href="#">' + model_category.description + '</a></h3>');
+                    $("#eventsAccordion").append('<h3><a href="#">' + model_category.description + '</a></h3>');
                     current_category = model_category.id;
                 }
-                $("#events").append('<div><a href="#/events/' + model.get('id') + '">'  + model.get('name') + '</a></div>')
+                var view = new TicketMonster.EventSummaryLineView({model:event});
+                $("#eventsAccordion").append(view.render().el);
             })
-            $("#events").accordion()
-            return this;
+            $("#eventsAccordion").accordion()
+            return this
         }
     });
 
-    TicketMonster.EventDetailView = Backbone.View.extend({
-            render: function(model) {
+    TicketMonster.EventSummaryLineView = Backbone.View.extend({
+        tagName:'div',
+        events:{
+            "click":"notify"
+        },
+        render:function () {
+            $(this.el).empty().append('<a href="#ignore">' + this.model.get('name') + '</a>')
+            return this;
+        },
+        notify:function () {
+            summaryView.render(this.model)
+        }
+    })
+
+    TicketMonster.EventSummaryView = Backbone.View.extend({
+        render:function (data) {
+            if (data) {
                 $(this.el).empty()
-                $(this.el).append("<h1>"+model.get('name')+"</h1><p/><img src='rest/media/" + model.get('picture').id + "'/><p/>" + model.get("description"))
+                $(this.el).append("<h1>" + data.get('name') + "</h1><p/><img src='rest/media/" + data.get('picture').id + "'/><p/>" + data.get("description"))
+                $(this.el).append("<a href='#/events/" + data.get('id') + "'>Get details</a>")
             }
-        })
+            else {
+                $(this.el).empty()
+                $(this.el).append("Click a link on the left")
+            }
+            return this
+        }
+    })
+
+    TicketMonster.EventDetailView = Backbone.View.extend({
+        render:function (model) {
+            $(this.el).empty()
+            $(this.el).append("<h1>" + model.get('name') + "</h1><p/><img src='rest/media/" + model.get('picture').id + "'/><p/>" + model.get("description"))
+        }
+    })
+
 
     TicketMonster.AboutView = Backbone.View.extend({
-        render: function() {
-           $(this.el).empty().append("<section><h1>Welcome to Ticket Monster!</h1>" +
-                   "Ticket Monster is a demo application</section>")
+        render:function () {
+            $(this.el).empty().append("<section><h1>Welcome to Ticket Monster!</h1>" +
+                    "Ticket Monster is a demo application</section>")
         }
     })
 
@@ -92,7 +141,8 @@
             "":"home",
             "/events":"home",
             "/events/:id":"eventDetail",
-            "/about": "about",
+            "/about":"about",
+            "ignore":"ignore",
             "*actions":"defaultHandler"
         },
         initialize:function () {
@@ -101,7 +151,7 @@
             TicketMonster.views.eventDetailView = new TicketMonster.EventDetailView({el:$("#content")})
             TicketMonster.models.events = new TicketMonster.Events;
             TicketMonster.models.events.bind("reset", function () {
-                TicketMonster.views.mainView.render($(this.models))
+                TicketMonster.views.mainView.render(this.models)
             })
         },
         home:function () {
@@ -111,7 +161,15 @@
             TicketMonster.views.aboutView.render()
         },
         eventDetail:function (id) {
-            TicketMonster.views.eventDetailView.render(TicketMonster.models.events.get(id))
+            if (TicketMonster.models.events.get(id)) {
+                TicketMonster.views.eventDetailView.render(TicketMonster.models.events.get(id))
+            } else {
+                var model = new TicketMonster.Event({'url':('rest/events/' + id)})
+                model.fetch()
+                TicketMonster.views.eventDetailView.render(model)
+            }
+        },
+        ignore:function () {
         },
         defaultHandler:function (actions) {
             alert(actions)
