@@ -42,7 +42,6 @@ public class BookingService extends BaseEntityService<Booking> {
 
     @DELETE
     @Path("/{id:[0-9][0-9]*}")
-    @Consumes(MediaType.APPLICATION_JSON)
     public Response deleteBooking(@PathParam("id") Long id) {
         Booking booking = getEntityManager().find(Booking.class, id);
         if (booking == null) {

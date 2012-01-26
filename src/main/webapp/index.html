@@ -170,7 +170,7 @@ TicketMonster.EventSummaryView = Backbone.View.extend({
 
 TicketMonster.EventDetailView = Backbone.View.extend({
     events:{
-        "click input[type='button']":"beginBooking"
+        "click input[name='bookButton']":"beginBooking"
     },
     render:function (model) {
         $(this.el).empty()
@@ -195,7 +195,7 @@ TicketMonster.EventDetailView = Backbone.View.extend({
                     })
                 }
                 if ($("#performanceTimes").val()) {
-                    $("#book").empty().append("<input type='button' id='bookButton' value='Book'/>");
+                    $("#book").empty().append("<input type='button' name='bookButton' value='Book'/>");
                 }
 
             })
@@ -203,7 +203,7 @@ TicketMonster.EventDetailView = Backbone.View.extend({
                 $("#venueSelector").change()
             }
             if ($("#performanceTimes").val()) {
-                $("#book").empty().append("<input type='button' id='bookButton' value='Book'/>");
+                $("#book").empty().append("<input type='button' name='bookButton' value='Book'/>");
             }
         })
     },
@@ -212,8 +212,48 @@ TicketMonster.EventDetailView = Backbone.View.extend({
     }
 })
 
+TicketMonster.Booking = Backbone.Model.extend({
+   urlRoot:'rest/bookings'
+})
+
+TicketMonster.Bookings = Backbone.Collection.extend({
+    url:'rest/bookings',
+    model: TicketMonster.Booking,
+    id: 'id'
+})
 
 TicketMonster.BookingView = Backbone.View.extend({
+    events: {
+      "click input[name='delete']": "delete"
+    },
+    render: function() {
+        $(this.el).empty().append("<tr>" +
+                "<td>" + this.model.get('id') + "</td>" +
+                "<td>" + this.model.get('contactEmail') + "</td>" +
+                "<td><input name='delete' type='button'/></td>" +
+                "</tr>")
+        return this;
+    },
+    delete: function() {
+      if (confirm("Are you sure you want to delete booking " + this.model.get('id'))) {
+          this.model.destroy(function(){alert("Model destroyed")})
+          this.model.collection.fetch()
+      }
+    }
+})
+
+TicketMonster.BookingsView = Backbone.View.extend({
+    render: function(bookings) {
+        $(this.el).empty().append("<table id='bookingDetails'/>");
+        _.each(bookings, function(booking) {
+            var bookingView = new TicketMonster.BookingView({model:booking})
+           $("#bookingDetails").append(bookingView.render().el)
+        })
+    }
+})
+
+
+TicketMonster.CreateBookingView = Backbone.View.extend({
     render:function (showId, performanceId) {
         loadedSections = new Object()
         loadedPrices = new Object()
@@ -291,6 +331,7 @@ TicketMonster.Router = Backbone.Router.extend({
         "/events/:id":"eventDetail",
         "/about":"about",
         "/book/:showId/:performanceId":"bookTickets",
+        "/bookings":"listBookings",
         "ignore":"ignore",
         "*actions":"defaultHandler"
     },
@@ -298,10 +339,15 @@ TicketMonster.Router = Backbone.Router.extend({
         TicketMonster.views.mainView = new TicketMonster.MainView({el:$("#content")})
         TicketMonster.views.aboutView = new TicketMonster.AboutView({el:$("#content")})
         TicketMonster.views.eventDetailView = new TicketMonster.EventDetailView({el:$("#content")})
-        TicketMonster.views.bookingView = new TicketMonster.BookingView({el:$("#content")})
+        TicketMonster.views.createBookingView = new TicketMonster.CreateBookingView({el:$("#content")})
+        TicketMonster.views.bookingsView = new TicketMonster.BookingsView({el:$("#content")})
         TicketMonster.models.events = new TicketMonster.Events;
+        TicketMonster.models.bookings = new TicketMonster.Bookings;
         TicketMonster.models.events.bind("reset", function () {
             TicketMonster.views.mainView.render(this.models)
+        })
+        TicketMonster.models.bookings.bind("reset", function () {
+            TicketMonster.views.bookingsView.render(this.models)
         })
     },
     home:function () {
@@ -311,7 +357,10 @@ TicketMonster.Router = Backbone.Router.extend({
         TicketMonster.views.aboutView.render()
     },
     bookTickets:function (showId, performanceId) {
-        TicketMonster.views.bookingView.render(parseInt(showId), parseInt(performanceId))
+        TicketMonster.views.createBookingView.render(parseInt(showId), parseInt(performanceId))
+    },
+    listBookings: function() {
+        TicketMonster.models.bookings.fetch()
     },
     eventDetail:function (id) {
         var model = new TicketMonster.Event({id:id})
