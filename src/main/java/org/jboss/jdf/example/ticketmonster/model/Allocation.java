@@ -6,9 +6,12 @@ import java.util.List;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
  * An allocation consists of one or more contiguous sold seats
@@ -17,7 +20,7 @@ import javax.persistence.ManyToOne;
  * @author Shane Bryzak
  * @author Marius Bogoevici
  */
-@Entity
+@Entity @JsonIgnoreProperties("booking")
 public class Allocation implements Serializable {
     private static final long serialVersionUID = 8738724150877088864L;
 
@@ -31,7 +34,7 @@ public class Allocation implements Serializable {
     @ManyToOne
     private Booking booking;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     public List<AllocationTicketCategoryCount> ticketsPerCategory = new ArrayList<AllocationTicketCategoryCount>();
 
     private int startSeat;

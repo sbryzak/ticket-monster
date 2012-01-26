@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -28,7 +29,7 @@ public class Booking {
     @GeneratedValue
     private Long id;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "booking")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "booking",cascade = CascadeType.ALL)
     @NotEmpty
     @Valid
     private Set<Allocation> allocations = new HashSet<Allocation>();

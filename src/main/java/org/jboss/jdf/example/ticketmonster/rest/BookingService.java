@@ -125,8 +125,8 @@ public class BookingService extends BaseEntityService<Booking> {
                 return Response.status(Response.Status.NOT_MODIFIED).build();
             }
             createdAllocation.setTicketsPerCategory(ticketsPerCategory.get(sectionId));
-            getEntityManager().persist(createdAllocation);
-            booking.getAllocations().add(createdAllocation);
+            System.out.println("Allocating " + createdAllocation.getQuantity() + " tickets ");
+            booking.addAllocation(createdAllocation);
         }
         booking.setPerformance(performance);
         booking.setCancellationCode("abc");
