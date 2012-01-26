@@ -105,4 +105,9 @@ public class Show implements Serializable {
         result = 31 * result + (venueLayout != null ? venueLayout.hashCode() : 0);
         return result;
     }
+    
+    @Override
+    public String toString() {
+        return event + " with " + venueLayout;
+    }
 }

@@ -59,4 +59,9 @@ public class TicketCategory implements Serializable {
     public int hashCode() {
         return description != null ? description.hashCode() : 0;
     }
+    
+    @Override
+    public String toString() {
+        return description;
+    }
 }
