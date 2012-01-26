@@ -5,6 +5,7 @@
     <title>Ticket Monster</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>
+    <link rel="stylesheet" href="resources/css/jquery-ui.css" type="text/css" media="all"/>
 
     <script type="text/javascript" src="resources/js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="resources/js/jquery-ui-1.8.14.custom.min.js"></script>
@@ -14,13 +15,22 @@
 
 </head>
 <body>
+
 <div id="container">
-    <a href="#">Home</a>
-    <a href="#a">Elsewhere</a>
-</div>
-<div id="container2">
-    <a href="#">Home</a>
-    <a href="#a">Elsewhere</a>
+    <div id="menu">
+        <table>
+            <tr>
+                <td><a href="#">Home</a></td>
+                <td><a href="#/events">Events</a></td>
+                <td><a href="#/venues">Venues</a></td>
+                <td><a href="#/bookings">Bookings</a></td>
+                <td><a href="#/about">About</a></td>
+            </tr>
+        </table>
+    </div>
+    <div id="content">
+        
+    </div>
 </div>
 <footer>
     <img src="resources/gfx/logo.png" alt="HTML5"/>
@@ -31,45 +41,79 @@
     TicketMonster.models = new Object()
 
     TicketMonster.Event = Backbone.Model.extend({
-        initialize: function() {
+        initialize:function () {
             console.log("Creating an event")
         }
     })
 
-    TicketMonster.Events = Backbone.Collection.extend ({
-       url : "rest/events",
-       model: TicketMonster.Event,
-
+    TicketMonster.Events = Backbone.Collection.extend({
+        url:"rest/events",
+        model:TicketMonster.Event,
+        id: "id",
+        comparator:function (model) {
+            return model.get('category').id;
+        }
     });
 
     TicketMonster.MainView = Backbone.View.extend({
 
-        render: function() {
-            console.log("Beginning to render")
-            console.log(JSON.stringify(TicketMonster.models.events.models))
+        render:function (data) {
             $(this.el).empty().append("<div id='events'/>");
-            _.each(TicketMonster.models.events.models, function(model){
-                    $("#events").append(model.get('name'))
+            var current_category = -1
+            _.each(TicketMonster.models.events.models, function (model) {
+                var model_category = model.get('category')
+                if (current_category !== model_category.id) {
+                    $("#events").append('<h3><a href="#">' + model_category.description + '</a></h3>');
+                    current_category = model_category.id;
+                }
+                $("#events").append('<div><a href="#/events/' + model.get('id') + '">'  + model.get('name') + '</a></div>')
             })
-            console.log("Ending render")
+            $("#events").accordion()
             return this;
         }
     });
 
+    TicketMonster.EventDetailView = Backbone.View.extend({
+            render: function(model) {
+                $(this.el).empty()
+                $(this.el).append("<h1>"+model.get('name')+"</h1><p/><img src='rest/media/" + model.get('picture').id + "'/><p/>" + model.get("description"))
+            }
+        })
+
+    TicketMonster.AboutView = Backbone.View.extend({
+        render: function() {
+           $(this.el).empty().append("<section><h1>Welcome to Ticket Monster!</h1>" +
+                   "Ticket Monster is a demo application</section>")
+        }
+    })
+
     TicketMonster.Router = Backbone.Router.extend({
         routes:{
             "":"home",
+            "/events":"home",
+            "/events/:id":"eventDetail",
+            "/about": "about",
             "*actions":"defaultHandler"
         },
-        initialize: function() {
-            TicketMonster.views.mainView = new TicketMonster.MainView({el:$("#container")})
+        initialize:function () {
+            TicketMonster.views.mainView = new TicketMonster.MainView({el:$("#content")})
+            TicketMonster.views.aboutView = new TicketMonster.AboutView({el:$("#content")})
+            TicketMonster.views.eventDetailView = new TicketMonster.EventDetailView({el:$("#content")})
             TicketMonster.models.events = new TicketMonster.Events;
-            TicketMonster.models.events.bind("reset", function(){alert("refreshed"); TicketMonster.views.mainView.render()})
+            TicketMonster.models.events.bind("reset", function () {
+                TicketMonster.views.mainView.render($(this.models))
+            })
         },
         home:function () {
             TicketMonster.models.events.fetch()
         },
-        defaultHandler: function(actions) {
+        about:function () {
+            TicketMonster.views.aboutView.render()
+        },
+        eventDetail:function (id) {
+            TicketMonster.views.eventDetailView.render(TicketMonster.models.events.get(id))
+        },
+        defaultHandler:function (actions) {
             alert(actions)
         }
     });
