@@ -66,22 +66,23 @@ var loadedSections = 0
 var loadedPrices = 0
 
 function checkAvailability(sectionId, performanceTime) {
-    var quantity = 0
+    var sectionQuantity = 0
     var ticketInputs = $("#booking" + sectionId + ">input[type='number']");
     var priceIds = $("#booking" + sectionId + ">input[name='priceCategories']");
     var sectionPrice = 0
     $.each(ticketInputs, function (i, element) {
         if ('' !== element.value) {
-            quantity += parseInt(element.value);
-            sectionPrice += quantity * loadedPrices[priceIds[i].value]
+            var quantity = parseInt(element.value);
+            sectionQuantity += quantity;
+            sectionPrice += (sectionQuantity * loadedPrices[priceIds[i].value])
         }
     })
-    if ('' === quantity || quantity == 0) {
+    if ('' === sectionQuantity || sectionQuantity == 0) {
         $("#sectionQuantity" + sectionId).empty()
         return
     }
-    $("#sectionQuantity" + sectionId).empty().append(quantity.toString() + " for " + sectionPrice)
-    $.getJSON("rest/availability", {"performance":performanceTime, "quantity":quantity, "section":sectionId}, function (result) {
+    $("#sectionQuantity" + sectionId).empty().append(sectionQuantity.toString() + " for " + sectionPrice)
+    $.getJSON("rest/availability", {"performance":performanceTime, "quantity":sectionQuantity, "section":sectionId}, function (result) {
         var divId = "#sectionAvailability" + sectionId;
         $(divId).empty().append(result ? "<div style='color:#00FF00'>available</div>" : "<div style='color:#FF0000'>unavailable</div>")
     })
@@ -157,7 +158,7 @@ TicketMonster.EventSummaryView = Backbone.View.extend({
     render:function (data) {
         if (data) {
             $(this.el).empty()
-            if(data.get('picture') == null) {
+            if(data.get('picture') != null) {
                 $(this.el).append("<h1>" + data.get('name') + "</h1><p/><img src='rest/media/" + data.get('picture').id + "'/><p/>" + data.get("description"))
             }
             else {
