@@ -45,6 +45,7 @@
     var summaryView = null
 
     TicketMonster.Event = Backbone.Model.extend({
+        urlRoot:'rest/events',
         initialize:function () {
             console.log("Creating an event")
         }
@@ -61,7 +62,7 @@
 
     TicketMonster.MainView = Backbone.View.extend({
         render:function (data) {
-            $(this.el).empty().append("<table width='100%'><tr><td id='eventMenu' width='30%'/><td id='eventSummary' width='70%'/></tr></table>")
+            $(this.el).empty().append("<table width='100%'><tr><td id='eventMenu' width='30%' valign='top'/><td id='eventSummary' width='70%'/></tr></table>")
             summaryView = new TicketMonster.EventSummaryView();
             $("#eventSummary").append(summaryView.render().el)
             this.menuView = new TicketMonster.MenuView();
@@ -143,6 +144,7 @@
             "/events":"home",
             "/events/:id":"eventDetail",
             "/about":"about",
+            "/book/:id":"book",
             "ignore":"ignore",
             "*actions":"defaultHandler"
         },
@@ -161,15 +163,16 @@
         about:function () {
             TicketMonster.views.aboutView.render()
         },
-        eventDetail:function (id) {
-            if (TicketMonster.models.events.get(id)) {
-                TicketMonster.views.eventDetailView.render(TicketMonster.models.events.get(id))
-            } else {
-                var model = new TicketMonster.Event({'url':('rest/events/' + id)})
-                model.fetch()
-                TicketMonster.views.eventDetailView.render(model)
-            }
+        book:function (id) {
+            alert("Booking for id")
         },
+        eventDetail:function (id) {
+            var model = new TicketMonster.Event({id:id})
+            model.bind("change", function() {
+                TicketMonster.views.eventDetailView.render(this)
+            })
+            model.fetch()
+         },
         ignore:function () {
         },
         defaultHandler:function (actions) {
