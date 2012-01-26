@@ -125,6 +125,7 @@
         render:function (model) {
             $(this.el).empty()
             $(this.el).append("<h1>" + model.get('name') + "</h1><p/><img src='rest/media/" + model.get('picture').id + "'/><p/>" + model.get("description"))
+
         }
     })
 
