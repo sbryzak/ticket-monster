@@ -1,5 +1,7 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
+import static javax.persistence.TemporalType.TIMESTAMP;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -7,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
@@ -23,6 +26,7 @@ public class Performance implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @Temporal(TIMESTAMP)
     private Date date;
 
     @ManyToOne

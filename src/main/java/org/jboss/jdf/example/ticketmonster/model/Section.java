@@ -1,11 +1,11 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
+import static javax.persistence.CascadeType.ALL;
+
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -53,7 +53,7 @@ public class Section implements Serializable {
     @ManyToOne
     private VenueLayout layout;
 
-    @OneToMany(mappedBy = "section", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "section", cascade = ALL)
     @NotEmpty
     private Set<Row> sectionRows = new HashSet<Row>();
 
@@ -123,6 +123,11 @@ public class Section implements Serializable {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (layout != null ? layout.hashCode() : 0);
         return result;
+    }
+    
+    @Override
+    public String toString() {
+        return name;
     }
 
 }

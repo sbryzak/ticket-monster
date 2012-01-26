@@ -10,6 +10,11 @@ set ACCEPT_DEFAULTS true;
 
 scaffold setup;
 
+@/* Enable RichFaces for wizzy widgets from entities */;
+
+richfaces setup;
+
+
 @/* Scaffold CRUD views for the entities that an admin would start drilling down into the data model from */;
 
 scaffold from-entity org.jboss.jdf.example.ticketmonster.model.*
