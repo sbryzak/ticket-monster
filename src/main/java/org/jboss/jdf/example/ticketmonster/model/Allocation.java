@@ -1,5 +1,7 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,7 @@ public class Allocation implements Serializable {
     private static final long serialVersionUID = 8738724150877088864L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=IDENTITY)
     private Long id;
 
     @ManyToOne

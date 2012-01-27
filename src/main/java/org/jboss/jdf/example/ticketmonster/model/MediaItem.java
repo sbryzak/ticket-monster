@@ -1,5 +1,7 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.io.Serializable;
 
 import javax.persistence.Basic;
@@ -25,7 +27,7 @@ public class MediaItem implements Serializable {
     private static final long serialVersionUID = -3190368407410663590L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=IDENTITY)
     private Long id;
 
     @Column(name = "MEDIA_TYPE")

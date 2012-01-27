@@ -1,5 +1,7 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.io.Serializable;
 
 import javax.persistence.Entity;
@@ -23,7 +25,7 @@ public class Event implements Serializable {
     private static final long serialVersionUID = -7237875436163170627L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=IDENTITY)
     private Long id;
 
     @NotNull @NotEmpty

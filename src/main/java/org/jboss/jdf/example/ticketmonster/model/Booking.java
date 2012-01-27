@@ -2,14 +2,13 @@ package org.jboss.jdf.example.ticketmonster.model;
 
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -29,7 +28,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class Booking {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=IDENTITY)
     private Long id;
 
     @OneToMany(fetch = EAGER, mappedBy = "booking", cascade = ALL)

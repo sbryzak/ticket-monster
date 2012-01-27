@@ -1,5 +1,6 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
+import static javax.persistence.GenerationType.IDENTITY;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 import java.io.Serializable;
@@ -23,7 +24,7 @@ public class Performance implements Serializable {
     private static final long serialVersionUID = -108405033615497885L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=IDENTITY)
     private Long id;
 
     @Temporal(TIMESTAMP)
