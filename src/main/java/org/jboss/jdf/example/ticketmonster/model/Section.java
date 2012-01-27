@@ -1,6 +1,7 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
 import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -27,7 +28,7 @@ public class Section implements Serializable {
     private static final long serialVersionUID = 4293585694763708395L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=IDENTITY)
     private Long id;
 
     /**
