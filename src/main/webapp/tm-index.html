@@ -74,7 +74,7 @@ function checkAvailability(sectionId, performanceTime) {
         if ('' !== element.value) {
             var quantity = parseInt(element.value);
             sectionQuantity += quantity;
-            sectionPrice += (sectionQuantity * loadedPrices[priceIds[i].value])
+            sectionPrice += (quantity * loadedPrices[priceIds[i].value])
         }
     })
     if ('' === sectionQuantity || sectionQuantity == 0) {
