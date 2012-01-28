@@ -23,7 +23,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  *
  * @author Shane Bryzak
  */
-@Entity @JsonIgnoreProperties({"layout", "sectionRows"})
+@Entity @JsonIgnoreProperties({"venue", "sectionRows"})
 public class Section implements Serializable {
     private static final long serialVersionUID = 4293585694763708395L;
 
@@ -52,7 +52,7 @@ public class Section implements Serializable {
      * The layout to which this section belongs
      */
     @ManyToOne
-    private VenueLayout layout;
+    private Venue venue;
 
     @OneToMany(mappedBy = "section", cascade = ALL)
     @NotEmpty
@@ -90,12 +90,12 @@ public class Section implements Serializable {
         this.capacity = capacity;
     }
 
-    public VenueLayout getLayout() {
-        return layout;
+    public Venue getVenue() {
+        return venue;
     }
 
-    public void setLayout(VenueLayout layout) {
-        this.layout = layout;
+    public void setVenue(Venue venue) {
+        this.venue = venue;
     }
 
     public Set<Row> getSectionRows() {
@@ -113,7 +113,7 @@ public class Section implements Serializable {
 
         Section section = (Section) o;
 
-        if (layout != null ? !layout.equals(section.layout) : section.layout != null) return false;
+        if (venue != null ? !venue.equals(section.venue) : section.venue != null) return false;
         if (name != null ? !name.equals(section.name) : section.name != null) return false;
 
         return true;
@@ -122,7 +122,7 @@ public class Section implements Serializable {
     @Override
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (layout != null ? layout.hashCode() : 0);
+        result = 31 * result + (venue != null ? venue.hashCode() : 0);
         return result;
     }
     

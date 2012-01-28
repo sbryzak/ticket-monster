@@ -35,7 +35,7 @@ public class AvailabilityService {
                 "allocation.booking.performance.id = :performanceId and allocation.row.section.id = :sectionId");
         Section section = null;
         try {
-            section = (Section) entityManager.createQuery("select s from Section s where s.id = :sectionId and exists(select p from Performance p where s.layout.id = p.show.venueLayout.id and p.id = :performanceId)")
+            section = (Section) entityManager.createQuery("select s from Section s where s.id = :sectionId and exists(select p from Performance p where s.venue.id = p.show.venue.id and p.id = :performanceId)")
                     .setParameter("performanceId", performanceId)
                     .setParameter("sectionId", sectionId).getSingleResult();
         } catch (NoResultException e) {

@@ -1,6 +1,7 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
 import static javax.persistence.CascadeType.ALL;
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.util.Set;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -23,12 +25,11 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
  * @author Shane Bryzak
  */
 @Entity
-@JsonIgnoreProperties("layouts")
 public class Venue implements Serializable {
     private static final long serialVersionUID = -6588912817518967721L;
 
     @Id
-    @GeneratedValue(strategy=IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     private String name;
@@ -38,8 +39,10 @@ public class Venue implements Serializable {
 
     private String description;
 
-    @OneToMany(mappedBy = "venue", cascade = ALL)
-    private Set<VenueLayout> layouts = new HashSet<VenueLayout>();
+    @OneToMany(cascade = ALL, fetch = EAGER, mappedBy = "venue")
+    private Set<Section> sections = new HashSet<Section>();
+
+    private int capacity;
 
     @ManyToOne
     @JoinColumn(name = "PICTURE_ID")
@@ -85,12 +88,20 @@ public class Venue implements Serializable {
         this.description = description;
     }
 
-    public Set<VenueLayout> getLayouts() {
-        return layouts;
+    public Set<Section> getSections() {
+        return sections;
     }
 
-    public void setLayouts(Set<VenueLayout> layouts) {
-        this.layouts = layouts;
+    public void setSections(Set<Section> sections) {
+        this.sections = sections;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
     @Override
@@ -112,7 +123,7 @@ public class Venue implements Serializable {
         result = 31 * result + (address != null ? address.hashCode() : 0);
         return result;
     }
-    
+
     @Override
     public String toString() {
         return name;

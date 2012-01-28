@@ -26,18 +26,4 @@ public class VenueService extends BaseEntityService<Venue> {
         super(Venue.class);
     }
 
-
-    @GET
-    @Path("/layouts/{layoutId:[0-9][0-9]*}/sections")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Section> getSections( @PathParam("layoutId") Long layoutId) {
-
-        final CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
-        final CriteriaQuery<Section> criteriaQuery = criteriaBuilder.createQuery(Section.class);
-        Root<Section> root = criteriaQuery.from(Section.class);
-        Predicate layoutCondition = criteriaBuilder.equal(root.get("layout").get("id"), layoutId);
-        criteriaQuery.select(criteriaBuilder.createQuery(Section.class).getSelection()).where(layoutCondition);
-        return getEntityManager().createQuery(criteriaQuery).getResultList();
-    }
-
 }

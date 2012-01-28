@@ -37,7 +37,7 @@ public class Show implements Serializable {
     private Event event;
 
     @ManyToOne
-    private VenueLayout venueLayout;
+    private Venue venue;
 
     @OneToMany(fetch = EAGER, mappedBy = "show", cascade = ALL)
     @NotEmpty
@@ -72,12 +72,12 @@ public class Show implements Serializable {
         this.performances = performances;
     }
 
-    public VenueLayout getVenueLayout() {
-        return venueLayout;
+    public Venue getVenue() {
+        return venue;
     }
 
-    public void setVenueLayout(VenueLayout venueLayout) {
-        this.venueLayout = venueLayout;
+    public void setVenue(Venue venue) {
+        this.venue = venue;
     }
 
     public Set<PriceCategory> getPriceCategories() {
@@ -96,7 +96,7 @@ public class Show implements Serializable {
         Show show = (Show) o;
 
         if (event != null ? !event.equals(show.event) : show.event != null) return false;
-        if (venueLayout != null ? !venueLayout.equals(show.venueLayout) : show.venueLayout != null) return false;
+        if (venue != null ? !venue.equals(show.venue) : show.venue != null) return false;
 
         return true;
     }
@@ -104,12 +104,12 @@ public class Show implements Serializable {
     @Override
     public int hashCode() {
         int result = event != null ? event.hashCode() : 0;
-        result = 31 * result + (venueLayout != null ? venueLayout.hashCode() : 0);
+        result = 31 * result + (venue != null ? venue.hashCode() : 0);
         return result;
     }
-    
+
     @Override
     public String toString() {
-        return event + " with " + venueLayout;
+        return event + " at " + venue;
     }
 }
