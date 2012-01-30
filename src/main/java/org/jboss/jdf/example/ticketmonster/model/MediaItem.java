@@ -1,18 +1,17 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.hibernate.validator.constraints.URL;
 
 /**
  * A reference to a media object such as images, sound bites, video recordings, that can
@@ -30,31 +29,32 @@ public class MediaItem implements Serializable {
     @GeneratedValue(strategy=IDENTITY)
     private Long id;
 
-    @Column(name = "MEDIA_TYPE")
-    private String mediaType;
-
-    @Basic(fetch = FetchType.LAZY)
-    @Lob
-    private byte[] content;
+    @Enumerated(STRING)
+    private MediaType mediaType;
+    
+    @URL
+    private String url;
+    
+    public MediaItem() {}
 
     public Long getId() {
         return id;
     }
 
-    public String getMediaType() {
+    public MediaType getMediaType() {
         return mediaType;
     }
-
-    public void setMediaType(String mediaType) {
+    
+    public void setMediaType(MediaType mediaType) {
         this.mediaType = mediaType;
     }
 
-    public byte[] getContent() {
-        return content;
+    public String getUrl() {
+        return url;
     }
-
-    public void setContent(byte[] content) {
-        this.content = content;
+    
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override

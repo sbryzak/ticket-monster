@@ -25,7 +25,6 @@ scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Event;
 scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Section;
 scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Show;
 scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Performance;
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.MediaItem;
 scaffold from-entity org.jboss.jdf.example.ticketmonster.model.EventCategory;
 
 
@@ -35,3 +34,5 @@ build clean package jboss-as:deploy;
 echo Examine the app so far at http://localhost:8080/ticket-monster;
 
 wait;
+
+echo Add "<tm:image media="#{mediaManager.getPath(eventBean.event.picture)}" />" to "scaffold/event/view.xhtml" instead of the output of the picture
