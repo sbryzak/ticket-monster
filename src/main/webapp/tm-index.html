@@ -43,13 +43,12 @@ TicketMonster.models = new Object()
 
 TicketMonster.eventBus = _.extend({}, Backbone.Events);
 
-var loadedSections = 0
 var loadedPrices = 0
 
 function checkAvailability(sectionId, performanceTime) {
     var sectionQuantity = 0
-    var ticketInputs = $("#booking" + sectionId + ">input[type='number']");
-    var priceIds = $("#booking" + sectionId + ">input[name='priceCategories']");
+    var ticketInputs = $("#booking" + sectionId + ">div>input[type='number']");
+    var priceIds = $("#booking" + sectionId + ">div>input[name='priceCategories']");
     var sectionPrice = 0
     $.each(ticketInputs, function (i, element) {
         if ('' !== element.value) {
@@ -240,13 +239,42 @@ TicketMonster.BookingsView = Backbone.View.extend({
     }
 })
 
+TicketMonster.PriceCategoryView = Backbone.View.extend({
+    render: function() {
+       var priceCategory = this.model.get('priceCategory');
+       $(this.el).append(priceCategory.ticketCategory.description + "(" + priceCategory.price + ")" + ": <input type='number' name='tickets' min='1' max='5' title='Numeric value'/> " +
+                                      " <input type='hidden' name='priceCategories' value='" + priceCategory.id + "'/>")
+        return this;
+   }
+})
+
+TicketMonster.SectionView = Backbone.View.extend({
+    tagName:'fieldset',
+    event:{
+        "change input":"checkAvailability"
+    },
+    render:function () {
+        $(this.el).append("<legend>Section " + this.model.get('section').name + "</legend><div id='sectionQuantity" + this.model.get('section').id + "'/> <div id='sectionAvailability" + this.model.get('section').id + "'/>");
+        var self = this;
+        _.each(this.model.get('priceCategories'), function (priceCategory) {
+            var performanceId = self.model.get('performanceId');
+            var priceModel = new Backbone.Model({priceCategory:priceCategory, performanceId:performanceId});
+            $(self.el).append(new TicketMonster.PriceCategoryView({model:priceModel}).render().el)
+        })
+        return this
+    },
+    checkAvailability:function () {
+        checkAvailability(this.model.get('section').id, this.model.get('performanceId'))
+    }
+})
+
 
 TicketMonster.CreateBookingView = Backbone.View.extend({
     events:{
         "submit form":"save"
     },
     render:function (showId, performanceId) {
-        loadedSections = new Object()
+        var loadedSections = new Object()
         loadedPrices = new Object()
         var topLevelElement = $(this.el)
         topLevelElement.empty()
@@ -264,14 +292,8 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
 
             $.getJSON("rest/shows/" + selectedShow.id + "/pricing", function (pricingMap) {
                 for (sectionId in pricingMap) {
-                    $("#bookTickets").append("<fieldset id='booking" + sectionId + "'><legend>Section " + loadedSections[sectionId].name + "</legend><div id='sectionQuantity" + sectionId + "'/> <div id='sectionAvailability" + sectionId + "'/> </fieldset>");
-                    $.each(pricingMap[sectionId], function (i, price_category) {
-                        $("#booking" + sectionId).append(price_category.ticketCategory.description + "(" + price_category.price + ")" + ": <input type='number' name='tickets' min='0' onkeyup='checkAvailability(" + sectionId + "," + performanceId + ")' title='Numeric value'/> " +
-                                " <input type='hidden' name='priceCategories' value='" + price_category.id + "'/>" +
-                                " <input type='hidden' name='sections' value='" + sectionId + "'/>" +
-                                " <p/>")
-                        loadedPrices[price_category.id] = price_category.price
-                    })
+                    var sectionModel = new Backbone.Model({'priceCategories':pricingMap[sectionId], 'section':loadedSections[sectionId], 'performanceId':performanceId});
+                    $("#bookTickets").append(new TicketMonster.SectionView({model:sectionModel, id:'booking'+sectionId}).render().el)
                 }
 
                 $("#bookTickets").append("Email: <input type='email' name='email' required/>");
