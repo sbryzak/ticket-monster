@@ -7,15 +7,14 @@
     <link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>
     <link rel="stylesheet" href="resources/css/jquery-ui.css" type="text/css" media="all"/>
 
+    <script type="text/javascript" src="resources/js/tm-utils.js"></script>
     <script type="text/javascript" src="resources/js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="resources/js/jquery-ui-1.8.14.custom.min.js"></script>
     <script type="text/javascript" src="resources/js/underscore-min.js"></script>
     <script type="text/javascript" src="resources/js/backbone-min.js"></script>
 
-
 </head>
 <body>
-
 <div id="container">
     <div id="menu">
         <table>
@@ -32,29 +31,11 @@
 
     </div>
 </div>
+
 <footer>
     <img src="resources/gfx/logo.png" alt="HTML5"/>
 </footer>
 <script type="text/javascript">
-
-var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-var monthNames = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"];
-
-Date.prototype.toPrettyString = function () {
-    return dayNames[this.getDay()] + " " +
-            this.getDate() + " " +
-            monthNames[this.getMonth()] + " " +
-            this.getFullYear() + " @ " +
-            zeropad(this.getHours(), 2) + ":" +
-            zeropad(this.getMinutes(), 2);
-}
-
-function zeropad(val, digits) {
-    val = val + "";
-    while (val.length < digits) val = "0" + val;
-    return val;
-}
 
 TicketMonster = new Object()
 TicketMonster.views = new Object()
@@ -332,11 +313,11 @@ TicketMonster.AboutView = Backbone.View.extend({
 TicketMonster.Router = Backbone.Router.extend({
     routes:{
         "":"home",
-        "/events":"home",
-        "/events/:id":"eventDetail",
-        "/about":"about",
-        "/book/:showId/:performanceId":"bookTickets",
-        "/bookings":"listBookings",
+        "events":"home",
+        "events/:id":"eventDetail",
+        "about":"about",
+        "book/:showId/:performanceId":"bookTickets",
+        "bookings":"listBookings",
         "ignore":"ignore",
         "*actions":"defaultHandler"
     },
