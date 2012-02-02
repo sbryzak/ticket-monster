@@ -242,6 +242,9 @@ TicketMonster.BookingsView = Backbone.View.extend({
 
 
 TicketMonster.CreateBookingView = Backbone.View.extend({
+    events:{
+        "submit form":"save"
+    },
     render:function (showId, performanceId) {
         loadedSections = new Object()
         loadedPrices = new Object()
@@ -274,31 +277,30 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
                 $("#bookTickets").append("Email: <input type='email' name='email' required/>");
                 $("#bookTickets").append("<input type='hidden' name='performance' value='" + performanceId + "'/>")
                 $("#bookTickets").append("<input name='createBooking' type='submit' value='Book!'/>")
-                $("#bookTickets").submit(function (event) {
-                    event.preventDefault()
-                    $.post("rest/bookings", $(this).serialize(),
-                            function (booking) {
-                                $("#book").empty()
-
-                                $("#book").append("Created booking " + booking.id + " with tickets as follows: ")
-                                $.each(booking.allocations, function (i, allocation) {
-                                    if (allocation.quantity > 1) {
-                                        $("#book").append("<p/> Section " + allocation.row.section.name + " Row " + allocation.row.name + ", seats " + allocation.startSeat + "-" + allocation.endSeat)
-                                    } else {
-                                        $("#book").append("<p/> Section " + allocation.row.section.name + " Row " + allocation.row.name + ", seat " + allocation.startSeat)
-                                    }
-                                    $.each(allocation.ticketsPerCategory, function (i, entry) {
-                                        $("#book").append("<p/> " + entry.ticketCount + " " + entry.ticketCategory.description)
-                                    })
-                                })
-
-                            }).error(function (error) {
-                                alert(error)
-                            })
-                })
             })
-
         })
+    },
+    save:function (event) {
+        event.originalEvent.preventDefault()
+        $.post("rest/bookings", $(event.currentTarget).serialize(),
+                function (booking) {
+                    $("#book").empty()
+
+                    $("#book").append("Created booking " + booking.id + " with tickets as follows: ")
+                    $.each(booking.allocations, function (i, allocation) {
+                        if (allocation.quantity > 1) {
+                            $("#book").append("<p/> Section " + allocation.row.section.name + " Row " + allocation.row.name + ", seats " + allocation.startSeat + "-" + allocation.endSeat)
+                        } else {
+                            $("#book").append("<p/> Section " + allocation.row.section.name + " Row " + allocation.row.name + ", seat " + allocation.startSeat)
+                        }
+                        $.each(allocation.ticketsPerCategory, function (i, entry) {
+                            $("#book").append("<p/> " + entry.ticketCount + " " + entry.ticketCategory.description)
+                        })
+                    })
+
+                }).error(function (error) {
+                    alert(error)
+                })
     }
 })
 
