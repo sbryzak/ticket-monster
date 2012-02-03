@@ -4,9 +4,10 @@
 <head>
     <title>Ticket Monster</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script type="text/javascript" src="resources/js/modernizr-2.0.6.js"></script>
+
     <link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>
     <link rel="stylesheet" href="resources/css/jquery-ui.css" type="text/css" media="all"/>
-
     <script type="text/javascript" src="resources/js/tm-utils.js"></script>
     <script type="text/javascript" src="resources/js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="resources/js/jquery-ui-1.8.14.custom.min.js"></script>
@@ -15,6 +16,7 @@
 
 </head>
 <body>
+
 <div id="container">
     <div id="menu">
         <table>
@@ -44,29 +46,6 @@ TicketMonster.models = new Object()
 TicketMonster.eventBus = _.extend({}, Backbone.Events);
 
 var loadedPrices = 0
-
-function checkAvailability(sectionId, performanceTime) {
-    var sectionQuantity = 0
-    var ticketInputs = $("#booking" + sectionId + ">div>input[type='number']");
-    var priceIds = $("#booking" + sectionId + ">div>input[name='priceCategories']");
-    var sectionPrice = 0
-    $.each(ticketInputs, function (i, element) {
-        if ('' !== element.value) {
-            var quantity = parseInt(element.value);
-            sectionQuantity += quantity;
-            sectionPrice += (quantity * loadedPrices[priceIds[i].value])
-        }
-    })
-    if ('' === sectionQuantity || sectionQuantity == 0) {
-        $("#sectionQuantity" + sectionId).empty()
-        return
-    }
-    $("#sectionQuantity" + sectionId).empty().append(sectionQuantity.toString() + " for " + sectionPrice)
-    $.getJSON("rest/availability", {"performance":performanceTime, "quantity":sectionQuantity, "section":sectionId}, function (result) {
-        var divId = "#sectionAvailability" + sectionId;
-        $(divId).empty().append(result ? "<div style='color:#00FF00'>available</div>" : "<div style='color:#FF0000'>unavailable</div>")
-    })
-}
 
 var summaryView = null
 
@@ -229,6 +208,7 @@ TicketMonster.BookingView = Backbone.View.extend({
     }
 })
 
+
 TicketMonster.BookingsView = Backbone.View.extend({
     render:function (bookings) {
         $(this.el).empty().append("<table id='bookingDetails'/>");
@@ -240,31 +220,82 @@ TicketMonster.BookingsView = Backbone.View.extend({
 })
 
 TicketMonster.PriceCategoryView = Backbone.View.extend({
+    events: {
+        "change input":"update"
+    },
     render: function() {
        var priceCategory = this.model.get('priceCategory');
-       $(this.el).append(priceCategory.ticketCategory.description + "(" + priceCategory.price + ")" + ": <input type='number' name='tickets' min='1' max='5' title='Numeric value'/> " +
+       $(this.el).append(priceCategory.ticketCategory.description + "(" + priceCategory.price + ")" + ": <input type='number' name='tickets' min='1' max='5' title='Numeric value' placeholder='Enter ticket count'/> " +
                                       " <input type='hidden' name='priceCategories' value='" + priceCategory.id + "'/>")
         return this;
+   },
+   update: function(event) {
+       var quantity = $(this.el).find("input[type='number']").val();
+       if ('' === quantity || 0 == quantity)
+       {
+           this.model.unset('quantity')
+       }
+       else {
+       this.model.set('quantity', parseInt(quantity));
+       }
    }
+})
+
+TicketMonster.BookingRequest = Backbone.Model.extend({
+
+});
+
+TicketMonster.AllocationRequest = Backbone.Model.extend({
+
 })
 
 TicketMonster.SectionView = Backbone.View.extend({
     tagName:'fieldset',
-    event:{
+    events:{
         "change input":"checkAvailability"
     },
     render:function () {
-        $(this.el).append("<legend>Section " + this.model.get('section').name + "</legend><div id='sectionQuantity" + this.model.get('section').id + "'/> <div id='sectionAvailability" + this.model.get('section').id + "'/>");
+        this.priceCategories = new Array()
+        $(this.el).append("<legend>Section " + this.model.get('section').name + "</legend>" +
+                "<div id='sectionQuantity'/>" +
+                "<div id='sectionAvailability'/>");
         var self = this;
         _.each(this.model.get('priceCategories'), function (priceCategory) {
             var performanceId = self.model.get('performanceId');
             var priceModel = new Backbone.Model({priceCategory:priceCategory, performanceId:performanceId});
-            $(self.el).append(new TicketMonster.PriceCategoryView({model:priceModel}).render().el)
+            var priceCategoryView = new TicketMonster.PriceCategoryView({model:priceModel});
+            $(self.el).append(priceCategoryView.render().el)
+            self.priceCategories.push(priceModel)
         })
         return this
     },
     checkAvailability:function () {
-        checkAvailability(this.model.get('section').id, this.model.get('performanceId'))
+        var sectionQuantity = 0
+        var sectionPrice = 0
+        _.each(this.priceCategories, function(priceCategory) {
+            if (priceCategory.get('quantity') != null) {
+               var quantity = priceCategory.get('quantity');
+               sectionQuantity += quantity;
+               sectionPrice += quantity*priceCategory.get('priceCategory').price
+            }
+        })
+        if (sectionQuantity != 0) {
+            $(this.el).find("#sectionQuantity").empty().append(sectionQuantity.toString() + " for " + sectionPrice)
+            var self = this
+            $.getJSON("rest/availability", {"performance":this.model.get('performanceId'), "quantity":sectionQuantity, "section":this.model.get('section').id}, function (result) {
+                if (result) {
+                    $(self.el).find('legend').css('background-color', '#00AA00').css('color', 'white')
+                }
+                else {
+                    $(self.el).find('legend').css('background-color', '#AA0000').css('color', 'white')
+                }
+                self.model.set('availability', result)
+            })
+        } else {
+            $(this.el).find("#sectionQuantity").empty();
+            $(this.el).find('legend').css('background-color', 'transparent').css('color', 'black')
+            this.model.unset('availability')
+        }
     }
 })
 
