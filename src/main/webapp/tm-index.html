@@ -4,13 +4,13 @@
 <head>
     <title>Ticket Monster</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <script type="text/javascript" src="resources/js/modernizr-2.0.6.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0;">
 
     <link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>
-    <link rel="stylesheet" href="resources/css/jquery-ui.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="resources/css/jquery-ui-1.8.17.custom.css" type="text/css" media="all"/>
     <script type="text/javascript" src="resources/js/tm-utils.js"></script>
     <script type="text/javascript" src="resources/js/jquery-1.7.1.min.js"></script>
-    <script type="text/javascript" src="resources/js/jquery-ui-1.8.14.custom.min.js"></script>
+    <script type="text/javascript" src="resources/js/jquery-ui-1.8.17.custom.min.js"></script>
     <script type="text/javascript" src="resources/js/underscore-min.js"></script>
     <script type="text/javascript" src="resources/js/backbone-min.js"></script>
 
@@ -34,10 +34,14 @@
     </div>
 </div>
 
+
+
 <footer>
     <img src="resources/gfx/logo.png" alt="HTML5"/>
 </footer>
 <script type="text/javascript">
+
+$("a").button();
 
 TicketMonster = new Object()
 TicketMonster.views = new Object()
@@ -74,8 +78,6 @@ TicketMonster.MainView = Backbone.View.extend({
         this.menuView = new TicketMonster.MenuView();
         $("#eventMenu").append(this.menuView.el)
         this.menuView.render(data)
-
-
     }
 })
 
@@ -95,6 +97,7 @@ TicketMonster.MenuView = Backbone.View.extend({
             $("#eventsAccordion").append(view.render().el);
         })
         $("#eventsAccordion").accordion()
+        $("#eventsAccordion").accordion("option", "navigation", "true")
         return this
     }
 });
@@ -105,7 +108,7 @@ TicketMonster.EventSummaryLineView = Backbone.View.extend({
         "click":"notify"
     },
     render:function () {
-        $(this.el).empty().append('<a href="#ignore">' + this.model.get('name') + '</a>')
+        $(this.el).empty().append('<a href="#">' + this.model.get('name') + '</a>')
         return this;
     },
     notify:function () {
@@ -139,7 +142,7 @@ TicketMonster.EventDetailView = Backbone.View.extend({
     },
     render:function (model) {
         $(this.el).empty()
-        $(this.el).append("<h1>" + model.get('name') + "</h1><p/><img src='rest/media/" + model.get('picture').id + "'/><p/>" + model.get("description") + "<select id='venueSelector' /><select id='performanceTimes'/><div id='book'/>")
+        $(this.el).append("<h1>" + model.get('name') + "</h1></p><table><tr><td><img src='rest/media/" + model.get('picture').id + "'/><p/>" + model.get("description") + "</td><td><select id='venueSelector' /><select id='performanceTimes'/><div id='datePicker'/></td></tr></table><div id='book'/>")
         var eventId = model.get("id")
         var topElement = $(this.el)
         $.getJSON("rest/shows?event=" + eventId, function (shows) {
@@ -154,7 +157,6 @@ TicketMonster.EventDetailView = Backbone.View.extend({
                 var selectedShow = loadedShows[showId];
                 $("#performanceTimes").empty()
                 if (selectedShow) {
-
                     $.each(selectedShow.performances, function (i, performance) {
                         $("#performanceTimes").append("<option value='" + performance.id + "'>" + new Date(performance.date).toPrettyString() + "</option>")
                     })
@@ -163,7 +165,19 @@ TicketMonster.EventDetailView = Backbone.View.extend({
                     $("#book").empty().append("<input type='button' name='bookButton' value='Book'/>");
                 }
 
+                $("#datePicker").datepicker("destroy")
+                $("#datePicker").datepicker({
+                                beforeShowDay: function(date) {
+                                    return [true, "*", "Performance on this date"]
+                                },
+                                defaultDate: null,
+                                minDate:new Date(selectedShow.performances[0].date),
+                                maxDate:new Date(selectedShow.performances[selectedShow.performances.length -1].date)
+                            });
+                $("#datePicker").datepicker("setDate",null);
             })
+
+
             if ($("#venueSelector").val()) {
                 $("#venueSelector").change()
             }
@@ -220,25 +234,24 @@ TicketMonster.BookingsView = Backbone.View.extend({
 })
 
 TicketMonster.PriceCategoryView = Backbone.View.extend({
-    events: {
+    events:{
         "change input":"update"
     },
-    render: function() {
-       var priceCategory = this.model.get('priceCategory');
-       $(this.el).append(priceCategory.ticketCategory.description + "(" + priceCategory.price + ")" + ": <input type='number' name='tickets' min='1' max='5' title='Numeric value' placeholder='Enter ticket count'/> " +
-                                      " <input type='hidden' name='priceCategories' value='" + priceCategory.id + "'/>")
+    render:function () {
+        var priceCategory = this.model.get('priceCategory');
+        $(this.el).append(priceCategory.ticketCategory.description + "(" + priceCategory.price + ")" + ": <input type='number' name='tickets' min='1' max='5' title='Numeric value' placeholder='Enter ticket count'/> " +
+                " <input type='hidden' name='priceCategories' value='" + priceCategory.id + "'/>")
         return this;
-   },
-   update: function(event) {
-       var quantity = $(this.el).find("input[type='number']").val();
-       if ('' === quantity || 0 == quantity)
-       {
-           this.model.unset('quantity')
-       }
-       else {
-       this.model.set('quantity', parseInt(quantity));
-       }
-   }
+    },
+    update:function (event) {
+        var quantity = $(this.el).find("input[type='number']").val();
+        if ('' === quantity || 0 == quantity) {
+            this.model.unset('quantity')
+        }
+        else {
+            this.model.set('quantity', parseInt(quantity));
+        }
+    }
 })
 
 TicketMonster.BookingRequest = Backbone.Model.extend({
@@ -272,11 +285,11 @@ TicketMonster.SectionView = Backbone.View.extend({
     checkAvailability:function () {
         var sectionQuantity = 0
         var sectionPrice = 0
-        _.each(this.priceCategories, function(priceCategory) {
+        _.each(this.priceCategories, function (priceCategory) {
             if (priceCategory.get('quantity') != null) {
-               var quantity = priceCategory.get('quantity');
-               sectionQuantity += quantity;
-               sectionPrice += quantity*priceCategory.get('priceCategory').price
+                var quantity = priceCategory.get('quantity');
+                sectionQuantity += quantity;
+                sectionPrice += quantity * priceCategory.get('priceCategory').price
             }
         })
         if (sectionQuantity != 0) {
@@ -324,7 +337,7 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
             $.getJSON("rest/shows/" + selectedShow.id + "/pricing", function (pricingMap) {
                 for (sectionId in pricingMap) {
                     var sectionModel = new Backbone.Model({'priceCategories':pricingMap[sectionId], 'section':loadedSections[sectionId], 'performanceId':performanceId});
-                    $("#bookTickets").append(new TicketMonster.SectionView({model:sectionModel, id:'booking'+sectionId}).render().el)
+                    $("#bookTickets").append(new TicketMonster.SectionView({model:sectionModel, id:'booking' + sectionId}).render().el)
                 }
 
                 $("#bookTickets").append("Email: <input type='email' name='email' required/>");
@@ -426,5 +439,6 @@ var tmRouter = new TicketMonster.Router;
 Backbone.history.start();
 
 </script>
+
 </body>
 </html>
