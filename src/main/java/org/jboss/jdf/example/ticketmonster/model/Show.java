@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -40,6 +41,7 @@ public class Show implements Serializable {
     private Venue venue;
 
     @OneToMany(fetch = EAGER, mappedBy = "show", cascade = ALL)
+    @OrderBy("date asc")
     @NotEmpty
     private Set<Performance> performances = new HashSet<Performance>();
 
