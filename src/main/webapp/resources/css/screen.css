@@ -44,7 +44,7 @@ footer {
 }
 
 code {
-   font-size: 1.1em;
+   font-size: 0.9em;
 }
 
 a {
@@ -89,52 +89,5 @@ legend {
    float: left;
    margin-left: 85px;
 }
-
-/* Member table styles */
-#mem_tbl {
-   background-color: #E6E7E8;
-   clear: both;
-   width: 550px;
-}
-
-#mem_tbl td {
-   height: 2em;
-   padding-left: 6px;
-   font-size: 11px;
-}
-
-#mem_tbl th {
-   font-size: 12px;
-   font-weight: normal;
-   padding: 0 10px 0 5px;
-   border-bottom: #999999 dotted 1px;
-}
-
-#mem_tbl thead {
-   height: 31px;
-   font-size: 10px;
-   font-weight: bold;
-   color: #FFFFFF;
-   background-color: black;
-   text-align: left;
-}
-
-#mem_tbl tfoot {
-   height: 20px;
-   font-size: 10px;
-   font-weight: bold;
-   background-color: #EAECEE;
-   text-align: center;
-}
-
-/* Using new CSS3 selectors for styling*/
-#members tr:nth-child(odd) {
-   background: #f4f3f3;
-}
-
-#members tr:nth-child(even) {
-   background: #ffffff;
-}
-
 
 

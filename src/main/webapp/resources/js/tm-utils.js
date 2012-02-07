@@ -17,3 +17,13 @@ Number.prototype.toZeroPaddedString = function(digits) {
     while (val.length < digits) val = "0" + val;
     return val;
 }
+
+function renderTemplate(template, data) {
+    return _.template(template.html(), (data == undefined) ? {} : data);
+}
+function applyTemplate(target, template, data) {
+    return target.html(renderTemplate(template, data))
+}
+
+
+
