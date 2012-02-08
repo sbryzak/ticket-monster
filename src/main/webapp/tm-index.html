@@ -457,7 +457,7 @@ TicketMonster.AboutView = Backbone.View.extend({
 
 TicketMonster.Router = Backbone.Router.extend({
     routes:{
-        "events":"home",
+        "events":"events",
         "events/:id":"eventDetail",
         "about":"about",
         "book/:showId/:performanceId":"bookTickets",
@@ -483,7 +483,7 @@ TicketMonster.Router = Backbone.Router.extend({
             this.fetch()
         })
     },
-    home:function () {
+    events:function () {
         TicketMonster.models.events.fetch()
     },
     about:function () {
