@@ -7,19 +7,22 @@
 
     <link type="text/css" rel="stylesheet" href="resources/css/m.screen.css"/>
     <link rel="stylesheet" href="//code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css"/>
-    <script type="text/javascript" src="resources/js/tm-utils.js"></script>
     <script type="text/javascript" src="resources/js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="resources/js/jquery.mobile.router.js"></script>
     <script type="text/javascript" src="resources/js/jquery.mobile-1.0.1.min.js"></script>
 
     <script type="text/javascript" src="resources/js/underscore.js"></script>
     <script type="text/javascript" src="resources/js/backbone.js"></script>
+    <script type="text/javascript" src="resources/js/tm-utils.js"></script>
 
 
 </head>
 
 <body>
 
+<script id="template-view" type="text/template">
+     <a href="<%= element.url %>"><%=element.name%></a>
+</script>
 
 <div id="index" data-role="page">
     <div data-role="header">Ticket Monster1</div>
@@ -52,6 +55,7 @@
             </li>
         </ul>
         <a href="#index">Back</a>
+        <div id="footer"/>
     </div>
 </div>
 
@@ -67,7 +71,6 @@
     	},{
     		localpage: function(type,match,ui){
     			console.log("localpage2: "+type);
-    			console.log(match);
     		}
     	}, {
     		defaultHandler: function(type, ui, page) {
@@ -78,6 +81,8 @@
     		defaultHandlerEvents: "s"
     	});
 
+    var compiledTemplate = _.template($("#template-view").html(), {element:{name:'Concert', url:"#two"}});
+    $('#footer').empty().append(compiledTemplate)
 </script>
 
 </body>

@@ -25,7 +25,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  *
  * @author Shane Bryzak
  */
-@Entity @JsonIgnoreProperties("priceCategories")
+@Entity
 public class Show implements Serializable {
 
     private static final long serialVersionUID = -108405033615497885L;
@@ -45,7 +45,7 @@ public class Show implements Serializable {
     @NotEmpty
     private Set<Performance> performances = new HashSet<Performance>();
 
-    @OneToMany(mappedBy = "show", cascade = ALL)
+    @OneToMany(mappedBy = "show", cascade = ALL, fetch = EAGER)
     @NotEmpty
     private Set<PriceCategory> priceCategories = new HashSet<PriceCategory>();
 
