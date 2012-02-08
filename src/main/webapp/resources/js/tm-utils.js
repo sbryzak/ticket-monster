@@ -12,6 +12,15 @@ Date.prototype.toPrettyString = function () {
             this.getMinutes().toZeroPaddedString(2);
 }
 
+Date.prototype.toCalendarDate = function() {
+    return { 'day': this.getDay(), 'month': this.getMonth(), 'year': this.getFullYear()};
+}
+
+Date.prototype.toTimeOfDay = function() {
+    return { 'hours': this.getHours(), 'minutes': this.getMinutes(),
+        'seconds':this.getSeconds(), 'milliseconds': this.getMilliseconds()};
+}
+
 Number.prototype.toZeroPaddedString = function(digits) {
     val = this + "";
     while (val.length < digits) val = "0" + val;
@@ -24,6 +33,8 @@ function renderTemplate(template, data) {
 function applyTemplate(target, template, data) {
     return target.html(renderTemplate(template, data))
 }
+
+
 
 
 

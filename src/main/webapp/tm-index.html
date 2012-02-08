@@ -21,7 +21,6 @@
     <div id="menu">
         <table>
             <tr>
-                <td><a href="#">Home</a></td>
                 <td><a href="#/events">Events</a></td>
                 <td><a href="#/venues">Venues</a></td>
                 <td><a href="#/bookings">Bookings</a></td>
@@ -188,60 +187,95 @@
 </script>
 
 <script type="text/javascript">
-TicketMonster.EventSummaryView = Backbone.View.extend({
-    render:function (data) {
-        if (data) {
-            applyTemplate($(this.el), $("#event-summary-view"), data.attributes)
+    TicketMonster.EventSummaryView = Backbone.View.extend({
+        render:function (data) {
+            if (data) {
+                applyTemplate($(this.el), $("#event-summary-view"), data.attributes)
+            }
+            else {
+                $(this.el).empty()
+                $(this.el).append("Click a link on the left")
+            }
+            return this
         }
-        else {
-            $(this.el).empty()
-            $(this.el).append("Click a link on the left")
-        }
-        return this
-    }
-})
+    })
+</script>
 
+<script id="event-detail" type="text/template">
+
+    <table>
+        <tr>
+            <td colspan="2"><h1><%=name%></h1></td>
+        </tr>
+        <tr>
+            <td width='350px' rowspan="4"><img width='350px' src='rest/media/<%=picture.id%>'/></td>
+            <td><label for='venueSelector'>Where: </label><select id='venueSelector'/>
+            </td>
+
+
+        </tr>
+        <tr>
+            <td>
+                <div style='font-size:0.7em' type='text' id="dayPicker"/>
+                <label for="performanceTimes">Choose a time:</label><select id="performanceTimes"/>
+            </td>
+        </tr>
+        <tr>
+            <td><%=description%></td>
+        </tr>
+        <tr>
+            <td><input name="bookButton" type="button" value="Book"></td>
+        </tr>
+    </table>
+</script>
+
+<script type="text/javascript">
 TicketMonster.EventDetailView = Backbone.View.extend({
     events:{
         "click input[name='bookButton']":"beginBooking"
     },
     render:function (model) {
         $(this.el).empty()
-        $(this.el).append("<h1>" + model.get('name') + "</h1></p><table><tr ><td width='350px'><img width='350px' src='rest/media/" + model.get('picture').id + "'/><p/>" + model.get("description") + "</td><td><label for='venueSelector'>Where: </label><select id='venueSelector' /><select id='performanceTimes'/><div style='font-size:0.7em' type='text' id='datePicker'/></td></tr></table><div id='book'/>")
+        applyTemplate($(this.el), $("#event-detail"), model.attributes)
         var eventId = model.get("id")
+
         var topElement = $(this.el)
+
         $.getJSON("rest/shows?event=" + eventId, function (shows) {
-            loadedShows = new Object()
             $("#venueSelector").empty()
             $.each(shows, function (i, show) {
                 $("#venueSelector").append("<option value='" + show.id + "'>" + show.venue.address.city + " : " + show.venue.name + "</option>")
-                loadedShows[show.id] = show
-            })
+           })
             $("#venueSelector").change(function (selectElement) {
-                var showId = $("#venueSelector option:selected").val();
-                var selectedShow = loadedShows[showId];
-                $("#performanceTimes").empty()
-                if (selectedShow) {
-                    $.each(selectedShow.performances, function (i, performance) {
-                        $("#performanceTimes").append("<option value='" + performance.id + "'>" + new Date(performance.date).toPrettyString() + "</option>")
-                    })
-                }
-                if ($("#performanceTimes").val()) {
-                    $("#book").empty().append("<input type='button' name='bookButton' value='Book'/>");
-                }
+                var selectedShowId = $("#venueSelector option:selected").val();
+                var selectedShow = _.find(shows, function(show){ return show.id == selectedShowId });
 
-                $("#datePicker").datepicker("destroy")
-                $("#datePicker").datepicker({
+                $("#dayPicker").datepicker("destroy")
+                $("#dayPicker").datepicker({
                     beforeShowDay:function (date) {
-                        return [true, "*", "Performance on this date"]
+                        return [_.any(selectedShow.performances, function (performance) {
+                            return _.isEqual(new Date(performance.date).toCalendarDate(), date.toCalendarDate())
+                        }), "*", "Performance on this date"]
                     },
+                    onSelect:function (dateText, inst) {
+                            var date = $(this).datepicker('getDate');
+                            $("#performanceTimes").empty()
+                            if (selectedShow) {
+                                $.each(selectedShow.performances, function (i, performance) {
+                                    var performanceDate = new Date(performance.date);
+                                    if (_.isEqual(performanceDate.toCalendarDate(), date.toCalendarDate())) {
+                                        $("#performanceTimes").append("<option value='" + performance.id + "'>" + performanceDate.getHours().toZeroPaddedString(2) + ":" + performanceDate.getMinutes().toZeroPaddedString(2) + "</option>")
+                                    }
+                                })
+                            }
+                        },
                     defaultDate:null,
                     minDate:new Date(selectedShow.performances[0].date),
                     maxDate:new Date(selectedShow.performances[selectedShow.performances.length - 1].date),
                     autoSize:false
 
                 });
-                $("#datePicker").datepicker("setDate", null);
+                $("#dayPicker").datepicker("setDate", null);
             })
 
 
@@ -256,6 +290,7 @@ TicketMonster.EventDetailView = Backbone.View.extend({
     beginBooking:function () {
         tmRouter.navigate('/book/' + $("#venueSelector option:selected").val() + '/' + $("#performanceTimes").val(), true)
     }
+
 })
 
 TicketMonster.Booking = Backbone.Model.extend({
@@ -446,7 +481,6 @@ TicketMonster.AboutView = Backbone.View.extend({
 
 TicketMonster.Router = Backbone.Router.extend({
     routes:{
-        "":"home",
         "events":"home",
         "events/:id":"eventDetail",
         "about":"about",
@@ -491,11 +525,6 @@ TicketMonster.Router = Backbone.Router.extend({
             TicketMonster.views.eventDetailView.render(this)
         })
         model.fetch()
-    },
-    ignore:function () {
-    },
-    defaultHandler:function (actions) {
-        alert(actions)
     }
 });
 
