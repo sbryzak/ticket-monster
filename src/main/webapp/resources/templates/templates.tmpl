@@ -1,0 +1,89 @@
+<script id="main-view" type="text/template">
+    <table width='100%'>
+        <tr>
+            <td width='30%' valign='top'>
+                <div id='eventMenu'/>
+            </td>
+            <td width='70%'>
+                <div id='eventSummary'/>
+            </td>
+        </tr>
+    </table>
+</script>
+
+
+<script id="category-title" type="text/template">
+    <h3><a href="#"><%= description %></a></h3>
+</script>
+
+<script id="event-summary" type="text/template">
+    <a href="#"><%=name%></a>
+</script>
+
+<script id="event-summary-view" type="text/template">
+    <table>
+        <thead>
+        <tr>
+            <td colspan="2"><h1><%=name%></h1></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td rowspan="2"> <% if(picture != null) {%>
+                <img width='350px' src='rest/media/<%=picture.id%>'/>
+                <% } else { %>
+                We cannot show you a picture, but trust us, it is very cool
+                <% } %>
+            </td>
+            <td> <%=description%></td>
+        <tr/>
+        <tr>
+            <td><a href='#events/<%=id%>'>Get details</a></td>
+        </tbody>
+        </tr>
+    </table>
+</script>
+
+<script id="booking-row" type="text/template">
+    <tr>
+        <td><%=id%></td>
+        <td><%=contactEmail%></td>
+        <td><input name='delete' type='button' value='Delete'/></td>
+    </tr>
+</script>
+
+<script id="create-booking" type="text/template">
+    <table>
+        <tr>
+            <td><h3><%=show.event.name%></h3></td>
+        </tr>
+        <tr>
+            <td><h4><%=show.venue.name%> on <%=new Date(performance.date).toPrettyString()%> </h4></td>
+        </tr>
+        <tr>
+            <td>
+                <div id="sectionSelectorPlaceholder"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="ticketCategoriesViewPlaceholder"/>
+            </td>
+        </tr>
+    </table>
+</script>
+
+
+<script id="ticket-entries" type="text/template">
+    <form name="ticketCategories">
+        <% _.each(priceCategories, function(priceCategory) { %>
+        <div id="ticket-category-input-<%=priceCategory.id%>"/>
+        <% }) %>
+    </form>
+</script>
+
+<script id="ticket-entry" type="text/template">
+    <label><%=priceCategory.ticketCategory.description%>(<%=priceCategory.price%>)</label><input type="number" title="Enter value" name="tickets"/>
+</script>
+
+

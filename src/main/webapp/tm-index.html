@@ -13,6 +13,16 @@
     <script type="text/javascript" src="resources/js/underscore.js"></script>
     <script type="text/javascript" src="resources/js/backbone.js"></script>
     <script type="text/javascript" src="resources/js/tm-utils.js"></script>
+    <script type="text/javascript">
+        $.ajax({
+            url: "resources/templates/templates.tmpl",
+            dataType: "html",
+            context: document.head,
+            success: function(data){
+                $(this).prepend(data);
+            }
+        });
+    </script>
 
 </head>
 <body>
@@ -21,10 +31,10 @@
     <div id="menu">
         <table>
             <tr>
-                <td><a href="#/events">Events</a></td>
-                <td><a href="#/venues">Venues</a></td>
-                <td><a href="#/bookings">Bookings</a></td>
-                <td><a href="#/about">About</a></td>
+                <td><a href="#events">Events</a></td>
+                <td><a href="#venues">Venues</a></td>
+                <td><a href="#bookings">Bookings</a></td>
+                <td><a href="#about">About</a></td>
             </tr>
         </table>
     </div>
@@ -37,19 +47,6 @@
 <footer>
     <img src="resources/gfx/logo.png" alt="HTML5"/>
 </footer>
-
-<script id="main-view" type="text/template">
-    <table width='100%'>
-        <tr>
-            <td width='30%' valign='top'>
-                <div id='eventMenu'/>
-            </td>
-            <td width='70%'>
-                <div id='eventSummary'/>
-            </td>
-        </tr>
-    </table>
-</script>
 
 
 <script type="text/javascript">
@@ -89,40 +86,6 @@
     })
 
 </script>
-
-
-<script id="category-title" type="text/template">
-    <h3><a href="#"><%= description %></a></h3>
-</script>
-
-<script id="event-summary" type="text/template">
-    <a href="#"><%=name%></a>
-</script>
-
-<script id="event-summary-view" type="text/template">
-    <table>
-        <thead>
-        <tr>
-            <td colspan="2"><h1><%=name%></h1></td>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td rowspan="2"> <% if(picture != null) {%>
-                <img width='350px' src='rest/media/<%=picture.id%>'/>
-                <% } else { %>
-                We cannot show you a picture, but trust us, it is very cool
-                <% } %>
-            </td>
-            <td> <%=description%></td>
-        <tr/>
-        <tr>
-            <td><a href='#/events/<%=id%>'>Get details</a></td>
-        </tbody>
-        </tr>
-    </table>
-</script>
-
 
 <script type="text/javascript">
 
@@ -178,32 +141,6 @@
     })
 </script>
 
-<script id="event-detail" type="text/template">
-
-    <table>
-        <tr>
-            <td colspan="2"><h1><%=name%></h1></td>
-        </tr>
-        <tr>
-            <td width='350px' rowspan="4"><img width='350px' src='rest/media/<%=picture.id%>'/></td>
-            <td><label for='venueSelector'>Location: </label><select id='venueSelector'/></td>
-        </tr>
-        <tr>
-            <td>
-                <div style='font-size:0.7em' type='text' id="dayPicker"/>
-            </td>
-            <td>
-                <label for="performanceTimes">Choose a time:</label><select id="performanceTimes"/>
-            </td>
-        </tr>
-        <tr>
-            <td><%=description%></td>
-        </tr>
-        <tr>
-            <td><input name="bookButton" type="button" value="Book"></td>
-        </tr>
-    </table>
-</script>
 
 <script type="text/javascript">
     TicketMonster.EventDetailView = Backbone.View.extend({
@@ -277,13 +214,6 @@
 
 </script>
 
-<script id="booking-row" type="text/template">
-    <tr>
-        <td><%=id%></td>
-        <td><%=contactEmail%></td>
-        <td><input name='delete' type='button' value='Delete'/></td>
-    </tr>
-</script>
 
 <script type="text/javascript">
     TicketMonster.BookingView = Backbone.View.extend({
@@ -395,26 +325,7 @@
 
 </script>
 
-<script id="create-booking" type="text/template">
-    <table>
-        <tr>
-            <td><h3><%=show.event.name%></h3></td>
-        </tr>
-        <tr>
-            <td><h4><%=show.venue.name%> on <%=new Date(performance.date).toPrettyString()%> </h4></td>
-        </tr>
-        <tr>
-            <td>
-                <div id="sectionSelectorPlaceholder"/>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div id="ticketCategoriesViewPlaceholder"/>
-            </td>
-        </tr>
-    </table>
-</script>
+
 
 <script id="select-section" type="text/template">
     <label for="sectionSelect">Select section:</label>
@@ -425,19 +336,6 @@
         <% }) %>
     </select>
 </script>
-
-<script id="ticket-entries" type="text/template">
-    <form name="ticketCategories">
-        <% _.each(priceCategories, function(priceCategory) { %>
-        <div id="ticket-category-input-<%=priceCategory.id%>"/>
-        <% }) %>
-    </form>
-</script>
-
-<script id="ticket-entry" type="text/template">
-    <label><%=priceCategory.ticketCategory.description%>(<%=priceCategory.price%>)</label><input type="number" title="Enter value" name="tickets"/>
-</script>
-
 
 <script type="text/javascript">
     TicketMonster.SectionSelectorView = Backbone.View.extend({
