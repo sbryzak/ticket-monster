@@ -154,19 +154,6 @@
          <version>1.0.0.CR4</version>
          <scope>test</scope>
       </dependency>
-
-       <dependency>
-           <groupId>org.jboss.solder</groupId>
-           <artifactId>solder-api</artifactId>
-           <version>3.1.0.Beta4</version>
-       </dependency>
-
-       <dependency>
-           <groupId>org.jboss.solder</groupId>
-           <artifactId>solder-impl</artifactId>
-           <version>3.1.0.Beta4</version>
-           <scope>runtime</scope>
-       </dependency>
        <dependency>
            <groupId>org.codehaus.jackson</groupId>
            <artifactId>jackson-core-asl</artifactId>

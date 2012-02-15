@@ -76,10 +76,13 @@
 
 <script id="ticket-entries" type="text/template">
     <form name="ticketCategories">
-        <% _.each(priceCategories, function(priceCategory) { %>
+     <% if (priceCategories.length > 0) { %>
+     <%  _.each(priceCategories, function(priceCategory) { %>
         <div id="ticket-category-input-<%=priceCategory.id%>"/>
         <% }) %>
-    </form>
+    </form><p/>
+    <input type="button" name="add" value="Add!"/>
+    <% } %>
 </script>
 
 <script id="ticket-entry" type="text/template">

@@ -371,6 +371,9 @@
 
 
     TicketMonster.TicketCategoriesView = Backbone.View.extend({
+        events: {
+          "click input[name='add']":"updateModel"
+        },
         id:'categoriesView',
         render:function () {
             var views = {};
