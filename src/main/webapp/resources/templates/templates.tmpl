@@ -70,9 +70,28 @@
                 <div id="ticketCategoriesViewPlaceholder"/>
             </td>
         </tr>
+        <tr>
+                         <td>
+                             <div id="ticketSummaryView"/>
+                         </td>
+                     </tr>
+         <tr>
+            <td>
+                 <input type='button' name="submit" value="Book!" disabled="true"/>
+            </td>
+         <tr>
     </table>
 </script>
 
+<script id="select-section" type="text/template">
+    <label for="sectionSelect">Select section:</label>
+    <select id="sectionSelect">
+        <option value="-1" selected="true">Choose a section</option>
+        <% _.each(sections, function(section) { %>
+        <option value="<%=section.id%>"><%=section.name%> - <%=section.description%></option>
+        <% }) %>
+    </select>
+</script>
 
 <script id="ticket-entries" type="text/template">
     <form name="ticketCategories">
@@ -87,6 +106,19 @@
 
 <script id="ticket-entry" type="text/template">
     <label><%=priceCategory.ticketCategory.description%>(<%=priceCategory.price%>)</label><input type="number" title="Enter value" name="tickets"/>
+</script>
+
+<script id="ticket-summary-view" type="text/template">
+    Current request:</p>
+   <% _.each(tickets, function(ticketRequest) { %>
+          <% _.each(ticketRequest.models, function(model) { %>
+            <% if (model.attributes.quantity != undefined) { %>
+               <%= model.attributes.priceCategory.section.name %> (<%= model.attributes.priceCategory.section.description %>) -
+                   (<%= model.attributes.priceCategory.ticketCategory.description %>):
+                    <%= model.attributes.quantity %>
+           <% } %>
+          <% }) %>
+       <% }) %>
 </script>
 
 

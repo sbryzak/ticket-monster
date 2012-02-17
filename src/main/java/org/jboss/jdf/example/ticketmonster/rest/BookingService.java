@@ -29,6 +29,7 @@ import org.jboss.jdf.example.ticketmonster.model.PriceCategory;
 import org.jboss.jdf.example.ticketmonster.model.Row;
 import org.jboss.jdf.example.ticketmonster.model.Section;
 
+
 /**
  * @author Marius Bogoevici
  */
@@ -51,6 +52,18 @@ public class BookingService extends BaseEntityService<Booking> {
         }
         getEntityManager().remove(booking);
         return Response.ok().build();
+    }
+
+    @POST
+    @Path("/alt")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createBooking(BookingRequest bookingRequest) {
+        Map<Long, TicketRequest> ticketsByCategories = new HashMap<Long, TicketRequest>();
+        for (TicketRequest ticketRequest : bookingRequest.getTicketRequests()) {
+            ticketsByCategories.put(ticketRequest.getPriceCategory(), ticketRequest);
+        }
+        List<PriceCategory> loadedPriceCategories = getEntityManager().createQuery("select p from PriceCategory p where p.id in :ids").setParameter("ids", ticketsByCategories.keySet()).getResultList();
+
     }
 
     @POST
@@ -83,7 +96,7 @@ public class BookingService extends BaseEntityService<Booking> {
             final Long sectionId = priceCategory.getSection().getId();
             if (!ticketCountsPerSection.containsKey(sectionId)) {
                 ticketCountsPerSection.put(sectionId, 0);
-                ticketsPerCategory.put(sectionId, new ArrayList<AllocationTicketCategoryCount> ());
+                ticketsPerCategory.put(sectionId, new ArrayList<AllocationTicketCategoryCount>());
             }
             ticketCountsPerSection.put(sectionId, ticketCountsPerSection.get(sectionId) + ticketCountAsInteger);
             ticketsPerCategory.get(sectionId).add(new AllocationTicketCategoryCount(priceCategory.getTicketCategory(), ticketCountAsInteger));
@@ -139,5 +152,42 @@ public class BookingService extends BaseEntityService<Booking> {
         booking.setCancellationCode("abc");
         getEntityManager().persist(booking);
         return Response.ok().entity(booking).type(MediaType.APPLICATION_JSON_TYPE).build();
+    }
+
+    public static class BookingRequest {
+        
+        private List<TicketRequest> ticketRequests = new ArrayList<TicketRequest>();
+
+        public List<TicketRequest> getTicketRequests() {
+            return ticketRequests;
+        }
+
+        public void setTicketRequests(List<TicketRequest> ticketRequests) {
+            this.ticketRequests = ticketRequests;
+        }
+    }
+
+    public static class TicketRequest {
+        
+        private long priceCategory;
+
+        private int quantity;
+
+
+        public long getPriceCategory() {
+            return priceCategory;
+        }
+
+        public void setPriceCategory(long priceCategory) {
+            this.priceCategory = priceCategory;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public void setQuantity(int quantity) {
+            this.quantity = quantity;
+        }
     }
 }
