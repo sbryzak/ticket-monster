@@ -1,11 +1,8 @@
 package org.jboss.jdf.example.ticketmonster.rest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +11,6 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -55,51 +51,35 @@ public class BookingService extends BaseEntityService<Booking> {
     }
 
     @POST
-    @Path("/alt")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createBooking(BookingRequest bookingRequest) {
+        Performance performance = getEntityManager().find(Performance.class, bookingRequest.getPerformance());
+
         Map<Long, TicketRequest> ticketsByCategories = new HashMap<Long, TicketRequest>();
         for (TicketRequest ticketRequest : bookingRequest.getTicketRequests()) {
             ticketsByCategories.put(ticketRequest.getPriceCategory(), ticketRequest);
         }
         List<PriceCategory> loadedPriceCategories = getEntityManager().createQuery("select p from PriceCategory p where p.id in :ids").setParameter("ids", ticketsByCategories.keySet()).getResultList();
 
-    }
+        Map<Long, PriceCategory> priceCategoriesById = new HashMap<Long, PriceCategory>();
 
-    @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response createBooking(@FormParam("email") String email,
-                                  @FormParam("performance") Long performanceId,
-                                  @FormParam("priceCategories") Long[] priceCategoryIds,
-                                  @FormParam("tickets") String[] ticketCounts) {
-        Performance performance = getEntityManager().find(Performance.class, performanceId);
-        Booking booking = new Booking();
-        booking.setContactEmail(email);
-        if (ticketCounts.length != priceCategoryIds.length) {
-            Map<String, String> entity = new HashMap<String, String>();
-            entity.put("cause", "There must be as many pr as tickets");
-            Response response = Response.status(Response.Status.BAD_REQUEST).entity(entity).build();
-        }
-        List<PriceCategory> loadedPriceCategories = getEntityManager().createQuery("select p from PriceCategory p where p.id in :ids").setParameter("ids", Arrays.asList(priceCategoryIds)).getResultList();
-        Map<Long, PriceCategory> priceCategories = new HashMap<Long, PriceCategory>();
         for (PriceCategory loadedPriceCategory : loadedPriceCategories) {
-            priceCategories.put(loadedPriceCategory.getId(), loadedPriceCategory);
+            priceCategoriesById.put(loadedPriceCategory.getId(), loadedPriceCategory);
         }
-
+        
+        Booking booking = new Booking();
+        booking.setContactEmail(bookingRequest.getEmail());
         Map<Long, Integer> ticketCountsPerSection = new LinkedHashMap<Long, Integer>();
         Map<Long, List<AllocationTicketCategoryCount>> ticketsPerCategory = new LinkedHashMap<Long, List<AllocationTicketCategoryCount>>();
-        for (int i = 0; i < ticketCounts.length; i++) {
-            if (ticketCounts[i] == null || "".equals(ticketCounts[i].trim()))
-                continue;
-            final PriceCategory priceCategory = priceCategories.get(priceCategoryIds[i]);
-            Integer ticketCountAsInteger = Integer.valueOf(ticketCounts[i]);
+        for (TicketRequest ticketRequest: ticketsByCategories.values()) {
+            final PriceCategory priceCategory = priceCategoriesById.get(ticketRequest.getPriceCategory());
             final Long sectionId = priceCategory.getSection().getId();
             if (!ticketCountsPerSection.containsKey(sectionId)) {
                 ticketCountsPerSection.put(sectionId, 0);
                 ticketsPerCategory.put(sectionId, new ArrayList<AllocationTicketCategoryCount>());
             }
-            ticketCountsPerSection.put(sectionId, ticketCountsPerSection.get(sectionId) + ticketCountAsInteger);
-            ticketsPerCategory.get(sectionId).add(new AllocationTicketCategoryCount(priceCategory.getTicketCategory(), ticketCountAsInteger));
+            ticketCountsPerSection.put(sectionId, ticketCountsPerSection.get(sectionId) + ticketRequest.getQuantity());
+            ticketsPerCategory.get(sectionId).add(new AllocationTicketCategoryCount(priceCategory.getTicketCategory(), ticketRequest.getQuantity()));
         }
         for (Long sectionId : ticketCountsPerSection.keySet()) {
             int ticketCount = ticketCountsPerSection.get(sectionId);
@@ -110,7 +90,7 @@ public class BookingService extends BaseEntityService<Booking> {
             Set<Row> rows = section.getSectionRows();
             Allocation createdAllocation = null;
             for (Row row : rows) {
-                List<Allocation> allocations = (List<Allocation>) getEntityManager().createQuery("select a from Allocation a  where a.booking.performance.id = :perfId and a.row.id = :rowId").setParameter("perfId", performanceId).setParameter("rowId", row.getId()).getResultList();
+                List<Allocation> allocations = (List<Allocation>) getEntityManager().createQuery("select a from Allocation a  where a.booking.performance.id = :perfId and a.row.id = :rowId").setParameter("perfId", bookingRequest.getPerformance()).setParameter("rowId", row.getId()).getResultList();
                 if (allocations.size() > 0) {
                     int confirmedCandidate = 0;
                     int nextCandidate = 1;
@@ -157,6 +137,8 @@ public class BookingService extends BaseEntityService<Booking> {
     public static class BookingRequest {
         
         private List<TicketRequest> ticketRequests = new ArrayList<TicketRequest>();
+        private long performance;
+        private String email;
 
         public List<TicketRequest> getTicketRequests() {
             return ticketRequests;
@@ -165,7 +147,26 @@ public class BookingService extends BaseEntityService<Booking> {
         public void setTicketRequests(List<TicketRequest> ticketRequests) {
             this.ticketRequests = ticketRequests;
         }
+
+        public long getPerformance() {
+            return performance;
+        }
+
+        public void setPerformance(long performance) {
+
+            this.performance = performance;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
     }
+
+
 
     public static class TicketRequest {
         

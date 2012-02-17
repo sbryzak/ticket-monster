@@ -372,7 +372,33 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
                }
             })
         })
-        alert(JSON.stringify(bookingRequest))
+
+        bookingRequest.email = $("input[name='email']").val();
+        bookingRequest.performance = this.model.performanceId
+        $.ajax({url:"rest/bookings",
+            data:JSON.stringify(bookingRequest),
+            type:"POST",
+            dataType:"json",
+            contentType:"application/json",
+                success:function (booking) {
+                    $("#content").empty()
+
+                    $("#content").append("Created booking " + booking.id + " with tickets as follows: ")
+                    $.each(booking.allocations, function (i, allocation) {
+                        if (allocation.quantity > 1) {
+                            $("#content").append("<p/> Section " + allocation.row.section.name + " Row " + allocation.row.name + ", seats " + allocation.startSeat + "-" + allocation.endSeat)
+                        } else {
+                            $("#content").append("<p/> Section " + allocation.row.section.name + " Row " + allocation.row.name + ", seat " + allocation.startSeat)
+                        }
+                        $.each(allocation.ticketsPerCategory, function (i, entry) {
+                            $("#content").append("<p/> " + entry.ticketCount + " " + entry.ticketCategory.description)
+                        })
+                    })
+
+                }}).error(function (error) {
+                    alert(error)
+                })
+        this.model.clear()
     },
     addQuantities:function (event) {
         this.model.bookingRequest.tickets.push(this.ticketCategoriesView.model)
