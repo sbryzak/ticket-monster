@@ -37,7 +37,7 @@ public class Allocation implements Serializable {
     private Booking booking;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    public List<AllocationTicketCategoryCount> ticketsPerCategory = new ArrayList<AllocationTicketCategoryCount>();
+    private List<AllocationTicketCategoryCount> ticketsPerCategory = new ArrayList<AllocationTicketCategoryCount>();
 
     private int startSeat;
 
