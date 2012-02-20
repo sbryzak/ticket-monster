@@ -15,12 +15,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.NotEmpty;
 
 
 /**
- * A show is an instance of an event taking plac at a particular venue. A show can have multiple
+ * A show is an instance of an event taking place at a particular venue. A show can have multiple
  * performances.
  *
  * @author Shane Bryzak
