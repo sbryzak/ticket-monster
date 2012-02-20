@@ -53,14 +53,6 @@
 $("a").button();
 
 TicketMonster = new Object()
-TicketMonster.views = new Object()
-TicketMonster.models = new Object()
-
-TicketMonster.eventBus = _.extend({}, Backbone.Events);
-
-
-var summaryView = null
-
 
 TicketMonster.Event = Backbone.Model.extend({
     urlRoot:'rest/events'
@@ -75,30 +67,54 @@ TicketMonster.Events = Backbone.Collection.extend({
     }
 });
 
-TicketMonster.MainView = Backbone.View.extend({
-    render:function (data) {
+TicketMonster.Venue = Backbone.Model.extend({
+    urlRoot:'rest/venues'
+})
+
+TicketMonster.Venues = Backbone.Collection.extend({
+    url:"rest/venues",
+    model:TicketMonster.Venue,
+    id:"id",
+    comparator:function (model) {
+        return model.get('address').city;
+    }
+});
+
+TicketMonster.EventsView = Backbone.View.extend({
+    render:function () {
         applyTemplate($(this.el), $('#main-view'), {})
-        summaryView = new TicketMonster.EventSummaryView();
-        $("#eventSummary").append(summaryView.render().el)
-        this.menuView = new TicketMonster.MenuView({el:$("#eventMenu")});
-        this.menuView.render(data)
+        var summaryView = new TicketMonster.EventSummaryView();
+        $("#itemSummary").append(summaryView.render().el)
+        this.menuView = new TicketMonster.EventMenuView({summaryView:summaryView, model:this.model, el:$("#itemMenu")});
+        this.menuView.render()
     }
 })
 
-TicketMonster.MenuView = Backbone.View.extend({
+TicketMonster.VenuesView = Backbone.View.extend({
+    render:function () {
+        applyTemplate($(this.el), $('#main-view'), {})
+        var venueSummaryView = new TicketMonster.EventSummaryView();
+        $("#itemSummary").append(venueSummaryView.render().el)
+        this.menuView = new TicketMonster.VenueMenuView({summaryView:venueSummaryView, model:this.model, el:$("#itemMenu")});
+        this.menuView.render()
+    }
+})
+
+
+TicketMonster.EventMenuView = Backbone.View.extend({
     tagName:'div',
-    render:function (data) {
-        var viewRoot = $(this.el)
-        viewRoot.empty()
+    render:function () {
+        var self = this
+        $(this.el).empty()
         var current_category = null
-        _.each(data, function (event) {
+        _.each(this.model.models, function (event) {
             var model_category = event.get('category')
             if (current_category !== model_category.id) {
-                viewRoot.append(renderTemplate($('#category-title'), model_category));
+                $(self.el).append(renderTemplate($('#category-title'), model_category));
                 current_category = model_category.id;
             }
-            var view = new TicketMonster.EventSummaryLineView({model:event});
-            viewRoot.append(view.render().el);
+            var view = new TicketMonster.EventSummaryLineView({summaryView:self.options.summaryView, model:event});
+            $(self.el).append(view.render().el);
         })
         $(this.el).accordion()
         $(this.el).accordion("option", "navigation", "true")
@@ -106,6 +122,53 @@ TicketMonster.MenuView = Backbone.View.extend({
     }
 });
 
+TicketMonster.VenueMenuView = Backbone.View.extend({
+    tagName:'div',
+    render:function () {
+        var self = this
+        $(this.el).empty()
+        var current_city = null
+        _.each(this.model.models, function (event) {
+            var model_city = event.get('address').city
+            if (current_city !== model_city) {
+                $(self.el).append(renderTemplate($('#city'), event.get('address')));
+                current_city = model_city;
+            }
+            var view = new TicketMonster.VenueSummaryLineView({summaryView:self.options.summaryView, model:event});
+            $(self.el).append(view.render().el);
+        })
+        $(this.el).accordion()
+        $(this.el).accordion("option", "navigation", "true")
+        return this
+    }
+});
+
+TicketMonster.VenueSummaryLineView = Backbone.View.extend({
+    tagName:'div',
+    events:{
+        "click":"notify"
+    },
+    render:function () {
+        applyTemplate($(this.el), $("#venue-summary"), this.model.attributes)
+        return this;
+    },
+    notify:function () {
+        this.options.summaryView.render(this.model)
+    }
+})
+
+TicketMonster.VenueSummaryView = Backbone.View.extend({
+    render:function (data) {
+        if (data) {
+            applyTemplate($(this.el), $("#venue-summary-view"), data.attributes)
+        }
+        else {
+            $(this.el).empty()
+            $(this.el).append("Click a link on the left")
+        }
+        return this
+    }
+})
 
 TicketMonster.EventSummaryLineView = Backbone.View.extend({
     tagName:'div',
@@ -117,7 +180,7 @@ TicketMonster.EventSummaryLineView = Backbone.View.extend({
         return this;
     },
     notify:function () {
-        summaryView.render(this.model)
+        this.options.summaryView.render(this.model)
     }
 })
 
@@ -139,11 +202,11 @@ TicketMonster.EventDetailView = Backbone.View.extend({
         "click input[name='bookButton']":"beginBooking",
         "change select[id='venueSelector']":"refreshShows"
     },
-    render:function (model) {
+    render:function () {
         $(this.el).empty()
-        applyTemplate($(this.el), $("#event-detail"), model.attributes)
+        applyTemplate($(this.el), $("#event-detail"), this.model.attributes)
         var self = this
-        $.getJSON("rest/shows?event=" + model.get('id'), function (shows) {
+        $.getJSON("rest/shows?event=" + this.model.get('id'), function (shows) {
             self.shows = shows
             $("#venueSelector").empty()
             $.each(shows, function (i, show) {
@@ -220,21 +283,21 @@ TicketMonster.BookingRowView = Backbone.View.extend({
         event.stopPropagation()
         event.stopImmediatePropagation()
     },
-    showDetails: function() {
-        tmRouter.navigate("#bookings/"+this.model.get('id'), true)
+    showDetails:function () {
+        tmRouter.navigate("#bookings/" + this.model.get('id'), true)
     }
 })
 
-TicketMonster.TicketSummaryView = Backbone.View.extend ({
-  render: function() {
-    applyTemplate($(this.el), $('#ticket-summary-view'), this.model.bookingRequest)
-  }
+TicketMonster.TicketSummaryView = Backbone.View.extend({
+    render:function () {
+        applyTemplate($(this.el), $('#ticket-summary-view'), this.model.bookingRequest)
+    }
 })
 
 TicketMonster.BookingsView = Backbone.View.extend({
-    render:function (bookings) {
+    render:function () {
         $(this.el).empty().append("<table id='bookingDetails'/>");
-        _.each(bookings, function (booking) {
+        _.each(this.model.models, function (booking) {
             var bookingView = new TicketMonster.BookingRowView({model:booking})
             $("#bookingDetails").append(bookingView.render().el)
         })
@@ -288,15 +351,15 @@ TicketMonster.TicketCategoriesView = Backbone.View.extend({
         var views = {};
 
         if (this.model != null) {
-        var priceCategories = _.map(this.model.models, function (item) {
-            return item.attributes.priceCategory
-        })
-        applyTemplate($(this.el), $('#ticket-entries'), {priceCategories:priceCategories});
+            var priceCategories = _.map(this.model.models, function (item) {
+                return item.attributes.priceCategory
+            })
+            applyTemplate($(this.el), $('#ticket-entries'), {priceCategories:priceCategories});
 
-        _.each(this.model.models, function (model) {
-            $("#ticket-category-input-" + model.attributes.priceCategory.id).append(new TicketMonster.TicketCategoryView({model:model}).render().el);
+            _.each(this.model.models, function (model) {
+                $("#ticket-category-input-" + model.attributes.priceCategory.id).append(new TicketMonster.TicketCategoryView({model:model}).render().el);
 
-        });
+            });
         } else {
             $(this.el).empty()
         }
@@ -372,11 +435,11 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
     save:function (event) {
         var bookingRequest = {ticketRequests:[]};
         var self = this;
-        _.each(this.model.bookingRequest.tickets, function(collection){
-            _.each(collection.models, function(model) {
-               if (model.attributes.quantity != undefined) {
-                  bookingRequest.ticketRequests.push({priceCategory:model.attributes.priceCategory.id, quantity:model.attributes.quantity})
-               }
+        _.each(this.model.bookingRequest.tickets, function (collection) {
+            _.each(collection.models, function (model) {
+                if (model.attributes.quantity != undefined) {
+                    bookingRequest.ticketRequests.push({priceCategory:model.attributes.priceCategory.id, quantity:model.attributes.quantity})
+                }
             })
         })
 
@@ -387,10 +450,10 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
             type:"POST",
             dataType:"json",
             contentType:"application/json",
-                success:function (booking) {
-                    applyTemplate($(self.el), $("#booking-details"), booking)
+            success:function (booking) {
+                applyTemplate($(self.el), $("#booking-details"), booking)
 
-                }}).error(function (error) {
+            }}).error(function (error) {
                     alert(error)
                 })
         this.model = {}
@@ -406,8 +469,8 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
     }
 });
 
-TicketMonster.BookingDetailView = Backbone.View.extend ({
-    render: function() {
+TicketMonster.BookingDetailView = Backbone.View.extend({
+    render:function () {
         applyTemplate($(this.el), $("#booking-details"), this.model.attributes)
         return this
     }
@@ -424,6 +487,7 @@ TicketMonster.Router = Backbone.Router.extend({
     routes:{
         "events":"events",
         "events/:id":"eventDetail",
+        "venues":"venues",
         "about":"about",
         "book/:showId/:performanceId":"bookTickets",
         "bookings":"listBookings",
@@ -431,49 +495,55 @@ TicketMonster.Router = Backbone.Router.extend({
         "ignore":"ignore",
         "*actions":"defaultHandler"
     },
-    initialize:function () {
-        TicketMonster.views.mainView = new TicketMonster.MainView({el:$("#content")})
-        TicketMonster.views.aboutView = new TicketMonster.AboutView({el:$("#content")})
-        TicketMonster.views.eventDetailView = new TicketMonster.EventDetailView({el:$("#content")})
-        TicketMonster.views.bookingsView = new TicketMonster.BookingsView({el:$("#content")})
-        TicketMonster.models.events = new TicketMonster.Events;
-        TicketMonster.models.bookings = new TicketMonster.Bookings;
-        TicketMonster.models.events.bind("reset", function () {
-            TicketMonster.views.mainView.render(this.models)
-        })
-        TicketMonster.models.bookings.bind("reset", function () {
-            TicketMonster.views.bookingsView.render(this.models)
-        })
-        TicketMonster.models.bookings.bind("destroy", function () {
-            this.fetch()
-        })
-    },
     events:function () {
-        TicketMonster.models.events.fetch()
+        var events = new TicketMonster.Events;
+        var eventsView = new TicketMonster.EventsView({model:events, el:$("#content")})
+        events.bind("reset",
+                function () {
+                    eventsView.render()
+                }).fetch()
     },
+    venues:function () {
+            var venues = new TicketMonster.Venues;
+            var venuesView = new TicketMonster.VenuesView({model:venues, el:$("#content")})
+            venues.bind("reset",
+                    function () {
+                        venuesView.render()
+                    }).fetch()
+        },
     about:function () {
-        TicketMonster.views.aboutView.render()
+        new TicketMonster.AboutView({el:$("#content")}).render()
     },
     bookTickets:function (showId, performanceId) {
         var createBookingView = new TicketMonster.CreateBookingView({model:{showId:showId, performanceId:performanceId, bookingRequest:{tickets:[]}}, el:$("#content")})
         createBookingView.render()
     },
     listBookings:function () {
-        TicketMonster.models.bookings.fetch()
+        var bookings = new TicketMonster.Bookings()
+        var bookingsView = new TicketMonster.BookingsView({model:bookings, el:$("#content")})
+        bookings.bind("reset",
+                function () {
+                    bookingsView.render()
+                }).bind("destroy",
+                function () {
+                    this.fetch()
+                }).fetch()
     },
     eventDetail:function (id) {
-        var model = new TicketMonster.Event({id:id})
-        model.bind("change", function () {
-            TicketMonster.views.eventDetailView.render(this)
-        })
-        model.fetch()
+        var model = new TicketMonster.Event({id:id});
+        var eventDetailView = new TicketMonster.EventDetailView({model:model, el:$("#content")});
+        model.bind("change",
+                function () {
+                    eventDetailView.render()
+                }).fetch()
     },
     bookingDetail:function (id) {
-        var model = new TicketMonster.Booking({id:id});
-        var attachedView = new TicketMonster.BookingDetailView({model:model, el:$("#content")})
-        model.bind("change", function () {
-            attachedView.render()
-        }).fetch()
+        var bookingModel = new TicketMonster.Booking({id:id});
+        var bookingDetailView = new TicketMonster.BookingDetailView({model:bookingModel, el:$("#content")})
+        bookingModel.bind("change",
+                function () {
+                    bookingDetailView.render()
+                }).fetch()
 
     }
 });
