@@ -44,6 +44,35 @@
     </table>
 </script>
 
+
+<script id="event-detail" type="text/template">
+
+    <table>
+        <tr>
+            <td colspan="2"><h1><%=name%></h1></td>
+        </tr>
+        <tr>
+            <td width='350px' rowspan="4"><img width='350px' src='rest/media/<%=picture.id%>'/></td>
+            <td><label for='venueSelector'>Location: </label><select id='venueSelector'/></td>
+        </tr>
+        <tr>
+            <td>
+                <div style='font-size:0.7em' type='text' id="dayPicker"/>
+            </td>
+            <td>
+                <label for="performanceTimes">Choose a time:</label><select id="performanceTimes"/>
+            </td>
+        </tr>
+        <tr>
+            <td><%=description%></td>
+        </tr>
+        <tr>
+            <td><input name="bookButton" type="button" value="Book"></td>
+        </tr>
+    </table>
+</script>
+
+
 <script id="booking-row" type="text/template">
     <tr>
         <td><%=id%></td>
@@ -124,6 +153,33 @@
            <% } %>
           <% }) %>
        <% }) %>
+</script>
+
+<script id="booking-details" type="text/template">
+<table>
+<thead>
+<tr><td colspan="5">Booking <%=id%></td><tr>
+<tr>
+<td>Ticket #</td>
+<td>Category</td>
+<td>Section</td>
+<td>Row</td>
+<td>Seat</td>
+</tr>
+</thead>
+<tbody>
+                    <% $.each(_.sortBy(tickets, function(ticket) {return ticket.id}), function (i, ticket) { %>
+                        <tr>
+                        <td><%= ticket.id %></td>
+                        <td><%=ticket.ticketCategory.description%></td>
+                        <td><%=ticket.seat.row.section.name%></td>
+                        <td><%=ticket.seat.row.name%></td>
+                        <td><%=ticket.seat.number%></td>
+                        </tr>
+                    <% }) %>
+                    <tr><td colspan="5"/><a href="#bookings">Show all</a><td></tr>
+
+</tbody>
 </script>
 
 
