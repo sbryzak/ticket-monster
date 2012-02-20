@@ -14,6 +14,11 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
+/**
+ * Represents the state of ticket allocation in a section, for a specific performance.
+ *
+ * Optimistic locking ensures that two tickets will not be sold within the same row
+ */
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"performance_id", "section_id"}))
 public class SectionAllocation {

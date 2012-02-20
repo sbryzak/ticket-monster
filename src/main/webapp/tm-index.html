@@ -385,7 +385,7 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
 
                     $("#content").append("Created booking " + booking.id + " with tickets as follows: ")
                     $.each(_.sortBy(booking.tickets, function(ticket) {return ticket.id}), function (i, ticket) {
-                        $("#content").append("<p/> Ticket " + ticket.id + "(" + ticket.ticketCategory.description + "): in section " + ticket.row.section.name + " Row " + ticket.row.name + " seat" + ticket.seatNumber)
+                        $("#content").append("<p/> Ticket " + ticket.id + "(" + ticket.ticketCategory.description + "): in section " + ticket.seat.row.section.name + " Row " + ticket.seat.row.name + " seat" + ticket.seat.number)
 
                     })
 

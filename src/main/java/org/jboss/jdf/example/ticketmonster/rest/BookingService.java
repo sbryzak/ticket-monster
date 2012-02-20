@@ -10,6 +10,7 @@ import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -23,11 +24,13 @@ import org.jboss.jdf.example.ticketmonster.model.Booking;
 import org.jboss.jdf.example.ticketmonster.model.Performance;
 import org.jboss.jdf.example.ticketmonster.model.Row;
 import org.jboss.jdf.example.ticketmonster.model.RowAllocation;
+import org.jboss.jdf.example.ticketmonster.model.Seat;
 import org.jboss.jdf.example.ticketmonster.model.Section;
 import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
 import org.jboss.jdf.example.ticketmonster.model.Ticket;
 import org.jboss.jdf.example.ticketmonster.model.TicketCategory;
 import org.jboss.jdf.example.ticketmonster.model.TicketPriceCategory;
+import org.jboss.jdf.example.ticketmonster.services.SeatAllocationService;
 
 
 /**
@@ -38,6 +41,8 @@ import org.jboss.jdf.example.ticketmonster.model.TicketPriceCategory;
 @RequestScoped
 public class BookingService extends BaseEntityService<Booking> {
 
+    @Inject
+    SeatAllocationService seatAllocationService;
 
     public BookingService() {
         super(Booking.class);    //To change body of overridden methods use File | Settings | File Templates.
@@ -88,38 +93,22 @@ public class BookingService extends BaseEntityService<Booking> {
         }
 
         for (Section section : ticketRequestsPerSection.keySet()) {
-            SectionAllocation sectionAllocationStatus;
-            try {
-                sectionAllocationStatus = (SectionAllocation) getEntityManager().createQuery("select s from SectionAllocation s where s.performance.id = :performanceId and " +
-                        " s.section.id = :sectionId").setParameter("performanceId", performance.getId()).setParameter("sectionId", section.getId()).getSingleResult();
-            } catch (NoResultException e) {
-                sectionAllocationStatus = new SectionAllocation(performance, section);
-                getEntityManager().persist(sectionAllocationStatus);
+            int totalTicketsRequestedPerSection = 0;
+            final Map<TicketCategory, TicketRequest> ticketRequestsByCategories = ticketRequestsPerSection.get(section);
+            for (TicketRequest ticketRequest : ticketRequestsByCategories.values()) {
+                totalTicketsRequestedPerSection += ticketRequest.getQuantity();
             }
-            final Map<TicketCategory, TicketRequest> requestsByCategory = ticketRequestsPerSection.get(section);
-            int totalSeatsRequestedInSection = 0;
-            for (TicketRequest ticketRequest : requestsByCategory.values()) {
-               totalSeatsRequestedInSection += ticketRequest.getQuantity();
-            }
-            for (Row row : section.getSectionRows()) {
-                RowAllocation rowAllocation = sectionAllocationStatus.getRowAllocations().get(row);
-                int startSeat = rowAllocation.findFirstGapStart(totalSeatsRequestedInSection);
-                rowAllocation.allocate(startSeat, totalSeatsRequestedInSection);
-                if (startSeat >= 0) {
-                    for (Map.Entry<TicketCategory, TicketRequest> requestEntry : requestsByCategory.entrySet()) {
-                       for (int i=0 ; i<requestEntry.getValue().getQuantity(); i++) {
-                           Ticket ticket = new Ticket();
-                           ticket.setTicketCategory(requestEntry.getKey());
-                           ticket.setPrice(priceCategoriesById.get(requestEntry.getValue().getPriceCategory()).getPrice());
-                           ticket.setRow(row);
-                           ticket.setSeatNumber(startSeat + i + 1);
-                           getEntityManager().persist(ticket);
-                           booking.getTickets().add(ticket);
-                       }
-                       startSeat += requestEntry.getValue().getQuantity();
-                    }
+            List<Seat> seats = seatAllocationService.allocateSeats(section, performance, totalTicketsRequestedPerSection, true);
+            int seatCounter = 0;
+            for (TicketCategory ticketCategory : ticketRequestsByCategories.keySet()) {
+                final TicketRequest ticketRequest = ticketRequestsByCategories.get(ticketCategory);
+                final TicketPriceCategory ticketPriceCategory = priceCategoriesById.get(ticketRequest.getPriceCategory());
+                for (int i = 0; i < ticketRequest.getQuantity(); i++) {
+                    Ticket ticket = new Ticket(seats.get(seatCounter + i), ticketCategory, ticketPriceCategory.getPrice());
+                    getEntityManager().persist(ticket);
+                    booking.getTickets().add(ticket);
                 }
-                break;
+                seatCounter += ticketRequest.getQuantity();
             }
         }
         booking.setPerformance(performance);

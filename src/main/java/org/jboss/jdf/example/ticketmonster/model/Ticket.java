@@ -31,50 +31,39 @@ public class Ticket implements Serializable {
     @GeneratedValue(strategy=IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Row row;
+    private Seat seat;
 
     @ManyToOne
     private TicketCategory ticketCategory;
 
     private float price;
 
-    private int seatNumber;
-
     public Long getId() {
         return id;
     }
 
-    public Row getRow() {
-        return row;
+    /** Np-arg constructor for persistence */
+    private Ticket() {
+
     }
 
-    public void setRow(Row row) {
-        this.row = row;
+    public Ticket(Seat seat, TicketCategory ticketCategory, float price) {
+        this.seat = seat;
+        this.ticketCategory = ticketCategory;
+        this.price = price;
     }
 
     public TicketCategory getTicketCategory() {
         return ticketCategory;
     }
 
-    public void setTicketCategory(TicketCategory ticketCategory) {
-        this.ticketCategory = ticketCategory;
-    }
-
     public float getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
-        this.price = price;
-    }
 
-    public int getSeatNumber() {
-        return seatNumber;
-    }
-
-    public void setSeatNumber(int seatNumber) {
-        this.seatNumber = seatNumber;
+    public Seat getSeat() {
+        return seat;
     }
 }
 

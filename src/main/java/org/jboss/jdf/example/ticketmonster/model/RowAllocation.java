@@ -21,9 +21,9 @@ public class RowAllocation {
         Arrays.fill(occupied, false);
     }
 
-    public int findFirstGapStart(int size) {
+    public int findFreeGapStart(int startSeat, int size) {
         int candidateStart = -1;
-        for (int i=0; i< occupied.length; i++) {
+        for (int i=startSeat; i< occupied.length; i++) {
            if (!occupied[i]) {
                if (candidateStart == -1) {
                  candidateStart = i;
