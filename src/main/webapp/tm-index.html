@@ -27,21 +27,7 @@
 </head>
 <body>
 
-<div id="container">
-    <div id="menu">
-        <table>
-            <tr>
-                <td><a href="#events">Events</a></td>
-                <td><a href="#venues">Venues</a></td>
-                <td><a href="#bookings">Bookings</a></td>
-                <td><a href="#about">About</a></td>
-            </tr>
-        </table>
-    </div>
-    <div id="content">
-
-    </div>
-</div>
+<div id="container"/>
 
 
 <footer>
@@ -50,7 +36,11 @@
 
 
 <script type="text/javascript">
-$("a").button();
+
+$(document).ready(function(){
+    applyTemplate($("#container"), $("#global-view"), {})
+    $("a[data-tm-role='top-menu-item']").button();
+});
 
 TicketMonster = new Object()
 
