@@ -46,7 +46,7 @@ public class Show implements Serializable {
 
     @OneToMany(mappedBy = "show", cascade = ALL, fetch = EAGER)
     @NotEmpty
-    private Set<PriceCategory> priceCategories = new HashSet<PriceCategory>();
+    private Set<TicketPriceCategory> priceCategories = new HashSet<TicketPriceCategory>();
 
     public Long getId() {
         return id;
@@ -81,11 +81,11 @@ public class Show implements Serializable {
         this.venue = venue;
     }
 
-    public Set<PriceCategory> getPriceCategories() {
+    public Set<TicketPriceCategory> getPriceCategories() {
         return priceCategories;
     }
 
-    public void setPriceCategories(Set<PriceCategory> priceCategories) {
+    public void setPriceCategories(Set<TicketPriceCategory> priceCategories) {
         this.priceCategories = priceCategories;
     }
 

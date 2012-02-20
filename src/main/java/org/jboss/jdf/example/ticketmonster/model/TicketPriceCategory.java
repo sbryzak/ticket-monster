@@ -22,7 +22,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
  */
 @Entity @JsonIgnoreProperties("show")
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"SECTION_ID","SHOW_ID","TICKETCATEGORY_ID"}))
-public class PriceCategory implements Serializable {
+public class TicketPriceCategory implements Serializable {
     private static final long serialVersionUID = 6649855367578381386L;
 
     @Id
@@ -85,7 +85,7 @@ public class PriceCategory implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        PriceCategory that = (PriceCategory) o;
+        TicketPriceCategory that = (TicketPriceCategory) o;
 
         if (section != null ? !section.equals(that.section) : that.section != null) return false;
         if (show != null ? !show.equals(that.show) : that.show != null) return false;

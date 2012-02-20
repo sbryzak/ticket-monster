@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
@@ -31,10 +32,11 @@ public class Booking {
     @GeneratedValue(strategy=IDENTITY)
     private Long id;
 
-    @OneToMany(fetch = EAGER, mappedBy = "booking", cascade = ALL)
+    @OneToMany(fetch = EAGER,cascade = ALL)
+    @JoinColumn(name = "booking_id")
     @NotEmpty
     @Valid
-    private Set<Allocation> allocations = new HashSet<Allocation>();
+    private Set<Ticket> tickets = new HashSet<Ticket>();
 
     @ManyToOne
     private Performance performance;
@@ -54,12 +56,12 @@ public class Booking {
         return id;
     }
 
-    public Set<Allocation> getAllocations() {
-        return allocations;
+    public Set<Ticket> getTickets() {
+        return tickets;
     }
 
-    public void setAllocations(Set<Allocation> allocations) {
-        this.allocations = allocations;
+    public void setTickets(Set<Ticket> tickets) {
+        this.tickets = tickets;
     }
 
     public Date getCreatedOn() {
@@ -84,11 +86,6 @@ public class Booking {
 
     public void setContactEmail(String contactEmail) {
         this.contactEmail = contactEmail;
-    }
-
-    public void addAllocation(Allocation allocation) {
-        this.getAllocations().add(allocation);
-        allocation.setBooking(this);
     }
 
     public Performance getPerformance() {

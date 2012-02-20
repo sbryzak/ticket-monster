@@ -18,7 +18,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 
-import org.jboss.jdf.example.ticketmonster.model.PriceCategory;
+import org.jboss.jdf.example.ticketmonster.model.TicketPriceCategory;
 import org.jboss.jdf.example.ticketmonster.model.Show;
 
 /**
@@ -58,15 +58,15 @@ public class ShowService extends BaseEntityService<Show> {
     @GET
     @Path("/{showId:[0-9][0-9]*}/pricing")
     @Produces(MediaType.APPLICATION_JSON)
-    public Map<Long,List<PriceCategory>> getPricing(@PathParam("showId") Long showId) {
+    public Map<Long,List<TicketPriceCategory>> getPricing(@PathParam("showId") Long showId) {
         Query query = getEntityManager().createQuery("select pc from PriceCategory pc where pc.show.id = :showId order by pc.section.id");
         query.setParameter("showId", showId);
-        List<PriceCategory> priceCategories = query.getResultList();
+        List<TicketPriceCategory> priceCategories = query.getResultList();
         
-        Map<Long, List<PriceCategory>> priceCategoryMap = new LinkedHashMap<Long, List<PriceCategory>> ();
-        for (PriceCategory priceCategory : priceCategories) {
+        Map<Long, List<TicketPriceCategory>> priceCategoryMap = new LinkedHashMap<Long, List<TicketPriceCategory>> ();
+        for (TicketPriceCategory priceCategory : priceCategories) {
            if (!priceCategoryMap.containsKey(priceCategory.getSection().getId())) {
-               priceCategoryMap.put(priceCategory.getSection().getId(), new ArrayList<PriceCategory>());
+               priceCategoryMap.put(priceCategory.getSection().getId(), new ArrayList<TicketPriceCategory>());
            }
            priceCategoryMap.get(priceCategory.getSection().getId()).add(priceCategory);
         }

@@ -384,15 +384,9 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
                     $("#content").empty()
 
                     $("#content").append("Created booking " + booking.id + " with tickets as follows: ")
-                    $.each(booking.allocations, function (i, allocation) {
-                        if (allocation.quantity > 1) {
-                            $("#content").append("<p/> Section " + allocation.row.section.name + " Row " + allocation.row.name + ", seats " + allocation.startSeat + "-" + allocation.endSeat)
-                        } else {
-                            $("#content").append("<p/> Section " + allocation.row.section.name + " Row " + allocation.row.name + ", seat " + allocation.startSeat)
-                        }
-                        $.each(allocation.ticketsPerCategory, function (i, entry) {
-                            $("#content").append("<p/> " + entry.ticketCount + " " + entry.ticketCategory.description)
-                        })
+                    $.each(_.sortBy(booking.tickets, function(ticket) {return ticket.id}), function (i, ticket) {
+                        $("#content").append("<p/> Ticket " + ticket.id + "(" + ticket.ticketCategory.description + "): in section " + ticket.row.section.name + " Row " + ticket.row.name + " seat" + ticket.seatNumber)
+
                     })
 
                 }}).error(function (error) {

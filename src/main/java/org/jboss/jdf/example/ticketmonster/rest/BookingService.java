@@ -2,6 +2,7 @@ package org.jboss.jdf.example.ticketmonster.rest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
@@ -17,13 +19,15 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.jdf.example.ticketmonster.model.Allocation;
-import org.jboss.jdf.example.ticketmonster.model.AllocationTicketCategoryCount;
 import org.jboss.jdf.example.ticketmonster.model.Booking;
 import org.jboss.jdf.example.ticketmonster.model.Performance;
-import org.jboss.jdf.example.ticketmonster.model.PriceCategory;
 import org.jboss.jdf.example.ticketmonster.model.Row;
+import org.jboss.jdf.example.ticketmonster.model.RowAllocation;
 import org.jboss.jdf.example.ticketmonster.model.Section;
+import org.jboss.jdf.example.ticketmonster.model.SectionAllocation;
+import org.jboss.jdf.example.ticketmonster.model.Ticket;
+import org.jboss.jdf.example.ticketmonster.model.TicketCategory;
+import org.jboss.jdf.example.ticketmonster.model.TicketPriceCategory;
 
 
 /**
@@ -51,83 +55,72 @@ public class BookingService extends BaseEntityService<Booking> {
     }
 
     @SuppressWarnings("unchecked")
-	@POST
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createBooking(BookingRequest bookingRequest) {
         Performance performance = getEntityManager().find(Performance.class, bookingRequest.getPerformance());
 
-        Map<Long, TicketRequest> ticketsByCategories = new HashMap<Long, TicketRequest>();
+        Set<Long> priceCategoryIds = new HashSet<Long>();
         for (TicketRequest ticketRequest : bookingRequest.getTicketRequests()) {
-            ticketsByCategories.put(ticketRequest.getPriceCategory(), ticketRequest);
+            if (priceCategoryIds.contains(ticketRequest.getPriceCategory())) {
+                throw new RuntimeException("Duplicate price category id");
+            }
+            priceCategoryIds.add(ticketRequest.getPriceCategory());
         }
-		List<PriceCategory> loadedPriceCategories = (List<PriceCategory>)getEntityManager().createQuery("select p from PriceCategory p where p.id in :ids").setParameter("ids", ticketsByCategories.keySet()).getResultList();
+        List<TicketPriceCategory> ticketPrices = (List<TicketPriceCategory>) getEntityManager().createQuery("select p from TicketPriceCategory p where p.id in :ids").setParameter("ids", priceCategoryIds).getResultList();
 
-        Map<Long, PriceCategory> priceCategoriesById = new HashMap<Long, PriceCategory>();
+        Map<Long, TicketPriceCategory> priceCategoriesById = new HashMap<Long, TicketPriceCategory>();
 
-        for (PriceCategory loadedPriceCategory : loadedPriceCategories) {
+        for (TicketPriceCategory loadedPriceCategory : ticketPrices) {
             priceCategoriesById.put(loadedPriceCategory.getId(), loadedPriceCategory);
         }
-        
+
         Booking booking = new Booking();
         booking.setContactEmail(bookingRequest.getEmail());
-        Map<Long, Integer> ticketCountsPerSection = new LinkedHashMap<Long, Integer>();
-        Map<Long, List<AllocationTicketCategoryCount>> ticketsPerCategory = new LinkedHashMap<Long, List<AllocationTicketCategoryCount>>();
-        for (TicketRequest ticketRequest: ticketsByCategories.values()) {
-            final PriceCategory priceCategory = priceCategoriesById.get(ticketRequest.getPriceCategory());
-            final Long sectionId = priceCategory.getSection().getId();
-            if (!ticketCountsPerSection.containsKey(sectionId)) {
-                ticketCountsPerSection.put(sectionId, 0);
-                ticketsPerCategory.put(sectionId, new ArrayList<AllocationTicketCategoryCount>());
+        
+        Map<Section, Map<TicketCategory, TicketRequest>> ticketRequestsPerSection = new LinkedHashMap<Section, Map<TicketCategory, TicketRequest>>();
+        for (TicketRequest ticketRequest : bookingRequest.getTicketRequests()) {
+            final TicketPriceCategory priceCategory = priceCategoriesById.get(ticketRequest.getPriceCategory());
+            if (!ticketRequestsPerSection.containsKey(priceCategory.getSection())) {
+                ticketRequestsPerSection.put(priceCategory.getSection(), new LinkedHashMap<TicketCategory, TicketRequest>());
             }
-            ticketCountsPerSection.put(sectionId, ticketCountsPerSection.get(sectionId) + ticketRequest.getQuantity());
-            ticketsPerCategory.get(sectionId).add(new AllocationTicketCategoryCount(priceCategory.getTicketCategory(), ticketRequest.getQuantity()));
+            ticketRequestsPerSection.get(priceCategory.getSection()).put(priceCategoriesById.get(ticketRequest.getPriceCategory()).getTicketCategory(), ticketRequest);
         }
-        for (Long sectionId : ticketCountsPerSection.keySet()) {
-            int ticketCount = ticketCountsPerSection.get(sectionId);
-            if (ticketCount == 0) {
-                continue;
+
+        for (Section section : ticketRequestsPerSection.keySet()) {
+            SectionAllocation sectionAllocationStatus;
+            try {
+                sectionAllocationStatus = (SectionAllocation) getEntityManager().createQuery("select s from SectionAllocation s where s.performance.id = :performanceId and " +
+                        " s.section.id = :sectionId").setParameter("performanceId", performance.getId()).setParameter("sectionId", section.getId()).getSingleResult();
+            } catch (NoResultException e) {
+                sectionAllocationStatus = new SectionAllocation(performance, section);
+                getEntityManager().persist(sectionAllocationStatus);
             }
-            Section section = getEntityManager().find(Section.class, sectionId);
-            Set<Row> rows = section.getSectionRows();
-            Allocation createdAllocation = null;
-            for (Row row : rows) {
-                List<Allocation> allocations = (List<Allocation>) getEntityManager().createQuery("select a from Allocation a  where a.booking.performance.id = :perfId and a.row.id = :rowId").setParameter("perfId", bookingRequest.getPerformance()).setParameter("rowId", row.getId()).getResultList();
-                if (allocations.size() > 0) {
-                    int confirmedCandidate = 0;
-                    int nextCandidate = 1;
-                    for (Allocation allocation : allocations) {
-                        if (allocation.getStartSeat() - nextCandidate >= ticketCount) {
-                            confirmedCandidate = nextCandidate;
-                            break;
-                        }
-                        nextCandidate = allocation.getEndSeat() + 1;
+            final Map<TicketCategory, TicketRequest> requestsByCategory = ticketRequestsPerSection.get(section);
+            int totalSeatsRequestedInSection = 0;
+            for (TicketRequest ticketRequest : requestsByCategory.values()) {
+               totalSeatsRequestedInSection += ticketRequest.getQuantity();
+            }
+            for (Row row : section.getSectionRows()) {
+                RowAllocation rowAllocation = sectionAllocationStatus.getRowAllocations().get(row);
+                int startSeat = rowAllocation.findFirstGapStart(totalSeatsRequestedInSection);
+                rowAllocation.allocate(startSeat, totalSeatsRequestedInSection);
+                if (startSeat >= 0) {
+                    for (Map.Entry<TicketCategory, TicketRequest> requestEntry : requestsByCategory.entrySet()) {
+                       for (int i=0 ; i<requestEntry.getValue().getQuantity(); i++) {
+                           Ticket ticket = new Ticket();
+                           ticket.setTicketCategory(requestEntry.getKey());
+                           ticket.setPrice(priceCategoriesById.get(requestEntry.getValue().getPriceCategory()).getPrice());
+                           ticket.setRow(row);
+                           ticket.setSeatNumber(startSeat + i + 1);
+                           getEntityManager().persist(ticket);
+                           booking.getTickets().add(ticket);
+                       }
+                       startSeat += requestEntry.getValue().getQuantity();
                     }
-                    if (confirmedCandidate == 0 && ((row.getCapacity() + 1) - nextCandidate) >= ticketCount) {
-                        confirmedCandidate = nextCandidate;
-                    }
-                    if (confirmedCandidate != 0) {
-                        createdAllocation = new Allocation();
-                        createdAllocation.setRow(row);
-                        createdAllocation.setStartSeat(nextCandidate);
-                        createdAllocation.setQuantity(ticketCount);
-                        createdAllocation.setEndSeat(nextCandidate + ticketCount - 1);
-                        break;
-                    }
-                } else {
-                    createdAllocation = new Allocation();
-                    createdAllocation.setRow(row);
-                    createdAllocation.setStartSeat(1);
-                    createdAllocation.setEndSeat(ticketCount);
-                    createdAllocation.setQuantity(ticketCount);
-                    break;
                 }
+                break;
             }
-            if (createdAllocation == null) {
-                return Response.status(Response.Status.NOT_MODIFIED).build();
-            }
-            createdAllocation.setTicketsPerCategory(ticketsPerCategory.get(sectionId));
-            System.out.println("Allocating " + createdAllocation.getQuantity() + " tickets ");
-            booking.addAllocation(createdAllocation);
         }
         booking.setPerformance(performance);
         booking.setCancellationCode("abc");
@@ -136,7 +129,7 @@ public class BookingService extends BaseEntityService<Booking> {
     }
 
     public static class BookingRequest {
-        
+
         private List<TicketRequest> ticketRequests = new ArrayList<TicketRequest>();
         private long performance;
         private String email;
@@ -168,9 +161,8 @@ public class BookingService extends BaseEntityService<Booking> {
     }
 
 
-
     public static class TicketRequest {
-        
+
         private long priceCategory;
 
         private int quantity;
