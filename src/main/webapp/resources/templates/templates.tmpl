@@ -33,13 +33,22 @@
 <script id="venue-summary-view" type="text/template">
     <table>
         <thead>
-        <tr>
-            <td colspan="2"><h1><%=name%></h1></td>
-        </tr>
-        </thead>
+                <tr>
+                    <td colspan="2"><h1><%=name%></h1></td>
+                </tr>
+                </thead>
         <tbody>
         <tr>
-
+                    <td rowspan="2"> <% if(picture != null) {%>
+                        <img width='350px' src='rest/media/<%=picture.id%>'/>
+                        <% } else { %>
+                        We cannot show you a picture, but trust us, it is very cool
+                        <% } %>
+                    </td>
+                    <td> <%=description%></td>
+                <tr/>
+        <tr>
+            <td><a href='#venues/<%=id%>'>Get details</a></td>
         </tr>
     </table>
 </script>
@@ -63,8 +72,9 @@
         <tr/>
         <tr>
             <td><a href='#events/<%=id%>'>Get details</a></td>
-        </tbody>
+
         </tr>
+        </tbody>
     </table>
 </script>
 
@@ -77,7 +87,7 @@
         </tr>
         <tr>
             <td width='350px' rowspan="4"><img width='350px' src='rest/media/<%=picture.id%>'/></td>
-            <td><label for='venueSelector'>Location: </label><select id='venueSelector'/></td>
+            <td><label for='venueSelector'>Venue: </label><select id='venueSelector'/></td>
         </tr>
         <tr>
             <td>
@@ -103,9 +113,15 @@
             <td colspan="2"><h1><%=name%></h1></td>
         </tr>
         <tr>
-            <td width='350px' rowspan="4"><img width='350px' src='rest/media/<%=picture.id%>'/></td>
-            <td><label for='venueSelector'>Location: </label><select id='venueSelector'/></td>
+                <td rowspan="4"> <% if(picture != null) {%>
+                <img width='350px' src='rest/media/<%=picture.id%>'/>
+                <% } else { %>
+                We cannot show you a picture, but trust us, it is very cool
+                <% } %>
+            </td>
+             <td><label for='eventSelector'>Event: </label><select id='eventSelector'/></td>
         </tr>
+
         <tr>
             <td>
                 <div style='font-size:0.7em' type='text' id="dayPicker"/>
