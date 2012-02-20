@@ -1,7 +1,6 @@
 package org.jboss.jdf.example.ticketmonster.rest;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -24,8 +23,6 @@ import javax.ws.rs.core.UriInfo;
  */
 public abstract class BaseEntityService<T> {
 
-    @Inject
-    private Logger log;
     @Inject
     private EntityManager entityManager;
 

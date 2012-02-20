@@ -50,7 +50,8 @@ public class BookingService extends BaseEntityService<Booking> {
         return Response.ok().build();
     }
 
-    @POST
+    @SuppressWarnings("unchecked")
+	@POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createBooking(BookingRequest bookingRequest) {
         Performance performance = getEntityManager().find(Performance.class, bookingRequest.getPerformance());
@@ -59,7 +60,7 @@ public class BookingService extends BaseEntityService<Booking> {
         for (TicketRequest ticketRequest : bookingRequest.getTicketRequests()) {
             ticketsByCategories.put(ticketRequest.getPriceCategory(), ticketRequest);
         }
-        List<PriceCategory> loadedPriceCategories = getEntityManager().createQuery("select p from PriceCategory p where p.id in :ids").setParameter("ids", ticketsByCategories.keySet()).getResultList();
+		List<PriceCategory> loadedPriceCategories = (List<PriceCategory>)getEntityManager().createQuery("select p from PriceCategory p where p.id in :ids").setParameter("ids", ticketsByCategories.keySet()).getResultList();
 
         Map<Long, PriceCategory> priceCategoriesById = new HashMap<Long, PriceCategory>();
 
