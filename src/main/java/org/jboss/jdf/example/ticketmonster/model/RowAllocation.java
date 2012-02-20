@@ -35,7 +35,6 @@ public class RowAllocation {
            else {
                candidateStart = -1;
            }
-
         }
         return -1;
     }

@@ -5,13 +5,10 @@ import static javax.persistence.GenerationType.IDENTITY;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.persistence.Basic;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -35,7 +32,6 @@ public class SectionAllocation {
     private Section section;
 
     @ElementCollection
-    @JoinColumn(columnDefinition = "row_id")
     Map<Row, RowAllocation> rowAllocations = new HashMap<Row, RowAllocation>();
 
     private SectionAllocation() {

@@ -34,6 +34,7 @@ public class Ticket implements Serializable {
     @ManyToOne
     private Row row;
 
+    @ManyToOne
     private TicketCategory ticketCategory;
 
     private float price;
