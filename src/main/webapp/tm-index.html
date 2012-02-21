@@ -106,6 +106,8 @@ TicketMonster.EventMenuView = Backbone.View.extend({
             var view = new TicketMonster.EventSummaryLineView({summaryView:self.options.summaryView, model:event});
             $(self.el).append(view.render().el);
         })
+        $(this.el).accordion()
+        $(this.el).accordion("option", "navigation", "true")
         return this
     }
 });
@@ -125,7 +127,9 @@ TicketMonster.VenueMenuView = Backbone.View.extend({
             var view = new TicketMonster.VenueSummaryLineView({summaryView:self.options.summaryView, model:event});
             $(self.el).append(view.render().el);
         })
-        return this;
+        $(this.el).accordion()
+        $(this.el).accordion("option", "navigation", "true")
+        return this
     }
 });
 
