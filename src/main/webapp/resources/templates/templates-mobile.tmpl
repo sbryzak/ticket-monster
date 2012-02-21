@@ -1,0 +1,256 @@
+<script id="main-view" type="text/template">
+    <table width='100%'>
+        <tr>
+            <td width='30%' valign='top'>
+                <div id='itemMenu'/>
+            </td>
+            <td width='70%'>
+                <div id='itemSummary'/>
+            </td>
+        </tr>
+    </table>
+</script>
+
+
+<script id="category-title" type="text/template">
+    <li><a href="#"><%= description %></a></li>
+</script>
+
+<script id="city" type="text/template">
+    <h3><a href="#"><%= city %></a></h3>
+</script>
+
+<script id="event-summary" type="text/template">
+    <a href="#"><%=name%></a>
+</script>
+
+<script id="venue-summary" type="text/template">
+    <a href="#"><%=name%></a>
+</script>
+
+
+<script id="venue-summary-view" type="text/template">
+    <table>
+        <thead>
+                <tr>
+                    <td colspan="2"><h1><%=name%></h1></td>
+                </tr>
+                </thead>
+        <tbody>
+        <tr>
+                    <td rowspan="2"> <% if(picture != null) {%>
+                        <img width='100px' src='rest/media/<%=picture.id%>'/>
+                        <% } else { %>
+                        We cannot show you a picture, but trust us, it is very cool
+                        <% } %>
+                    </td>
+                    <td> <%=description%></td>
+                <tr/>
+        <tr>
+            <td><a href='#venues/<%=id%>'>Get details</a></td>
+        </tr>
+    </table>
+</script>
+
+<script id="event-summary-view" type="text/template">
+    <table>
+        <thead>
+        <tr>
+            <td colspan="2"><h1><%=name%></h1></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td rowspan="2"> <% if(picture != null) {%>
+                <img width='100px' src='rest/media/<%=picture.id%>'/>
+                <% } else { %>
+                We cannot show you a picture, but trust us, it is very cool
+                <% } %>
+            </td>
+            <td> <%=description%></td>
+        <tr/>
+        <tr>
+            <td><a href='#events/<%=id%>'>Get details</a></td>
+
+        </tr>
+        </tbody>
+    </table>
+</script>
+
+
+<script id="event-detail" type="text/template">
+
+    <table>
+        <tr>
+            <td colspan="2"><h1><%=name%></h1></td>
+        </tr>
+        <tr>
+            <td width='350px' rowspan="4"><img width='350px' src='rest/media/<%=picture.id%>'/></td>
+            <td><label for='venueSelector'>Venue: </label><select id='venueSelector'/></td>
+        </tr>
+        <tr>
+            <td>
+                <div style='font-size:0.7em' type='text' id="dayPicker"/>
+            </td>
+            <td>
+                <label for="performanceTimes">Choose a time:</label><select id="performanceTimes"/>
+            </td>
+        </tr>
+        <tr>
+            <td><%=description%></td>
+        </tr>
+        <tr>
+            <td><input name="bookButton" type="button" value="Book"></td>
+        </tr>
+    </table>
+</script>
+
+<script id="venue-detail" type="text/template">
+
+    <table>
+        <tr>
+            <td colspan="2"><h1><%=name%></h1></td>
+        </tr>
+        <tr>
+                <td rowspan="4"> <% if(picture != null) {%>
+                <img width='350px' src='rest/media/<%=picture.id%>'/>
+                <% } else { %>
+                We cannot show you a picture, but trust us, it is very cool
+                <% } %>
+            </td>
+             <td><label for='eventSelector'>Event: </label><select id='eventSelector'/></td>
+        </tr>
+
+        <tr>
+            <td>
+                <div style='font-size:0.7em' type='text' id="dayPicker"/>
+            </td>
+            <td>
+                <label for="performanceTimes">Choose a time:</label><select id="performanceTimes"/>
+            </td>
+        </tr>
+        <tr>
+            <td><%=description%></td>
+        </tr>
+        <tr>
+            <td><input name="bookButton" type="button" value="Book"></td>
+        </tr>
+    </table>
+</script>
+
+
+<script id="booking-row" type="text/template">
+    <tr>
+        <td><%=id%></td>
+        <td><%=contactEmail%></td>
+        <td><input name='delete' type='button' value='Delete'/></td>
+    </tr>
+</script>
+
+<script id="create-booking" type="text/template">
+    <table>
+        <tr>
+            <td><h3><%=show.event.name%></h3></td>
+        </tr>
+        <tr>
+            <td><h4><%=show.venue.name%> on <%=new Date(performance.date).toPrettyString()%> </h4></td>
+        </tr>
+        <tr>
+            <td>
+                <div id="sectionSelectorPlaceholder"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="ticketCategoriesViewPlaceholder"/>
+            </td>
+        </tr>
+        <tr>
+                         <td>
+                             <div id="ticketSummaryView"/>
+                         </td>
+                     </tr>
+         <tr>
+            <td>
+                 <input type='email' name="email" value="Email"/>
+            </td>
+         <tr>
+         <tr>
+            <td>
+                 <input type='button' name="submit" value="Book!" disabled="true"/>
+            </td>
+         <tr>
+    </table>
+</script>
+
+<script id="select-section" type="text/template">
+    <label for="sectionSelect">Select section:</label>
+    <select id="sectionSelect">
+        <option value="-1" selected="true">Choose a section</option>
+        <% _.each(sections, function(section) { %>
+        <option value="<%=section.id%>"><%=section.name%> - <%=section.description%></option>
+        <% }) %>
+    </select>
+</script>
+
+<script id="ticket-entries" type="text/template">
+    <form name="ticketCategories">
+     <% if (priceCategories.length > 0) { %>
+     <%  _.each(priceCategories, function(priceCategory) { %>
+        <div id="ticket-category-input-<%=priceCategory.id%>"/>
+        <% }) %>
+    </form><p/>
+    <input type="button" name="add" value="Add!"/>
+    <% } %>
+</script>
+
+<script id="ticket-entry" type="text/template">
+    <label><%=priceCategory.ticketCategory.description%>(<%=priceCategory.price%>)</label><input type="number" title="Enter value" name="tickets"/>
+</script>
+
+<script id="ticket-summary-view" type="text/template">
+    Current request:</p>
+   <% _.each(tickets, function(ticketRequest) { %>
+          <% _.each(ticketRequest.models, function(model) { %>
+            <% if (model.attributes.quantity != undefined) { %>
+               <%= model.attributes.priceCategory.section.name %> (<%= model.attributes.priceCategory.section.description %>) -
+                   (<%= model.attributes.priceCategory.ticketCategory.description %>):
+                    <%= model.attributes.quantity %>
+           <% } %>
+          <% }) %>
+       <% }) %>
+</script>
+
+<script id="booking-details" type="text/template">
+<table>
+<thead>
+<tr><td colspan="5">Booking <%=id%></td><tr>
+<tr>
+<td>Ticket #</td>
+<td>Category</td>
+<td>Section</td>
+<td>Row</td>
+<td>Seat</td>
+</tr>
+</thead>
+<tbody>
+                    <% $.each(_.sortBy(tickets, function(ticket) {return ticket.id}), function (i, ticket) { %>
+                        <tr>
+                        <td><%= ticket.id %></td>
+                        <td><%=ticket.ticketCategory.description%></td>
+                        <td><%=ticket.seat.row.section.name%></td>
+                        <td><%=ticket.seat.row.name%></td>
+                        <td><%=ticket.seat.number%></td>
+                        </tr>
+                    <% }) %>
+                    <tr><td colspan="5"/><a href="#bookings">Show all</a><td></tr>
+
+</tbody>
+</script>
+
+
+<script id="global-view" type="text-template">
+    <div data-role="header" data-id="navigationMenu"/>
+    <div id="content"/>
+</script>
+

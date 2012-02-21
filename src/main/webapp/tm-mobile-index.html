@@ -2,45 +2,80 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Ticket Monster</title>
+    <title>Ticket Monster - mobile version</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0;">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0;"/>
 
-    <link type="text/css" rel="stylesheet" href="resources/css/screen.css"/>
-    <link rel="stylesheet" href="resources/css/jquery-ui-1.8.17.custom.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="//code.jquery.com/mobile/1.0.1/jquery.mobile-1.0.1.min.css"/>
     <script type="text/javascript" src="resources/js/jquery-1.6.4.js"></script>
-    <script type="text/javascript" src="resources/js/jquery-ui-1.8.17.custom.js"></script>
+    <script type="text/javascript" src="resources/js/jquery.mobile-1.0.1.min.js"></script>
     <script type="text/javascript" src="resources/js/underscore.js"></script>
     <script type="text/javascript" src="resources/js/backbone.js"></script>
     <script type="text/javascript" src="resources/js/tm-utils.js"></script>
     <script type="text/javascript">
         $.ajax({
-            url:"resources/templates/templates.tmpl",
+            url:"resources/templates/templates-mobile.tmpl",
             dataType:"text",
             context:document.head,
             success:function (data) {
                 $(this).append(data);
             }
         });
+
+        $(document).bind("mobileinit", function(){
+            $.mobile.hashListeningEnabled = false;
+            $.mobile.pushStateEnabled = false;
+        });
     </script>
 
 </head>
 <body>
 
-<div id="container"/>
 
 
-<footer>
-    <img src="resources/gfx/logo.png" alt="HTML5"/>
-</footer>
+
+<div id="container" data-role="page"> </div>
+
+
+<div id="events" data-role="page">
+    <div data-role="header" data-id="navigationMenu" data-position="fixed">
+        <div data-role="navbar" data-type="horizontal" id="menu">
+            <ul>
+                <li><a href="#events">Events</a></li>
+                <li><a href="#venues">Venues</a></li>
+                <li><a href="#bookings">Bookings</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="eventsContent"/>
+</div>
+
+<div id="venues" data-role="page">
+    <div data-role="header" data-id="navigationMenu" data-position="fixed">
+        <div data-role="navbar" data-type="horizontal" >
+            <ul>
+                <li><a href="#events">Events</a></li>
+                <li><a href="#venues">Venues</a></li>
+                <li><a href="#bookings">Bookings</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="venueContent"/>
+</div>
+
 
 
 <script type="text/javascript">
 
-$(document).ready(function(){
+
+
+$("#container").live('pageinit',function(event){
     applyTemplate($("#container"), $("#global-view"), {})
-    $("a[data-tm-role='top-menu-item']").button();
+    $("#container").trigger("create")
 });
+
 
 TicketMonster = new Object()
 
@@ -73,7 +108,7 @@ TicketMonster.Venues = Backbone.Collection.extend({
 TicketMonster.EventsView = Backbone.View.extend({
     render:function () {
         applyTemplate($(this.el), $('#main-view'), {})
-        var summaryView = new TicketMonster.EventSummaryView();
+        var summaryView = new TicketMonster.VenueSummaryView();
         $("#itemSummary").append(summaryView.render().el)
         this.menuView = new TicketMonster.EventMenuView({summaryView:summaryView, model:this.model, el:$("#itemMenu")});
         this.menuView.render()
@@ -106,6 +141,8 @@ TicketMonster.EventMenuView = Backbone.View.extend({
             var view = new TicketMonster.EventSummaryLineView({summaryView:self.options.summaryView, model:event});
             $(self.el).append(view.render().el);
         })
+        $(this.el).accordion()
+        $(this.el).accordion("option", "navigation", "true")
         return this
     }
 });
@@ -125,7 +162,9 @@ TicketMonster.VenueMenuView = Backbone.View.extend({
             var view = new TicketMonster.VenueSummaryLineView({summaryView:self.options.summaryView, model:event});
             $(self.el).append(view.render().el);
         })
-        return this;
+        $(this.el).accordion()
+        $(this.el).accordion("option", "navigation", "true")
+        return this
     }
 });
 
@@ -140,19 +179,6 @@ TicketMonster.VenueSummaryLineView = Backbone.View.extend({
     },
     notify:function () {
         this.options.summaryView.render(this.model)
-    }
-})
-
-TicketMonster.EventSummaryView = Backbone.View.extend({
-    render:function (data) {
-        if (data) {
-            applyTemplate($(this.el), $("#event-summary-view"), data.attributes)
-        }
-        else {
-            $(this.el).empty()
-            $(this.el).append("Click a link on the left")
-        }
-        return this
     }
 })
 
@@ -544,20 +570,20 @@ TicketMonster.Router = Backbone.Router.extend({
     },
     events:function () {
         var events = new TicketMonster.Events;
-        var eventsView = new TicketMonster.EventsView({model:events, el:$("#content")})
+        var eventsView = new TicketMonster.EventsView({model:events, el:$("#eventsContent")})
         events.bind("reset",
                 function () {
                     eventsView.render()
                 }).fetch()
     },
     venues:function () {
-            var venues = new TicketMonster.Venues;
-            var venuesView = new TicketMonster.VenuesView({model:venues, el:$("#content")})
-            venues.bind("reset",
-                    function () {
-                        venuesView.render()
-                    }).fetch()
-        },
+        var venues = new TicketMonster.Venues;
+        var venuesView = new TicketMonster.VenuesView({model:venues, el:$("#venueContent")})
+        venues.bind("reset",
+                function () {
+                    venuesView.render()
+                }).fetch()
+    },
     about:function () {
         new TicketMonster.AboutView({el:$("#content")}).render()
     },
