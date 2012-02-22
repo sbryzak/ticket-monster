@@ -81,27 +81,28 @@
 
 <script id="event-detail" type="text/template">
 
-    <table>
+    <table width='800px'>
         <tr>
-            <td colspan="2"><h1><%=name%></h1></td>
+            <td colspan="3"><h2><%=name%></h2></td>
         </tr>
         <tr>
-            <td width='350px' rowspan="4"><img width='350px' src='rest/media/<%=picture.id%>'/></td>
-            <td><label for='venueSelector'>Venue: </label><select id='venueSelector'/></td>
-        </tr>
-        <tr>
-            <td>
-                <div style='font-size:0.7em' type='text' id="dayPicker"/>
-            </td>
-            <td>
-                <label for="performanceTimes">Choose a time:</label><select id="performanceTimes"/>
-            </td>
-        </tr>
-        <tr>
+            <td width='350px' rowspan="5" valign="top"><img width='350px' src='rest/media/<%=picture.id%>'/></td>
             <td><%=description%></td>
         </tr>
         <tr>
-            <td><input name="bookButton" type="button" value="Book"></td>
+          <td><select id='venueSelector'/></td>
+        </tr>
+        <tr>
+            <td>
+                <div style='font-size:0.7em' id="dayPicker"/>
+            </td>
+        <tr>
+            <td>
+                Choose a time:<select id="performanceTimes"/>
+            </td>
+        </tr>
+        <tr>
+            <td><div id='bookingOption'><input name="bookButton" type="button" value="Book"></div></td>
         </tr>
     </table>
 </script>
@@ -173,7 +174,7 @@
                      </tr>
          <tr>
             <td>
-                 <input type='email' name="email" value="Email"/>
+                 <input type='email' name="email" placeholder="Email" required/>
             </td>
          <tr>
          <tr>
@@ -185,7 +186,7 @@
 </script>
 
 <script id="select-section" type="text/template">
-    <label for="sectionSelect">Select section:</label>
+    Select section:
     <select id="sectionSelect">
         <option value="-1" selected="true">Choose a section</option>
         <% _.each(sections, function(section) { %>
@@ -206,7 +207,7 @@
 </script>
 
 <script id="ticket-entry" type="text/template">
-    <label><%=priceCategory.ticketCategory.description%>(<%=priceCategory.price%>)</label><input type="number" title="Enter value" name="tickets"/>
+    <%=priceCategory.ticketCategory.description%>(<%=priceCategory.price%>)<input type="number" title="Enter value" name="tickets"/>
 </script>
 
 <script id="ticket-summary-view" type="text/template">

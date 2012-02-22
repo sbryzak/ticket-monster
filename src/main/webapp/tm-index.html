@@ -27,7 +27,21 @@
 </head>
 <body>
 
-<div id="container"/>
+<div id="container">
+    <div id="menu">
+            <table>
+                <tr>
+                    <td><a data-tm-role="top-menu-item" href="#events">Events</a></td>
+                    <td><a data-tm-role="top-menu-item" href="#venues">Venues</a></td>
+                    <td><a data-tm-role="top-menu-item" href="#bookings">Bookings</a></td>
+                    <td><a data-tm-role="top-menu-item" href="#about">About</a></td>
+                </tr>
+            </table>
+        </div>
+        <div id="content">
+
+        </div>
+</div>
 
 
 <footer>
@@ -37,10 +51,7 @@
 
 <script type="text/javascript">
 
-$(document).ready(function(){
-    applyTemplate($("#container"), $("#global-view"), {})
-    $("a[data-tm-role='top-menu-item']").button();
-});
+$("a[data-tm-role='top-menu-item']").button();
 
 TicketMonster = new Object()
 
@@ -198,7 +209,7 @@ TicketMonster.EventDetailView = Backbone.View.extend({
         var self = this
         $.getJSON("rest/shows?event=" + this.model.get('id'), function (shows) {
             self.shows = shows
-            $("#venueSelector").empty()
+            $("#venueSelector").empty().append("<option value='0'>Select a venue</option>");
             $.each(shows, function (i, show) {
                 $("#venueSelector").append("<option value='" + show.id + "'>" + show.venue.address.city + " : " + show.venue.name + "</option>")
             })
@@ -215,33 +226,44 @@ TicketMonster.EventDetailView = Backbone.View.extend({
         var selectedShow = _.find(this.shows, function (show) {
             return show.id == selectedShowId
         });
+        if (selectedShowId != 0) {
 
-        $("#dayPicker").datepicker("destroy")
-        $("#dayPicker").datepicker({
-            beforeShowDay:function (date) {
-                return [_.any(selectedShow.performances, function (performance) {
-                    return _.isEqual(new Date(performance.date).toCalendarDate(), date.toCalendarDate())
-                }), "*", "Performance on this date"]
-            },
-            onSelect:function (dateText, inst) {
-                var date = $(this).datepicker('getDate');
-                $("#performanceTimes").empty()
-                if (selectedShow) {
-                    $.each(selectedShow.performances, function (i, performance) {
-                        var performanceDate = new Date(performance.date);
-                        if (_.isEqual(performanceDate.toCalendarDate(), date.toCalendarDate())) {
-                            $("#performanceTimes").append("<option value='" + performance.id + "'>" + performanceDate.getHours().toZeroPaddedString(2) + ":" + performanceDate.getMinutes().toZeroPaddedString(2) + "</option>")
-                        }
-                    })
+            $("#dayPicker").datepicker("destroy");
+            $("#dayPicker").datepicker({
+                beforeShowDay:function (date) {
+                    return [_.any(selectedShow.performances, function (performance) {
+                        return _.isEqual(new Date(performance.date).toCalendarDate(), date.toCalendarDate())
+                    }), "*", "Performance on this date"]
+                },
+                onSelect:function (dateText, inst) {
+                    $("#bookingOption").show()
+                    var date = $(this).datepicker('getDate');
+                    $("#performanceTimes").empty().append()
+                    if (selectedShow) {
+                        $.each(selectedShow.performances, function (i, performance) {
+                            var performanceDate = new Date(performance.date);
+                            if (_.isEqual(performanceDate.toCalendarDate(), date.toCalendarDate())) {
+                                $("#performanceTimes").append("<option value='" + performance.id + "'>" + performanceDate.getHours().toZeroPaddedString(2) + ":" + performanceDate.getMinutes().toZeroPaddedString(2) + "</option>")
+                            }
+                        })
+                    }
+                },
+                defaultDate:null,
+                minDate:new Date(selectedShow.performances[0].date),
+                maxDate:new Date(selectedShow.performances[selectedShow.performances.length - 1].date),
+                autoSize:false
+
+            });
+        } else {
+            $("#dayPicker").datepicker("destroy")
+            $("#dayPicker").datepicker({
+                beforeShowDay:function (date) {
+                    return[ false, '*', ""]
                 }
-            },
-            defaultDate:null,
-            minDate:new Date(selectedShow.performances[0].date),
-            maxDate:new Date(selectedShow.performances[selectedShow.performances.length - 1].date),
-            autoSize:false
-
-        });
-        $("#dayPicker").datepicker("setDate", null);
+            })
+            $("#performanceTimes").empty()
+        }
+        $("#bookingOption").hide()
     }
 
 })
@@ -269,8 +291,8 @@ TicketMonster.VenueDetailView = Backbone.View.extend({
     beginBooking:function () {
         tmRouter.navigate('/book/' + $("#eventSelector option:selected").val() + '/' + $("#performanceTimes").val(), true)
     },
-    refreshShows:function (event) {
-        var selectedShowId = event.currentTarget.value;
+    refreshShows:function (venue) {
+        var selectedShowId = venue.currentTarget.value;
         var selectedShow = _.find(this.shows, function (show) {
             return show.id == selectedShowId
         });

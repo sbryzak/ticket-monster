@@ -21,23 +21,12 @@
                 $(this).append(data);
             }
         });
-
-        $(document).bind("mobileinit", function(){
-            $.mobile.hashListeningEnabled = false;
-            $.mobile.pushStateEnabled = false;
-        });
     </script>
 
 </head>
 <body>
 
-
-
-
-<div id="container" data-role="page"> </div>
-
-
-<div id="events" data-role="page">
+<div id="navigationMenu">
     <div data-role="header" data-id="navigationMenu" data-position="fixed">
         <div data-role="navbar" data-type="horizontal" id="menu">
             <ul>
@@ -48,33 +37,23 @@
             </ul>
         </div>
     </div>
-    <div id="eventsContent"/>
 </div>
 
-<div id="venues" data-role="page">
-    <div data-role="header" data-id="navigationMenu" data-position="fixed">
-        <div data-role="navbar" data-type="horizontal" >
-            <ul>
-                <li><a href="#events">Events</a></li>
-                <li><a href="#venues">Venues</a></li>
-                <li><a href="#bookings">Bookings</a></li>
-                <li><a href="#about">About</a></li>
-            </ul>
-        </div>
-    </div>
-    <div id="venueContent"/>
-</div>
 
+<div id="container" data-role="page">
+   <div id="content" >&nbsp;</div>
+</div>
 
 
 <script type="text/javascript">
 
 
 
-$("#container").live('pageinit',function(event){
-    applyTemplate($("#container"), $("#global-view"), {})
-    $("#container").trigger("create")
-});
+$.mobile.hashListeningEnabled = false;
+$.mobile.linkBindingEnabled = false;
+$.mobile.pushStateEnabled = false;
+
+$("div[data-role='page']").prepend($("#navigationMenu").html());
 
 
 TicketMonster = new Object()
@@ -127,28 +106,28 @@ TicketMonster.VenuesView = Backbone.View.extend({
 
 
 TicketMonster.EventMenuView = Backbone.View.extend({
-    tagName:'div',
     render:function () {
         var self = this
-        $(this.el).empty()
+        $(this.el).empty().append("<div id='categoryMenu' data-role='collapsible-set'/>")
+        var rootView = $("#categoryMenu")
         var current_category = null
         _.each(this.model.models, function (event) {
             var model_category = event.get('category')
             if (current_category !== model_category.id) {
-                $(self.el).append(renderTemplate($('#category-title'), model_category));
+                $(rootView).append(renderTemplate($('#category-title'), model_category));
                 current_category = model_category.id;
             }
             var view = new TicketMonster.EventSummaryLineView({summaryView:self.options.summaryView, model:event});
-            $(self.el).append(view.render().el);
+            $("#category-" + current_category).append(view.render().el);
         })
-        $(this.el).accordion()
-        $(this.el).accordion("option", "navigation", "true")
-        return this
-    }
+        $("#category-" + current_category).listview()
+        $(rootView).trigger('create')
+   }
 });
 
 TicketMonster.VenueMenuView = Backbone.View.extend({
-    tagName:'div',
+    tagName:'ul',
+    attributes:{"data-role":"listview"},
     render:function () {
         var self = this
         $(this.el).empty()
@@ -162,14 +141,12 @@ TicketMonster.VenueMenuView = Backbone.View.extend({
             var view = new TicketMonster.VenueSummaryLineView({summaryView:self.options.summaryView, model:event});
             $(self.el).append(view.render().el);
         })
-        $(this.el).accordion()
-        $(this.el).accordion("option", "navigation", "true")
-        return this
+        $(this.el).trigger("create")
     }
 });
 
 TicketMonster.VenueSummaryLineView = Backbone.View.extend({
-    tagName:'div',
+    tagName:'ul',
     events:{
         "click":"notify"
     },
@@ -570,7 +547,7 @@ TicketMonster.Router = Backbone.Router.extend({
     },
     events:function () {
         var events = new TicketMonster.Events;
-        var eventsView = new TicketMonster.EventsView({model:events, el:$("#eventsContent")})
+        var eventsView = new TicketMonster.EventsView({model:events, el:$("#content")})
         events.bind("reset",
                 function () {
                     eventsView.render()
@@ -578,7 +555,7 @@ TicketMonster.Router = Backbone.Router.extend({
     },
     venues:function () {
         var venues = new TicketMonster.Venues;
-        var venuesView = new TicketMonster.VenuesView({model:venues, el:$("#venueContent")})
+        var venuesView = new TicketMonster.VenuesView({model:venues, el:$("#content")})
         venues.bind("reset",
                 function () {
                     venuesView.render()
