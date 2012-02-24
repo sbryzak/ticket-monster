@@ -2,6 +2,7 @@ package org.jboss.jdf.example.ticketmonster.model;
 
 import javax.persistence.Embeddable;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Min;
 
 /**
@@ -10,23 +11,31 @@ import javax.validation.constraints.Min;
 @Embeddable
 public class Seat {
 
-    @ManyToOne
-    private Row row;
+    @Min(1)
+    private int rowNumber;
 
     @Min(1)
     private int number;
+
+    @ManyToOne
+    private Section section;
 
     /** Constructor for persistence */
     private Seat() {
     }
 
-    public Seat(Row row, int number) {
-        this.row = row;
+    public Seat(Section section, int rowNumber, int number) {
+        this.section = section;
+        this.rowNumber = rowNumber;
         this.number = number;
     }
 
-    public Row getRow() {
-        return row;
+    public Section getSection() {
+        return section;
+    }
+
+    public int getRowNumber() {
+        return rowNumber;
     }
 
     public int getNumber() {

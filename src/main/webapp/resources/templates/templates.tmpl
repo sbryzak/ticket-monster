@@ -240,8 +240,8 @@
                         <tr>
                         <td><%= ticket.id %></td>
                         <td><%=ticket.ticketCategory.description%></td>
-                        <td><%=ticket.seat.row.section.name%></td>
-                        <td><%=ticket.seat.row.name%></td>
+                        <td><%=ticket.seat.section.name%></td>
+                        <td><%=ticket.seat.rowNumber%></td>
                         <td><%=ticket.seat.number%></td>
                         </tr>
                     <% }) %>

@@ -1,18 +1,13 @@
 package org.jboss.jdf.example.ticketmonster.model;
 
-import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.validation.constraints.Min;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -43,20 +38,14 @@ public class Section implements Serializable {
     private String description;
 
     /**
-     * The total seating capacity of the section
-     */
-    @Min(0)
-    private int capacity;
-
-    /**
      * The layout to which this section belongs
      */
     @ManyToOne
     private Venue venue;
 
-    @OneToMany(mappedBy = "section", cascade = ALL)
-    @NotEmpty
-    private Set<Row> sectionRows = new HashSet<Row>();
+    private int numberOfRows;
+    
+    private int rowCapacity;
 
     public Long getId() {
         return id;
@@ -82,12 +71,24 @@ public class Section implements Serializable {
         this.description = description;
     }
 
-    public int getCapacity() {
-        return capacity;
+    public int getNumberOfRows() {
+        return numberOfRows;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
+    public void setNumberOfRows(int numberOfRows) {
+        this.numberOfRows = numberOfRows;
+    }
+
+    public int getRowCapacity() {
+        return rowCapacity;
+    }
+
+    public void setRowCapacity(int rowCapacity) {
+        this.rowCapacity = rowCapacity;
+    }
+    
+    public int getCapacity() {
+        return this.rowCapacity * this.numberOfRows;
     }
 
     public Venue getVenue() {
@@ -96,14 +97,6 @@ public class Section implements Serializable {
 
     public void setVenue(Venue venue) {
         this.venue = venue;
-    }
-
-    public Set<Row> getSectionRows() {
-        return sectionRows;
-    }
-
-    public void setSectionRows(Set<Row> sectionRows) {
-        this.sectionRows = sectionRows;
     }
 
     @Override
