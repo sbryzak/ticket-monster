@@ -4,19 +4,16 @@
             <td width='30%' valign='top'>
                 <div id='itemMenu'/>
             </td>
-            <td width='70%'>
-                <div id='itemSummary'/>
-            </td>
         </tr>
     </table>
 </script>
 
 
 <script id="category-title" type="text/template">
-    <div data-role="collapsible">
-    	<h3><%= description %></h3>
-        <ul data-role="listview" id="category-<%=id%>"></ul>
-    </div>
+    <li >
+    	<a href="#"><%= description %></a>
+        <ul id="category-<%=id%>"></ul>
+    </li>
 </script>
 
 <script id="city" type="text/template">
@@ -26,11 +23,11 @@
 </script>
 
 <script id="event-summary" type="text/template">
-    <li><a href="#"><%=name%></a></li>
+   <a href="#events/<%=id%>"><%=name%></a>
 </script>
 
 <script id="venue-summary" type="text/template">
-   <li><a href="#"><%=name%></a> </li>
+   <a href="#venue/<%=id%>"><%=name%></a>
 </script>
 
 
@@ -87,58 +84,56 @@
 
     <table>
         <tr>
-            <td colspan="2"><h1><%=name%></h1></td>
+            <td><img width='100px' src='rest/media/<%=picture.id%>'/></td>
+            <td><h3><%=name%></h3></td>
         </tr>
         <tr>
-            <td width='175px' rowspan="4"><img width='350px' src='rest/media/<%=picture.id%>'/></td>
-            <td><label for='venueSelector'>Venue: </label><select id='venueSelector'/></td>
+                    <td colspan="2"><%=description%></td>
         </tr>
         <tr>
-            <td>
-                <div style='font-size:0.7em' type='text' id="dayPicker"/>
+            <td colspan="2"><select id='showSelector' data-native-menu="false"/></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type='date' id="dayPicker" data-role="datebox" data-options='{"mode":"calbox"}'/>
             </td>
-            <td>
-                <label for="performanceTimes">Choose a time:</label><select id="performanceTimes"/>
-            </td>
         </tr>
         <tr>
-            <td><%=description%></td>
+            <td colspan="2">
+                           <select id="performanceTimes" data-native-menu="false"/>
+                        </td>
         </tr>
         <tr>
-            <td><input name="bookButton" type="button" value="Book"></td>
+            <td colspan="2"><input name="bookButton" type="button" value="Book"></td>
         </tr>
     </table>
 </script>
 
 <script id="venue-detail" type="text/template">
 
-    <table>
+   <table>
         <tr>
-            <td colspan="2"><h1><%=name%></h1></td>
+            <td><img width='100px' src='rest/media/<%=picture.id%>'/></td>
+            <td><h3><%=name%></h3></td>
         </tr>
         <tr>
-                <td rowspan="4"> <% if(picture != null) {%>
-                <img width='350px' src='rest/media/<%=picture.id%>'/>
-                <% } else { %>
-                We cannot show you a picture, but trust us, it is very cool
-                <% } %>
-            </td>
-             <td><label for='eventSelector'>Event: </label><select id='eventSelector'/></td>
+                    <td colspan="2"><%=description%></td>
         </tr>
-
         <tr>
-            <td>
-                <div style='font-size:0.7em' type='text' id="dayPicker"/>
-            </td>
-            <td>
-                <label for="performanceTimes">Choose a time:</label><select id="performanceTimes"/>
+            <td colspan="2"><select id='showSelector' data-native-menu="false"/></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type='date' id="dayPicker" data-role="datebox" data-options='{"mode":"calbox"}' placeholder='Please select a show date'/>
             </td>
         </tr>
         <tr>
-            <td><%=description%></td>
+            <td colspan="2">
+                           <select id="performanceTimes" data-native-menu="false"/>
+                        </td>
         </tr>
         <tr>
-            <td><input name="bookButton" type="button" value="Book"></td>
+            <td colspan="2"><input name="bookButton" type="button" value="Book"></td>
         </tr>
     </table>
 </script>
