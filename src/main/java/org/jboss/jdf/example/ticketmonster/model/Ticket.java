@@ -28,7 +28,7 @@ public class Ticket implements Serializable {
     private static final long serialVersionUID = 8738724150877088864L;
 
     @Id
-    @GeneratedValue(strategy=IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     private Seat seat;
@@ -38,12 +38,11 @@ public class Ticket implements Serializable {
 
     private float price;
 
-    public Long getId() {
-        return id;
-    }
 
-    /** Np-arg constructor for persistence */
-    private Ticket() {
+    /**
+     * Np-arg constructor for persistence
+     */
+    protected Ticket() {
 
     }
 
@@ -52,6 +51,11 @@ public class Ticket implements Serializable {
         this.ticketCategory = ticketCategory;
         this.price = price;
     }
+
+    public Long getId() {
+        return id;
+    }
+
 
     public TicketCategory getTicketCategory() {
         return ticketCategory;

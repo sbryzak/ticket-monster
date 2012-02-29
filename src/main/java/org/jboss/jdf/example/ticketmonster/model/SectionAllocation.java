@@ -65,7 +65,6 @@ public class SectionAllocation {
 
     public List<Seat> allocateSeats(int seatCount, boolean contiguous) {
         List<Seat> seats = new ArrayList<Seat>();
-        SectionAllocation sectionAllocation = this;
         for (int rowCounter = 0; rowCounter < section.getNumberOfRows(); rowCounter ++) {
 
             if (contiguous) {

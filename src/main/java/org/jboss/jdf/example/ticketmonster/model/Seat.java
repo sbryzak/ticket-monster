@@ -21,7 +21,7 @@ public class Seat {
     private Section section;
 
     /** Constructor for persistence */
-    private Seat() {
+    protected Seat() {
     }
 
     public Seat(Section section, int rowNumber, int number) {
