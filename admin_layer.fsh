@@ -17,7 +17,17 @@ richfaces setup;
 
 @/* Scaffold CRUD views for the entities that an admin would start drilling down into the data model from */;
 
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.*;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Venue;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.TicketCategory;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Show;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.EventCategory;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Event;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Section;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Show;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Performance;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.MediaItem;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.EventCategory;
+
 
 @/* Deploy this to JBoss AS 7 to see the result */;
 build clean package jboss-as:deploy;

@@ -41,7 +41,7 @@ public class SectionAllocation {
     
 
 
-    protected SectionAllocation() {
+    public SectionAllocation() {
     }
 
     public SectionAllocation(Performance performance, Section section) {
@@ -137,5 +137,9 @@ public class SectionAllocation {
             occupied[i] = true;
         }
 
+    }
+    
+    public long getId() {
+        return id;
     }
 }
