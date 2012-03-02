@@ -4,16 +4,4 @@
 <facelet-taglib>
     <namespace>http://jboss.org/jdf/example/ticketmonster</namespace>
     
-    <function>
-      <function-name>convertCategories</function-name>
-      <function-class>org.jboss.jdf.example.ticketmonster.jsf.SelectItems</function-class>
-      <function-signature>java.util.List convertCategories(java.util.List)</function-signature>
-    </function>
-    
-    <function>
-      <function-name>convertVenues</function-name>
-      <function-class>org.jboss.jdf.example.ticketmonster.jsf.SelectItems</function-class>
-      <function-signature>java.util.List convertVenues(java.util.List)</function-signature>
-    </function>
-    
 </facelet-taglib>
