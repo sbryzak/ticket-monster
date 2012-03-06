@@ -12,10 +12,16 @@ Date.prototype.toPrettyString = function () {
             this.getMinutes().toZeroPaddedString(2);
 }
 
+Date.prototype.toYMD = function() {
+    return this.getFullYear() + '-' + (this.getMonth()+1).toZeroPaddedString(2) + '-' + this.getDate().toZeroPaddedString(2)
+}
+
 Date.prototype.toCalendarDate = function() {
-    return { 'day': this.getDate(), 'month': this.getMonth(), 'year': this.getFullYear(),
-        asString:function(){ return this.year + '-' + (this.month+1).toZeroPaddedString(2) + '-' + this.day.toZeroPaddedString(2)},
-        asDate:function(){return new Date(this.year, this.month, this.day,0,0,0,0)}};
+    return { 'day': this.getDate(), 'month': this.getMonth(), 'year': this.getFullYear()}
+}
+
+Date.prototype.withoutTimeOfDay = function () {
+    return new Date(this.getFullYear(), this.getMonth(), this.getDate(), 0, 0, 0, 0);
 }
 
 Date.prototype.asArray = function() {
@@ -29,7 +35,7 @@ Date.prototype.toTimeOfDay = function() {
 }
 
 Date.prototype.diff = function(other) {
-    return parseInt((this.toCalendarDate().asDate().getTime() - other.toCalendarDate().asDate().getTime())/(1000.0 * 60 * 60 * 24))
+    return parseInt((this.withoutTimeOfDay().getTime() - other.withoutTimeOfDay().getTime())/(1000.0 * 60 * 60 * 24))
 }
 
 Number.prototype.toZeroPaddedString = function(digits) {
