@@ -81,7 +81,7 @@ TicketMonster.Venues = Backbone.Collection.extend({
     }
 });
 
-TicketMonster.EventsView = Backbone.View.extend({
+TicketMonster.EventsCategoriesView = Backbone.View.extend({
     render:function () {
         applyTemplate($(this.el), $('#main-view'), {})
         var summaryView = new TicketMonster.EventSummaryView();
@@ -91,7 +91,7 @@ TicketMonster.EventsView = Backbone.View.extend({
     }
 })
 
-TicketMonster.VenuesView = Backbone.View.extend({
+TicketMonster.VenueCitiesView = Backbone.View.extend({
     render:function () {
         applyTemplate($(this.el), $('#main-view'), {})
         var venueSummaryView = new TicketMonster.VenueSummaryView();
@@ -570,7 +570,7 @@ TicketMonster.Router = Backbone.Router.extend({
     },
     events:function () {
         var events = new TicketMonster.Events;
-        var eventsView = new TicketMonster.EventsView({model:events, el:$("#content")})
+        var eventsView = new TicketMonster.EventsCategoriesView({model:events, el:$("#content")})
         events.bind("reset",
                 function () {
                     eventsView.render()
@@ -578,7 +578,7 @@ TicketMonster.Router = Backbone.Router.extend({
     },
     venues:function () {
             var venues = new TicketMonster.Venues;
-            var venuesView = new TicketMonster.VenuesView({model:venues, el:$("#content")})
+            var venuesView = new TicketMonster.VenueCitiesView({model:venues, el:$("#content")})
             venues.bind("reset",
                     function () {
                         venuesView.render()

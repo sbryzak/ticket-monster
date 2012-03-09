@@ -1,11 +1,23 @@
-<script id="main-view" type="text/template">
-    <table width='100%'>
-        <tr>
-            <td width='30%' valign='top'>
-                <div id='itemMenu'/>
-            </td>
-        </tr>
-    </table>
+<script id="home-view" type="text/template">
+    <div data-role="header">
+        <h3>Ticket Monster - a JBoss application</h3>
+    </div>
+    <div data-role="content">
+        <img src="resources/gfx/icon_large.png"/>
+    </div>
+    <a data-role="button" href="#events">By Category</a>
+    <a data-role="button" href="#venues">By Location</a>
+    <a data-role="button" href="#bookings">My Bookings </a>
+</script>
+
+
+
+<script id="item-view" type="text/template">
+    <div data-role="header">
+        <a data-role="button" data-icon="home" href="#">Home</a>
+        <h3><%=items%></h3>
+    </div>
+    <div data-role="content" id='itemMenu'/>
 </script>
 
 
@@ -31,82 +43,21 @@
 </script>
 
 
-<script id="venue-summary-view" type="text/template">
-    <table>
-        <thead>
-        <tr>
-            <td colspan="2"><h1><%=name%></h1></td>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td rowspan="2"> <% if(picture != null) {%>
-                <img width='100px' src='rest/media/<%=picture.id%>'/>
-                <% } else { %>
-                We cannot show you a picture, but trust us, it is very cool
-                <% } %>
-            </td>
-            <td> <%=description%></td>
-        <tr/>
-        <tr>
-            <td><a href='#venues/<%=id%>'>Get details</a></td>
-        </tr>
-    </table>
-</script>
-
-<script id="event-summary-view" type="text/template">
-    <table>
-        <thead>
-        <tr>
-            <td colspan="2"><h1><%=name%></h1></td>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td rowspan="2"> <% if(picture != null) {%>
-                <img width='175px' src='rest/media/<%=picture.id%>'/>
-                <% } else { %>
-                We cannot show you a picture, but trust us, it is very cool
-                <% } %>
-            </td>
-            <td> <%=description%></td>
-        <tr/>
-        <tr>
-            <td><a href='#events/<%=id%>'>Get details</a></td>
-
-        </tr>
-        </tbody>
-    </table>
-</script>
-
 
 <script id="event-detail" type="text/template">
-
-    <table>
-        <tr>
-            <td><img width='100px' src='rest/media/<%=picture.id%>'/></td>
-            <td><h3><%=name%></h3></td>
-        </tr>
-        <tr>
-            <td colspan="2"><%=description%></td>
-        </tr>
-        <tr>
-            <td colspan="2"><select id='showSelector' data-native-menu="false"/></td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <input type='date' id="dayPicker" data-role="datebox" data-options='{"mode":"calbox"}'/>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <select id="performanceTimes" data-native-menu="false"/>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2"><input name="bookButton" type="button" value="Book"></td>
-        </tr>
-    </table>
+    <div data-role="header">
+        <h3><%=name%></h3>
+    </div>
+    <div data-role="content">
+        <img width='100px' src='rest/media/<%=picture.id%>'/>
+        <p><%=description%></p>
+        <select id='showSelector' data-native-menu="false"/>
+        <input type='date' id="dayPicker" data-role="datebox" data-options='{"mode":"calbox"}'/>
+        <select id="performanceTimes" data-native-menu="false"/>
+    </div>
+    <div data-role="footer" class="ui-bar">
+        <a id='bookButton' data-theme='b' data-role="button" data-icon="check">Book</a>
+    </div>
 </script>
 
 <script id="venue-detail" type="text/template">
@@ -139,33 +90,33 @@
     </table>
 </script>
 
+<script id="create-booking" type="text/template">
+    <div data-role="header">
+        <h3><%=show.event.name%></h3>
+    </div>
+    <p><%=show.venue.name%> on <%=new Date(performance.date).toPrettyString()%></p>
+
+    <div data-role="content">
+        <div id="sectionSelectorPlaceholder"/>
+
+        <div id="ticketCategoriesViewPlaceholder"/>
+
+        <div id="ticketSummaryView"/>
+
+        <input type='email' name='email' placeholder="Email"/>
+
+    </div>
+
+    <div data-role="footer" class="ui-bar">
+        <a id="cancelBooking" href="#" data-role="button" data-icon="delete">Cancel</a>
+        <a id="saveBooking" data-icon="check" data-role="button" disabled>Save</a>
+    </div>
+</script>
+
 
 <script id="booking-row" type="text/template">
     <a href="#booking/<%=id%>"><%=contactEmail%></a>
     <a data-tm-role='delete' href="#">Delete</a>
-</script>
-
-<script id="create-booking" type="text/template">
-
-    <h3><%=show.event.name%></h3>
-    <h4><%=show.venue.name%> on <%=new Date(performance.date).toPrettyString()%> </h4></td>
-
-    <div id="sectionSelectorPlaceholder"/>
-
-
-    <div id="ticketCategoriesViewPlaceholder"/>
-
-    <div id="ticketSummaryView"/>
-
-    <div id="bookingView">
-        <label for='email'>Email</label>
-        <input type='email' name='email' placeholder="Email" value=""/>
-
-        <p/>
-        <input type='button' name="submit" value="Book!" disabled="true"/>
-
-    </div>
-
 </script>
 
 <script id="select-section" type="text/template">
@@ -240,5 +191,5 @@
         </tr>
 
         </tbody>
-      </table>
+    </table>
 </script>
