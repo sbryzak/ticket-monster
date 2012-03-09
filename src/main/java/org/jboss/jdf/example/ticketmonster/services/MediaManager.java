@@ -18,10 +18,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
 
 import org.jboss.jdf.example.ticketmonster.model.MediaItem;
 import org.jboss.jdf.example.ticketmonster.model.MediaType;
+import org.jboss.jdf.example.ticketmonster.rest.MediaService;
 import org.jboss.jdf.example.ticketmonster.util.Base64;
 import org.jboss.jdf.example.ticketmonster.util.Reflections;
 
@@ -29,6 +32,9 @@ import org.jboss.jdf.example.ticketmonster.util.Reflections;
 public class MediaManager {
     
     private static final File tmpDir;
+
+    @Inject
+    EntityManager entityManager;
     
     static {
         tmpDir = new File(System.getProperty("java.io.tmpdir"), "org.jboss.jdf.examples.ticket-monster");
@@ -155,4 +161,7 @@ public class MediaManager {
         return createCachedMedia(mediaItem.getUrl(), mediaItem.getMediaType());
     }
 
+    public File getCachedFile(Long mediaItemId) {
+        return getCachedFile(getPath(entityManager.find(MediaItem.class, mediaItemId)).getUrl());
+    }
 }
