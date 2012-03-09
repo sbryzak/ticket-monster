@@ -3,7 +3,6 @@ package org.jboss.jdf.example.ticketmonster.rest;
 import java.io.File;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -17,9 +16,6 @@ public class MediaService {
     @Inject
     private MediaManager mediaManager;
 
-    @Inject
-    private EntityManager entityManager;
-    
     @GET
     @Path("/{id:\\S*}")
     @Produces("*/*")
