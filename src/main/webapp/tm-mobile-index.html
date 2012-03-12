@@ -182,12 +182,14 @@ var preparePage = function () {
     TicketMonster.EventDetailView = Backbone.View.extend({
         events:{
             "click a[id='bookButton']":"beginBooking",
-            "change select[id='showSelector']":"refreshShows"
+            "change select[id='showSelector']":"refreshShows",
+            "change select[id='performanceTimes']":"performanceSelected"
         },
         render:function () {
             $(this.el).empty()
             applyTemplate($(this.el), $("#event-detail"), this.model.attributes);
             $(this.el).trigger('create')
+            $("#bookButton").addClass("ui-disabled")
             var self = this
             $.getJSON("rest/shows?event=" + this.model.get('id'), function (shows) {
                 self.shows = shows;
@@ -200,19 +202,21 @@ var preparePage = function () {
                 $("#dayPicker").val(null)
                 $("#performanceTimes").selectmenu('disable')
                 $("#performanceTimes").empty().append("<option data-placeholder='true'>Choose a show time ...</option>")
+
             });
             $("#dayPicker").live('datebox', function (event, payload) {
+                console.log(event, payload)
                 var selectedShowId = $("#showSelector").val();
                 var selectedShow = _.find(self.shows, function (show) {
                     return show.id == selectedShowId
                 });
                 if (payload.method === 'set') {
-                    var date = new Date(payload.value);
+                    var date = payload.date;
                     $("#performanceTimes").empty().append("<option data-placeholder='true'>Choose a show time ...</option>")
-                    if (selectedShow) {
+                    if (selectedShow != null) {
                         $.each(selectedShow.performances, function (i, performance) {
-                            var performanceDate = new Date(performance.date);
-                            if (_.isEqual(performanceDate.toCalendarDate(), date.toCalendarDate())) {
+                           var performanceDate = new Date(performance.date)
+                           if (performanceDate.toYMD() === date.toYMD()) {
                                 $("#performanceTimes").append("<option value='" + performance.id + "'>" + performanceDate.getHours().toZeroPaddedString(2) + ":" + performanceDate.getMinutes().toZeroPaddedString(2) + "</option>")
                             }
                         })
@@ -224,6 +228,9 @@ var preparePage = function () {
             $(this.el).trigger('pagecreate')
             $("#showSelector").selectmenu('refresh', true)
             $("#performanceTimes").selectmenu('refresh')
+        },
+        performanceSelected: function() {
+            $("#bookButton").removeClass("ui-disabled")
         },
         beginBooking:function () {
             tmRouter.navigate('book/' + $("#showSelector option:selected").val() + '/' + $("#performanceTimes").val(), true)
@@ -465,7 +472,7 @@ var preparePage = function () {
                 self.ticketSummaryView = new TicketMonster.TicketSummaryView({model:self.model, el:$("#ticketSummaryView")});
                 self.show = selectedShow;
                 self.ticketCategoriesView.render();
-                $('a[id="saveBooking"]').button('disable')
+                $('a[id="saveBooking"]').addClass('ui-disabled')
                 $("#sectionSelector").change();
 
             });
@@ -518,7 +525,7 @@ var preparePage = function () {
             this.ticketCategoriesView.render()
             this.selectorView.render();
             this.ticketSummaryView.render();
-            $('a[id="saveBooking"]').button('enable')
+            $('a[id="saveBooking"]').removeClass('ui-disabled')
             $('a[id="saveBooking"]').button('refresh')
             $(this.el).trigger('pagecreate')
         }

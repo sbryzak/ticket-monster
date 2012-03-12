@@ -52,11 +52,13 @@
         <img width='100px' src='rest/media/<%=picture.id%>'/>
         <p><%=description%></p>
         <select id='showSelector' data-native-menu="false"/>
-        <input type='date' id="dayPicker" data-role="datebox" data-options='{"mode":"calbox"}'/>
+        <input type='text' id="dayPicker" data-role="datebox"
+               data-options='{"mode":"calbox", "disableManualInput":true, "dateFormat":"%A %d %B %Y"}'/>
         <select id="performanceTimes" data-native-menu="false"/>
     </div>
-    <div data-role="footer" class="ui-bar">
+    <div data-role="footer" class="ui-bar" >
         <a id='bookButton' data-theme='b' data-role="button" data-icon="check">Book</a>
+        <h6><%=name%></h6>
     </div>
 </script>
 
