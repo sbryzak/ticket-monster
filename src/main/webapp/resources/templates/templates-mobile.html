@@ -1,13 +1,22 @@
 <script id="home-view" type="text/template">
     <div data-role="header">
-        <h3>Ticket Monster - a JBoss application</h3>
+        <h3>Ticket Monster</h3>
     </div>
-    <div data-role="content">
+    <div data-role="content" align="center">
         <img src="resources/gfx/icon_large.png"/>
+        <h4 align="left">Find events</h4>
+        <ul data-role="listview">
+            <li>
+                <a href="#events">By Category</a>
+            </li>
+            <li>
+                <a href="#venues">By Location</a>
+            </li>
+        </ul>
     </div>
-    <a data-role="button" href="#events">By Category</a>
-    <a data-role="button" href="#venues">By Location</a>
-    <a data-role="button" href="#bookings">My Bookings </a>
+    <div data-role="footer">
+        <a data-role="button" data-icon="info" href="#bookings">View my Bookings </a>
+    </div>
 </script>
 
 
