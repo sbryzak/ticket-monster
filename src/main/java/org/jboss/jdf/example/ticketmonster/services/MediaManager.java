@@ -160,8 +160,5 @@ public class MediaManager {
     private MediaPath createCachedMedia(MediaItem mediaItem) {
         return createCachedMedia(mediaItem.getUrl(), mediaItem.getMediaType());
     }
-
-    public File getCachedFile(Long mediaItemId) {
-        return getCachedFile(getPath(entityManager.find(MediaItem.class, mediaItemId)).getUrl());
-    }
+    
 }
