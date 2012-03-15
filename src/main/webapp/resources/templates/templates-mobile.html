@@ -55,15 +55,31 @@
 
 <script id="event-detail" type="text/template">
     <div data-role="header">
-        <h3><%=name%></h3>
+        <h3>Book tickets</h3>
     </div>
     <div data-role="content">
+        <h3><%=name%></h3>
         <img width='100px' src='rest/media/<%=picture.id%>'/>
         <p><%=description%></p>
-        <select id='showSelector' data-native-menu="false"/>
-        <input type='text' id="dayPicker" data-role="datebox"
-               data-options='{"mode":"calbox", "disableManualInput":true, "dateFormat":"%A %d %B %Y"}'/>
-        <select id="performanceTimes" data-native-menu="false"/>
+        <div data-role="fieldcontain">
+            <label for="showSelector">Where:</label>
+            <select id='showSelector' data-mini='true'/>
+        </div>
+
+        <div data-role='fieldcontain'>
+            <fieldset data-role='controlgroup'>
+                <legend>When</legend>
+                <label for="showSelector">When:</label>
+                <input type='text' id="dayPicker" data-role="datebox" data-mini='true'
+                       data-options='{"mode":"calbox", "disableManualInput":true, "dateFormat":"%A %d %B %Y"}'/>
+
+
+                <label for="showSelector">When:</label>
+                <select id="performanceTimes" data-mini='true'/>
+
+            </fieldset>
+        </div>
+
     </div>
     <div data-role="footer" class="ui-bar" >
         <a id='bookButton' data-theme='b' data-role="button" data-icon="check">Book</a>
@@ -82,7 +98,7 @@
             <td colspan="2"><%=description%></td>
         </tr>
         <tr>
-            <td colspan="2"><select id='showSelector' data-native-menu="false"/></td>
+            <td colspan="2"><select id='showSelector'/></td>
         </tr>
         <tr>
             <td colspan="2">

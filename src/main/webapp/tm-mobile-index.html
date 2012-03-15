@@ -144,7 +144,7 @@ var preparePage = function () {
                     $(rootView).append(renderTemplate($('#city'), {'city':city}));
                     current_city = city;
                 }
-                var view = new TicketMonster.EventSummaryLineView({summaryView:self.options.summaryView, model:event});
+                var view = new TicketMonster.VenueSummaryLineView({summaryView:self.options.summaryView, model:event});
                 $("#city-" + current_city).append(view.render().el);
             })
             $("#cityMenu").listview()
@@ -152,30 +152,17 @@ var preparePage = function () {
     });
 
     TicketMonster.VenueSummaryLineView = Backbone.View.extend({
-        tagName:'ul',
-        events:{
-            "click":"notify"
-        },
         render:function () {
             applyTemplate($(this.el), $("#venue-summary"), this.model.attributes)
             return this;
-        },
-        notify:function () {
-            this.options.summaryView.render(this.model)
         }
     })
 
     TicketMonster.EventSummaryLineView = Backbone.View.extend({
         tagName:'li',
-        events:{
-            "click":"notify"
-        },
         render:function () {
             applyTemplate($(this.el), $("#event-summary"), this.model.attributes)
             return this;
-        },
-        notify:function () {
-            this.options.summaryView.render(this.model)
         }
     })
 
