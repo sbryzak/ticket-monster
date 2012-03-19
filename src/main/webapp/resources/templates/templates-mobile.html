@@ -108,7 +108,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <select id="performanceTimes" data-native-menu="false"/>
+                <select id="performanceTimes" />
             </td>
         </tr>
         <tr>
@@ -128,15 +128,35 @@
 
         <div id="ticketCategoriesViewPlaceholder"/>
 
-        <div id="ticketSummaryView"/>
-
         <input type='email' name='email' placeholder="Email"/>
 
     </div>
 
     <div data-role="footer" class="ui-bar">
-        <a id="cancelBooking" href="#" data-role="button" data-icon="delete">Cancel</a>
-        <a id="saveBooking" data-icon="check" data-role="button" disabled>Save</a>
+        <a href="#" data-role="button" data-icon="delete">Cancel</a>
+        <a id="confirmBooking" data-icon="check" data-role="button" disabled>Checkout</a>
+    </div>
+</script>
+
+
+<script id="confirm-booking" type="text/template">
+    <div data-role="header">
+        <h3><%=show.event.name%></h3>
+    </div>
+    <p><%=show.venue.name%> on <%=new Date(performance.date).toPrettyString()%></p>
+
+    <div data-role="content">
+
+        <div id="ticketSummaryView"/>
+
+    </div>
+
+    <div data-role="footer" class="ui-bar">
+        <div class="ui-grid-b">
+            <div class="ui-block-a"><a id="cancel" href="#" data-role="button" data-icon="delete">Cancel</a></div>
+            <div class="ui-block-b"><a id="back" href="#" data-role="button" data-icon="back">Back</a></div>
+            <div class="ui-block-c"><a id="saveBooking" data-icon="check" data-role="button">Save</a></div>
+        </div>
     </div>
 </script>
 
@@ -148,7 +168,7 @@
 
 <script id="select-section" type="text/template">
     Select section:
-    <select id="sectionSelect" data-native-menu='false' data-prevent-focus-zoom='true'>
+    <select id="sectionSelect" data-prevent-focus-zoom='true'>
         <option value="-1" selected="true">Choose a section</option>
         <% _.each(sections, function(section) { %>
         <option value="<%=section.id%>"><%=section.name%> - <%=section.description%></option>
@@ -164,7 +184,6 @@
         <% }) %>
     </form>
     <p/>
-    <input type="button" name="add" value="Add!"/>
     <% } %>
 </script>
 
@@ -175,16 +194,19 @@
 </script>
 
 <script id="ticket-summary-view" type="text/template">
-    Current request:</p>
-    <% _.each(tickets, function(ticketRequest) { %>
-    <% _.each(ticketRequest.models, function(model) { %>
-    <% if (model.attributes.quantity != undefined) { %>
-    <%= model.attributes.priceCategory.section.name %> (<%= model.attributes.priceCategory.section.description %>) -
-    (<%= model.attributes.priceCategory.ticketCategory.description %>):
-    <%= model.attributes.quantity %>
-    <% } %>
-    <% }) %>
-    <% }) %>
+    <h3>Current request</h3>
+
+    <div class="ui-grid-b">
+        <% _.each(tickets, function(ticketRequest) { %>
+        <% _.each(ticketRequest.models, function(model) { %>
+        <% if (model.attributes.quantity != undefined) { %>
+          <div class="ui-block-a"><b><%= model.attributes.priceCategory.section.name %></b>(<%= model.attributes.priceCategory.section.description %>)</div>
+          <div class="ui-block-c"><%= model.attributes.priceCategory.ticketCategory.description %></div>
+          <div class="ui-block-d"><%= model.attributes.quantity %></div>
+        <% } %>
+        <% }) %>
+        <% }) %>
+    </div>
 </script>
 
 <script id="booking-details" type="text/template">

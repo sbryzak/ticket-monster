@@ -440,9 +440,10 @@ var preparePage = function () {
 
     TicketMonster.CreateBookingView = Backbone.View.extend({
         events:{
-            "click a[id='saveBooking']":"save",
+            "click a[id='confirmBooking']":"checkout",
             "change select":"refreshPrices",
-            "click input[name='add']":"addQuantities"
+            "change input[type='number']":"updateForm",
+            "change input[name='email']":"updateForm"
         },
         render:function () {
 
@@ -456,17 +457,15 @@ var preparePage = function () {
                 $(self.el).trigger('pagecreate')
                 self.selectorView = new TicketMonster.SectionSelectorView({model:selectedShow, el:$("#sectionSelectorPlaceholder")}).render();
                 self.ticketCategoriesView = new TicketMonster.TicketCategoriesView({model:{}, el:$("#ticketCategoriesViewPlaceholder") });
-                self.ticketSummaryView = new TicketMonster.TicketSummaryView({model:self.model, el:$("#ticketSummaryView")});
-                self.show = selectedShow;
+                self.model.show = selectedShow
                 self.ticketCategoriesView.render();
-                $('a[id="saveBooking"]').addClass('ui-disabled')
+                $('a[id="confirmBooking"]').addClass('ui-disabled')
                 $("#sectionSelector").change();
-
             });
 
         },
         refreshPrices:function (event) {
-            var priceCategories = _.filter(this.show.priceCategories, function (item) {
+            var priceCategories = _.filter(this.model.show.priceCategories, function (item) {
                 return item.section.id == event.currentTarget.value
             })
             var models = new Array()
@@ -479,6 +478,35 @@ var preparePage = function () {
             this.ticketCategoriesView.render();
             $(this.el).trigger('pagecreate')
         },
+        checkout: function() {
+            this.model.bookingRequest.tickets.push(this.ticketCategoriesView.model)
+            new TicketMonster.ConfirmBookingView({model:this.model, el:$("#container")}).render()
+            $("#container").trigger('pagecreate')
+        },
+        updateForm:function () {
+            var total = 0;
+                _.each(this.ticketCategoriesView.model.models, function (model) {
+                    if (model.attributes.quantity != undefined) {
+                        total += model.attributes.quantity
+                    }
+                })
+            this.model.email = $("input[type='email']").val()
+            if (total >0 && $("input[type='email']").val()) {
+                $('a[id="confirmBooking"]').removeClass('ui-disabled')
+            }
+        }
+    });
+
+
+    TicketMonster.ConfirmBookingView = Backbone.View.extend({
+        events:{
+            "click a[id='saveBooking']":"save"
+        },
+        render:function () {
+            applyTemplate($(this.el), $("#confirm-booking"), this.model)
+            this.ticketSummaryView = new TicketMonster.TicketSummaryView({model:this.model, el:$("#ticketSummaryView")});
+            this.ticketSummaryView.render();
+        },
         save:function (event) {
             var bookingRequest = {ticketRequests:[]};
             var self = this;
@@ -490,7 +518,7 @@ var preparePage = function () {
                 })
             })
 
-            bookingRequest.email = $("input[name='email']").val();
+            bookingRequest.email = this.model.email;
             bookingRequest.performance = this.model.performanceId
             $.ajax({url:"rest/bookings",
                 data:JSON.stringify(bookingRequest),
@@ -504,19 +532,8 @@ var preparePage = function () {
                         alert(error)
                     })
             this.model = {}
-        },
-        addQuantities:function (event) {
-            this.model.bookingRequest.tickets.push(this.ticketCategoriesView.model)
-            this.ticketCategoriesView.model = null
-            $('option:selected', 'select').removeAttr('selected')
-            this.ticketCategoriesView.render()
-            this.selectorView.render();
-            this.ticketSummaryView.render();
-            $('a[id="saveBooking"]').removeClass('ui-disabled')
-            $('a[id="saveBooking"]').button('refresh')
-            $(this.el).trigger('pagecreate')
         }
-    });
+    })
 
     TicketMonster.BookingDetailView = Backbone.View.extend({
         render:function () {
