@@ -1,5 +1,5 @@
 insert into MediaItem (id, mediaType, url) values (100, 'IMAGE', 'http://in.relation.to/seam/resource/wikiUserPortrait/2253/l')
-insert into MediaItem (id, mediaType, url) values (101, 'IMAGE', 'http://farm7.static.flickr.com/6044/6252999118_4189302c13.jpg')
+insert into MediaItem (id, mediaType, url) values (101, 'IMAGE', 'http://in.relation.to/seam/resource/wikiUserPortrait/12612/l')
 
 insert into Venue (id, name, city, country, street, description, picture_id, capacity) values (1, 'City Central Concert Hall', 'Hamilton', 'Canada', '123 Main St','Set adjacent to Grand Central Square, this magnificent concert hall can seat up to 50000 people',null, 30000);
 
@@ -35,6 +35,14 @@ insert into show (id, event_id, venue_id) values (2, 1, 2);
 insert into performance (id, show_id, date) values (3, 2, '2012-04-03 19:30:00');
 insert into performance (id, show_id, date) values (4, 2, '2012-04-04 19:30:00');
 
+insert into show (id, event_id, venue_id) values (3, 2, 1);
+insert into performance (id, show_id, date) values (5, 3, '2012-04-05 17:00:00');
+insert into performance (id, show_id, date) values (6, 3, '2012-04-05 19:30:00');
+
+insert into show (id, event_id, venue_id) values (4, 2, 2);
+insert into performance (id, show_id, date) values (7, 4, '2012-04-07 17:00:00');
+insert into performance (id, show_id, date) values (8, 4, '2012-04-07 19:30:00');
+
 insert into TicketCategory (id, description) values (1, 'Adult');
 insert into TicketCategory (id, description) values (2, 'Child 0-14yrs');
 
@@ -57,3 +65,17 @@ insert into TicketPriceCategory (id, show_id, section_id, ticketcategory_id, pri
 insert into TicketPriceCategory (id, show_id, section_id, ticketcategory_id, price) values (16, 1, 2, 1, 199.50);
 insert into TicketPriceCategory (id, show_id, section_id, ticketcategory_id, price) values (17, 1, 3, 1, 179.50);
 insert into TicketPriceCategory (id, show_id, section_id, ticketcategory_id, price) values (18, 1, 4, 1, 149.50);
+
+
+insert into TicketPriceCategory (id, show_id, section_id, ticketcategory_id, price) values (19, 4, 100, 1, 167.75);
+insert into TicketPriceCategory (id, show_id, section_id, ticketcategory_id, price) values (20, 4, 101, 1, 197.75);
+insert into TicketPriceCategory (id, show_id, section_id, ticketcategory_id, price) values (21, 4, 102, 1, 167.75);
+insert into TicketPriceCategory (id, show_id, section_id, ticketcategory_id, price) values (22, 4, 103, 1, 155.0);
+insert into TicketPriceCategory (id, show_id, section_id, ticketcategory_id, price) values (23, 4, 104, 1, 155.0);
+insert into TicketPriceCategory (id, show_id, section_id, ticketcategory_id, price) values (24, 4, 105, 1, 155.0);
+insert into TicketPriceCategory (id, show_id, section_id, ticketcategory_id, price) values (25, 4, 106, 1, 122.5);
+
+insert into TicketPriceCategory (id, show_id, section_id, ticketcategory_id, price) values (26, 3, 1, 1, 219.50);
+insert into TicketPriceCategory (id, show_id, section_id, ticketcategory_id, price) values (27, 3, 2, 1, 199.50);
+insert into TicketPriceCategory (id, show_id, section_id, ticketcategory_id, price) values (28, 3, 3, 1, 179.50);
+insert into TicketPriceCategory (id, show_id, section_id, ticketcategory_id, price) values (29, 3, 4, 1, 149.50);
