@@ -11,8 +11,8 @@ body {
    margin: 0 auto;
    padding: 0 20px 10px 20px;
    border: 1px solid #666666;
-   width: 865px; /* subtract 40px from banner width for padding */
-   background: #FFFFFF url(../gfx/banner.png) no-repeat;
+   width: 900px; /* subtract 40px from banner width for padding */
+   background: #FFFFFF url(../gfx/banner.png) top center no-repeat;
    padding-top: 110px;
 }
 

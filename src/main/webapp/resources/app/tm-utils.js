@@ -7,9 +7,16 @@ Date.prototype.toPrettyString = function () {
     return dayNames[this.getDay()] + " " +
             this.getDate() + " " +
             monthNames[this.getMonth()] + " " +
-            this.getFullYear() + " @ " +
+            this.getFullYear() + " at " +
             this.getHours().toZeroPaddedString(2) + ":" +
             this.getMinutes().toZeroPaddedString(2);
+}
+
+Date.prototype.toPrettyStringWithoutTime = function () {
+    return dayNames[this.getDay()] + " " +
+        this.getDate() + " " +
+        monthNames[this.getMonth()] + " " +
+        this.getFullYear();
 }
 
 Date.prototype.toYMD = function() {
