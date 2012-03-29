@@ -165,7 +165,7 @@
 
         <tr>
             <td>
-                <div style='font-size:0.7em' type='text' id="dayPicker"/>
+                <div type='text' id="dayPicker"/>
             </td>
             <td>
                 <label for="performanceTimes">Choose a time:</label><select id="performanceTimes"/>
@@ -238,7 +238,7 @@
 
             <%_.each(models, function(model) { %>
                     <div class="item">
-                        <a href="#events/<%=model.attributes.id%>"><img width="500px" src='rest/media/<%=model.attributes.picture.id%>'/></a>
+                        <img width="500px" src='rest/media/<%=model.attributes.picture.id%>'/>
                         <div class="carousel-caption">
                             <h4><%=model.attributes.name%></h4>
                             <p><%=model.attributes.description%></p>
@@ -270,9 +270,8 @@
 <script id="ticket-entry" type="text/template">
     <div class="control-group">
         <label class="control-label"><%=priceCategory.ticketCategory.description%></label>
-
-        <div class="controls"><input title="Enter value"
-                                     name="tickets-<%=priceCategory.ticketCategory.id%>"/><span class="add-on">@ $<%=priceCategory.price%></span>
+        <div class="controls"><div class="input-append"><input class="span2" rel="tooltip" title="Enter value" type="number" min="1" max="9"
+                                     placeholder="Number of tickets" name="tickets-<%=priceCategory.ticketCategory.id%>"/><span class="add-on">@ $<%=priceCategory.price%></span></div>
         </div>
     </div>
 </script>
@@ -282,9 +281,11 @@
         <%
             _.each(tickets, function(ticketRequest) {
         %>
-        <dt><%= ticketRequest.priceCategory.section.name %> (<%= ticketRequest.priceCategory.section.description%>)</dt>
-        <dd><p><%= ticketRequest.priceCategory.ticketCategory.description %>: <%= ticketRequest.quantity %></p></dd>
+        <dt>Section <%= ticketRequest.priceCategory.section.name %> (<%= ticketRequest.priceCategory.section.description%>)</dt>
+        <dd><p><%= ticketRequest.priceCategory.ticketCategory.description %>: <%= ticketRequest.quantity %> @ $<%=ticketRequest.priceCategory.price%></p></dd>
         <% }) %>
+        <dt>Total</dt>
+        <dd><%= totals.tickets %> tickets for $<%= totals.price %></dd>
     </dl>
 </script>
 

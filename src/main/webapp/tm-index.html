@@ -401,7 +401,7 @@ TicketMonster.TicketCategoryView = Backbone.View.extend({
     },
     onChange:function (event) {
         var value = event.currentTarget.value;
-        if (value != '' && value != 0) {
+        if ($.isNumeric(value) && value > 0) {
             this.model.set('quantity', parseInt(value))
         }
         else {
@@ -524,10 +524,10 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
         var self = this;
         _.each(this.ticketCategoriesView.model.models, function (model) {
             if (model.attributes.quantity != undefined) {
-
                 self.model.bookingRequest.tickets.push({priceCategory:model.attributes.priceCategory, quantity:model.attributes.quantity})
             }
-        })
+        });
+
         // make sure that tickets are sorted by section and ticket category
         this.model.bookingRequest.tickets.sort(function(t1, t2) {
             if (t1.priceCategory.section.id != t2.priceCategory.section.id ) {
@@ -536,7 +536,17 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
             else {
                 return t1.priceCategory.ticketCategory.id - t2.priceCategory.ticketCategory.id
             }
-        })
+        });
+
+        var totals = _.reduce( this.model.bookingRequest.tickets, function(totals, ticketRequest) {
+           return {
+               tickets: totals.tickets + ticketRequest.quantity,
+               price: totals.price + ticketRequest.quantity * ticketRequest.priceCategory.price
+           };
+        }, {tickets:0, price:0.0});
+
+        this.model.bookingRequest.totals = totals;
+
         this.ticketCategoriesView.model = null
         $('option:selected', 'select').removeAttr('selected')
         this.ticketCategoriesView.render()
