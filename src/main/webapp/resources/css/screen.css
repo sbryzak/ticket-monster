@@ -63,12 +63,6 @@ span.invalid {
    color: red;
 }
 
-fieldset {
-   padding: 1em;
-   font: 80%/1 sans-serif;
-   width: 400px;
-}
-
 label {
    float: left;
    width: 15%;
@@ -77,12 +71,6 @@ label {
    padding-top: 0.2em;
    text-align: right;
    font-weight: bold;
-}
-
-legend {
-   padding: 0.2em 0.5em;
-   border: 1px solid;
-   text-align: right;
 }
 
 #register {

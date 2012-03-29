@@ -1,5 +1,5 @@
-insert into MediaItem (id, mediaType, url) values (100, 'IMAGE', 'http://in.relation.to/seam/resource/wikiUserPortrait/2253/l')
-insert into MediaItem (id, mediaType, url) values (101, 'IMAGE', 'http://in.relation.to/seam/resource/wikiUserPortrait/12612/l')
+insert into MediaItem (id, mediaType, url) values (100, 'IMAGE', 'http://upload.wikimedia.org/wikipedia/commons/8/8b/Jerry-Mickey_at_Red_Rocks_taken_08-11-87.jpg')
+insert into MediaItem (id, mediaType, url) values (101, 'IMAGE', 'http://upload.wikimedia.org/wikipedia/commons/6/66/Inside_Moscow_Bolshoi_Theatre.jpg')
 
 insert into Venue (id, name, city, country, street, description, picture_id, capacity) values (1, 'City Central Concert Hall', 'Hamilton', 'Canada', '123 Main St','Set adjacent to Grand Central Square, this magnificent concert hall can seat up to 50000 people',null, 30000);
 
