@@ -376,6 +376,7 @@ TicketMonster.Bookings = Backbone.Collection.extend({
 })
 
 TicketMonster.BookingRowView = Backbone.View.extend({
+    tagName:'tr',
     events:{
         "click a[name='delete']":"delete",
         "click ":"showDetails"
@@ -406,7 +407,7 @@ TicketMonster.TicketSummaryView = Backbone.View.extend({
 
 TicketMonster.BookingsView = Backbone.View.extend({
     render:function () {
-        $(this.el).empty().append("<table class='table table-striped table-bordered' id='bookingList'/>");
+        applyTemplate($(this.el), $('#booking-table'), {})
         _.each(this.model.models, function (booking) {
             var bookingView = new TicketMonster.BookingRowView({model:booking})
             $("#bookingList").append(bookingView.render().el)

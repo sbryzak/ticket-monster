@@ -217,12 +217,33 @@
     </div>
 </script>
 
+<script id="booking-table" type="text/template">
+    <div class='span8'>
+        <table class='table table-striped table-bordered' >
+            <thead>
+                <tr>
+                    <th>Booking #</th>
+                    <th>Purchaser</th>
+                    <th>Created on</th>
+                    <th>Total tickets</th>
+                    <th>Total price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id='bookingList'>
+
+            </tbody>
+        </table>
+    </div>
+</script>
+
 <script id="booking-row" type="text/template">
-    <tr>
         <td><a><%=id%></a></td>
-        <td><a><%=contactEmail%></a></td>
+        <td><%=contactEmail%></td>
+        <td><%=new Date(createdOn).toPrettyString()%></td>
+        <td><%=tickets.length%></td>
+        <td>$<%=totalTicketPrice%></td>
         <td><a class="btn btn-danger btn-mini" name='delete'><i class="icon-trash icon-white"/></a></td>
-    </tr>
 </script>
 
 <script id="create-booking" type="text/template">
