@@ -4,6 +4,7 @@ import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.IDENTITY;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -62,6 +63,14 @@ public class Booking {
 
     public void setTickets(Set<Ticket> tickets) {
         this.tickets = tickets;
+    }
+
+    public float getTotalTicketPrice() {
+        float totalPrice = 0.0f;
+        for (Ticket ticket : tickets) {
+            totalPrice += (ticket.getPrice());
+        }
+        return totalPrice;
     }
 
     public Date getCreatedOn() {
