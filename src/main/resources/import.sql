@@ -3,6 +3,7 @@ insert into MediaItem (id, mediaType, url) values (101, 'IMAGE', 'http://dl.drop
 insert into MediaItem (id, mediaType, url) values (102, 'IMAGE', 'http://dl.dropbox.com/u/65660684/640px-Opera_House_with_Sydney.jpg')
 insert into MediaItem (id, mediaType, url) values (103, 'IMAGE', 'http://dl.dropbox.com/u/65660684/640px-Roy_Thomson_Hall_Toronto.jpg')
 insert into MediaItem (id, mediaType, url) values (104, 'IMAGE', 'http://dl.dropbox.com/u/65660684/640px-West-stand-bmo-field.jpg')
+insert into MediaItem (id, mediaType, url) values (105, 'IMAGE', 'http://dl.dropbox.com/u/65660684/640px-Brazil_national_football_team_training_at_Dobsonville_Stadium_2010-06-03_13.jpg')
 
 insert into Venue (id, name, city, country, street, description, picture_id, capacity) values (1, 'Roy Thomson Hall', 'Toronto', 'Canada', '60 Simcoe Street','Roy Thomson Hall is a concert hall located at 60 Simcoe Street in Toronto, Ontario. It is the home of the Toronto Symphony Orchestra and the Toronto Mendelssohn Choir.',103, 2630);
 
@@ -37,7 +38,7 @@ insert into eventcategory (id, description) values (5, 'Comedy');
 
 insert into event (id, name, description, picture_id, category_id, major) values (1, 'Rock concert of the decade', 'Get ready to rock your night away with this megaconcert extravaganza from 10 of the biggest rock stars of the 80''s', 100, 1, true);
 insert into event (id, name, description, picture_id, category_id, major) values (2, 'Shane''s Sock Puppets', 'This critically acclaimed masterpiece will take you on an emotional rollercoaster the likes of which you''ve never experienced.', 101, 2, true);
-insert into event (id, name, description, picture_id, category_id, major) values (3, 'Brazil vs. Italy', 'A friendly replay of the famous World Cup final', 103, 4, true);
+insert into event (id, name, description, picture_id, category_id, major) values (3, 'Brazil vs. Italy', 'A friendly replay of the famous World Cup final.', 105, 4, true);
 
 insert into show (id, event_id, venue_id) values (1, 1, 1);
 insert into performance (id, show_id, date) values (1, 1, '2012-04-01 19:00:00');
