@@ -1,8 +1,7 @@
-<script id="main-view" type="text/template">
+<script id="main-view" type="text/template" xmlns="http://www.w3.org/1999/html">
     <div class="row">
         <div class="span3">
             <div id="itemMenu"/>
-
         </div>
         <div id='itemSummary' class="span9"/>
     </div>
@@ -13,8 +12,7 @@
     <div class="accordion-group">
         <div class="accordion-heading">
             <a class="accordion-toggle" style="color: #fff; background: #000;" data-target="#category-<%=id%>-collapsible" data-toggle="collapse"
-               data-parent="#itemMenu"
-               href="#"><%= description %></a>
+               data-parent="#itemMenu"><%= description %></a>
         </div>
         <div id="category-<%=id%>-collapsible" class="collapse in accordion-body">
             <div id="category-<%=id%>" class="accordion-inner"></div>
@@ -25,22 +23,21 @@
 <script id="city" type="text/template">
     <div class="accordion-group">
         <div class="accordion-heading">
-            <a class="accordion-toggle" data-target="#category-<%=id%>-collapsible" data-toggle="collapse"
-               data-parent="#itemMenu"
-               href="#"><%= city %></a>
+            <a class="accordion-toggle" style="color: #fff; background: #000;" data-target="#city-<%=city%>-collapsible" data-toggle="collapse"
+               data-parent="#itemMenu"><%= city %></a>
         </div>
-        <div id="category-<%=id%>-collapsible" class="collapse in accordion-body">
-            <div id="category-<%=id%>" class="accordion-inner"></div>
+        <div id="city-<%=city%>-collapsible" class="collapse in accordion-body">
+            <div id="city-<%=city%>" class="accordion-inner"></div>
         </div>
     </div>
 </script>
 
 <script id="event-summary" type="text/template">
-    <a href="#"><%=name%></a>
+    <a href="#events/<%=id%>" rel="popover" data-content="<%=description%>" data-original-title="<%=name%>"><%=name%></a>
 </script>
 
 <script id="venue-summary" type="text/template">
-    <a href="#"><%=name%></a>
+    <a href="#venues/<%=id%>" rel="popover" data-content="<%=description%>" data-original-title="<%=name%>"><%=name%></a>
 </script>
 
 
@@ -89,30 +86,41 @@
     </div>
 </script>
 
+<script type="text/template" id="event-venue-description">
+    <address>
+        <p><%= venue.description %></p>
+        <p><strong>Address:</strong></p>
+        <p><%= venue.address.street %></p>
+        <p><%= venue.address.city %>, <%= venue.address.country %></p>
+    </address>
+</script>
 
 <script id="event-detail" type="text/template">
     <div class="row">
         <div class="span5"><% if(picture != null) {%>
-            <img class="span4" src='rest/media/<%=picture.id%>'/>
-            <% } else { %>
-            We cannot show you a picture, but trust us, it is very cool
-            <% } %>
-        </div>
-        <div class="span6">
-            <h2 class="page-header"><%=name%></h2>
-
-            <form class="form-horizontal well">
+            <div class="row"><img class="span4" src='rest/media/<%=picture.id%>'/>
+                <% } else { %>
+                We cannot show you a picture, but trust us, it is very cool
+                <% } %>
+            </div>
+            <div class="row">&nbsp;</div>
+            <div class="row">
                 <div class="control-group">
-                    <label class="control-label" for="venueSelector">Venue</label>
+                    <label class="control-label" for="venueSelector">Where: </label>
 
                     <div class="controls">
                         <select id='venueSelector' class="span3"/>
-
-                        <p class="help-block">
-                            <small>Select a venue</small>
-                        </p>
                     </div>
                 </div>
+            </div>
+            <div id="eventVenueDescription">&nbsp;</div>
+        </div>
+        <div class="span6">
+            <h2 class="page-header"><%=name%></h2>
+            <h4 style="margin: 10px">Find tickets</h4>
+
+            <div class="form-horizontal well" style="padding: 20px">
+
                 <div class="control-group">
                     <label class="control-label" for="venueSelector">Date</label>
 
@@ -141,45 +149,73 @@
                                                        value="Book"></div>
                     </div>
                 </div>
-            </form>
+                </form>
 
+            </div>
         </div>
     </div>
 </script>
 
 <script id="venue-detail" type="text/template">
-
-    <table>
-        <tr>
-            <td colspan="2"><h1><%=name%></h1></td>
-        </tr>
-        <tr>
-            <td rowspan="4"> <% if(picture != null) {%>
-                <img width='350px' src='rest/media/<%=picture.id%>'/>
+    <div class="row">
+        <div class="span5"><% if(picture != null) {%>
+            <div class="row"><img class="span4" src='rest/media/<%=picture.id%>'/>
                 <% } else { %>
                 We cannot show you a picture, but trust us, it is very cool
                 <% } %>
-            </td>
-            <td><label for='eventSelector'>Event: </label><select id='eventSelector'/></td>
-        </tr>
+            </div>
+            <div class="row">&nbsp;</div>
+            <div class="row">
+                <div class="control-group">
+                    <label class="control-label" for="eventSelector">Where: </label>
 
-        <tr>
-            <td>
-                <div type='text' id="dayPicker"/>
-            </td>
-            <td>
-                <label for="performanceTimes">Choose a time:</label><select id="performanceTimes"/>
-            </td>
-        </tr>
-        <tr>
-            <td><%=description%></td>
-        </tr>
-        <tr>
-            <td><input name="bookButton" type="button" value="Book"></td>
-        </tr>
-    </table>
+                    <div class="controls">
+                        <select id='eventSelector' class="span3"/>
+                    </div>
+                </div>
+            </div>
+            <div id="venueEventDescription">&nbsp;</div>
+        </div>
+        <div class="span6">
+            <h2 class="page-header"><%=name%></h2>
+            <h4 style="margin: 10px">Find tickets</h4>
+
+            <div class="form-horizontal well" style="padding: 20px">
+
+                <div class="control-group">
+                    <label class="control-label" for="dayPicker">Date</label>
+
+                    <div class="controls">
+                        <select id="dayPicker" class="span3"/>
+
+                        <p class="help-block">
+                            <small>Select a date</small>
+                        </p>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="performanceTimes">Performance Time</label>
+
+                    <div class="controls">
+                        <select id="performanceTimes"/>
+
+                        <p class="help-block">
+                            <small>Select a performance time</small>
+                        </p>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <div id='bookingOption'><input name="bookButton" class="btn btn-primary" type="button"
+                                                       value="Book"></div>
+                    </div>
+                </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
 </script>
-
 
 <script id="booking-row" type="text/template">
     <tr>
@@ -205,7 +241,7 @@
             <div id="ticketCategoriesViewPlaceholder" class="row-fluid"></div>
         </div>
 
-        <div id="request-summary" class="span5 right border: 1px;">
+        <div id="request-summary" class="span5 right" style="border-style: solid; border-width: 1px; padding: 10px">
             <h3 class="page-header">Current booking request</h3>
 
             <div id="ticketSummaryView"/>
@@ -242,8 +278,31 @@
                         <div class="carousel-caption">
                             <h4><%=model.attributes.name%></h4>
                             <p><%=model.attributes.description%></p>
+                            <a class="btn btn-danger" href="#events/<%=model.id%>">Find venues</a>
                         </div>
                     </div>
+            <% }) %>
+        </div>
+        <!-- Carousel nav -->
+        <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+        <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+    </div>
+</script>
+
+<script id="venue-carousel" type="text/template">
+    <div id="myCarousel" class="carousel span6">
+        <!-- Carousel items -->
+        <div class="carousel-inner">
+
+            <%_.each(models, function(model) { %>
+            <div class="item">
+                <img width="500px" src='rest/media/<%=model.attributes.picture.id%>'/>
+                <div class="carousel-caption">
+                    <h4><%=model.attributes.name%></h4>
+                    <p><%=model.attributes.description%></p>
+                    <a class="btn btn-danger" href="#venues/<%=model.id%>">Find events</a>
+                </div>
+            </div>
             <% }) %>
         </div>
         <!-- Carousel nav -->
@@ -270,8 +329,13 @@
 <script id="ticket-entry" type="text/template">
     <div class="control-group">
         <label class="control-label"><%=priceCategory.ticketCategory.description%></label>
-        <div class="controls"><div class="input-append"><input class="span2" rel="tooltip" title="Enter value" type="number" min="1" max="9"
-                                     placeholder="Number of tickets" name="tickets-<%=priceCategory.ticketCategory.id%>"/><span class="add-on">@ $<%=priceCategory.price%></span></div>
+
+        <div class="controls">
+            <div><input class="span2" rel="tooltip" title="Enter value" type="number" min="1"
+                                             max="9"
+                                             placeholder="Number of tickets"
+                                             name="tickets-<%=priceCategory.ticketCategory.id%>"/><span class="add-on">@ $<%=priceCategory.price%></span>
+            </div>
         </div>
     </div>
 </script>
@@ -289,35 +353,96 @@
     </dl>
 </script>
 
-<script id="booking-details" type="text/template">
-    <div class="row">
-        <div class="span10">
-            <table class="table table-striped table-bordered">
-                <thead>
-                <tr>
-                    <th colspan="5">Booking <%=id%></th>
-                <tr>
-                <tr>
-                    <th>Ticket #</th>
-                    <th>Category</th>
-                    <th>Section</th>
-                    <th>Row</th>
-                    <th>Seat</th>
-                </tr>
-                </thead>
-                <tbody>
-                <% $.each(_.sortBy(tickets, function(ticket) {return ticket.id}), function (i, ticket) { %>
-                <tr>
-                    <td><%= ticket.id %></td>
-                    <td><%=ticket.ticketCategory.description%></td>
-                    <td><%=ticket.seat.section.name%></td>
-                    <td><%=ticket.seat.rowNumber%></td>
-                    <td><%=ticket.seat.number%></td>
-                </tr>
-                <% }) %>
-                </tbody>
-            </table>
+<script id="booking-confirmation" type="text/template">
+    <div>
+        <h3 class="page-header">Booking  #<%=booking.id%> confirmed!</h3>
+        <p><strong>Purchaser: </strong><%= booking.contactEmail %></p>
+        <p><strong>Created on: </strong><%= new Date(booking.createdOn).toPrettyString() %></strong</p>
+        <p><strong>Performance: </strong> <%= performance.event.name %> at <%= performance.venue.name %> on <%= new Date(booking.performance.date).toPrettyString() %></p>
+
+        <h4 class="page-header">Ticket allocations</h4>
+
+        <div class="row">
+            <div class="span3">
+                <table class="table table-striped table-bordered">
+                    <thead>
+
+                    <tr>
+                        <th>Ticket #</th>
+                        <th>Category</th>
+                        <th>Section</th>
+                        <th>Row</th>
+                        <th>Seat</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% $.each(_.sortBy(booking.tickets, function(ticket) {return ticket.id}), function (i, ticket) { %>
+                    <tr>
+                        <td><%= ticket.id %></td>
+                        <td><%=ticket.ticketCategory.description%></td>
+                        <td><%=ticket.seat.section.name%></td>
+                        <td><%=ticket.seat.rowNumber%></td>
+                        <td><%=ticket.seat.number%></td>
+                    </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
+            </div>
         </div>
+        <div class="row">
+            <a href="#>" class="btn btn-info">Home</a>
+        </div>
+    </div>
+
+</script>
+
+
+<script id="booking-list" type="text/template">
+    <div class="span7">
+        <table class='table table-striped table-bordered' id='bookingList'/>
+    </div>
+    <div class="span5">
+        <div id="bookingDetails"/>
+    </div>
+</script>
+
+<script id="booking-details" type="text/template">
+    <div>
+        <h3 class="page-header">Booking  #<%=booking.id%></h3>
+        <p><strong>Purchaser: </strong><%= booking.contactEmail %></p>
+        <p><strong>Created on: </strong><%= new Date(booking.createdOn).toPrettyString() %></strong</p>
+        <p><strong>Performance: </strong> <%= performance.event.name %> at <%= performance.venue.name %> on <%= new Date(booking.performance.date).toPrettyString() %></p>
+
+        <h4 class="page-header">Ticket allocations</h4>
+
+        <div class="row">
+            <div class="span3">
+                <table class="table table-striped table-bordered">
+                    <thead>
+
+                    <tr>
+                        <th>Ticket #</th>
+                        <th>Category</th>
+                        <th>Section</th>
+                        <th>Row</th>
+                        <th>Seat</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% $.each(_.sortBy(booking.tickets, function(ticket) {return ticket.id}), function (i, ticket) { %>
+                    <tr>
+                        <td><%= ticket.id %></td>
+                        <td><%=ticket.ticketCategory.description%></td>
+                        <td><%=ticket.seat.section.name%></td>
+                        <td><%=ticket.seat.rowNumber%></td>
+                        <td><%=ticket.seat.number%></td>
+                    </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
     </div>
 </script>
 

@@ -50,8 +50,6 @@ public class ShowService extends BaseEntityService<Show> {
             String event = queryParameters.getFirst("event");
             predicates.add(criteriaBuilder.equal(root.get("event").get("id"), event));
         }
-
-
         return predicates.toArray(new Predicate[]{});
     }
     
@@ -71,5 +69,14 @@ public class ShowService extends BaseEntityService<Show> {
            priceCategoryMap.get(priceCategory.getSection().getId()).add(priceCategory);
         }
         return priceCategoryMap;
+    }
+
+    @GET
+    @Path("/performance/{performanceId:[0-9][0-9]*}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Show getShowByPerformance(@PathParam("performanceId") Long performanceId) {
+        Query query = getEntityManager().createQuery("select s from Show s where exists(select p from Performance p where p.show = s and p.id = :performanceId)");
+        query.setParameter("performanceId", performanceId);
+        return (Show) query.getSingleResult();
     }
 }

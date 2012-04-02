@@ -1,6 +1,7 @@
 package org.jboss.jdf.example.ticketmonster.rest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -11,6 +12,8 @@ import java.util.Set;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
@@ -59,58 +62,72 @@ public class BookingService extends BaseEntityService<Booking> {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response createBooking(BookingRequest bookingRequest) {
-        Performance performance = getEntityManager().find(Performance.class, bookingRequest.getPerformance());
+        try {
+            Performance performance = getEntityManager().find(Performance.class, bookingRequest.getPerformance());
 
-        Set<Long> priceCategoryIds = new HashSet<Long>();
-        for (TicketRequest ticketRequest : bookingRequest.getTicketRequests()) {
-            if (priceCategoryIds.contains(ticketRequest.getPriceCategory())) {
-                throw new RuntimeException("Duplicate price category id");
-            }
-            priceCategoryIds.add(ticketRequest.getPriceCategory());
-        }
-        List<TicketPriceCategory> ticketPrices = (List<TicketPriceCategory>) getEntityManager().createQuery("select p from TicketPriceCategory p where p.id in :ids").setParameter("ids", priceCategoryIds).getResultList();
-
-        Map<Long, TicketPriceCategory> priceCategoriesById = new HashMap<Long, TicketPriceCategory>();
-
-        for (TicketPriceCategory loadedPriceCategory : ticketPrices) {
-            priceCategoriesById.put(loadedPriceCategory.getId(), loadedPriceCategory);
-        }
-
-        Booking booking = new Booking();
-        booking.setContactEmail(bookingRequest.getEmail());
-        
-        Map<Section, Map<TicketCategory, TicketRequest>> ticketRequestsPerSection = new LinkedHashMap<Section, Map<TicketCategory, TicketRequest>>();
-        for (TicketRequest ticketRequest : bookingRequest.getTicketRequests()) {
-            final TicketPriceCategory priceCategory = priceCategoriesById.get(ticketRequest.getPriceCategory());
-            if (!ticketRequestsPerSection.containsKey(priceCategory.getSection())) {
-                ticketRequestsPerSection.put(priceCategory.getSection(), new LinkedHashMap<TicketCategory, TicketRequest>());
-            }
-            ticketRequestsPerSection.get(priceCategory.getSection()).put(priceCategoriesById.get(ticketRequest.getPriceCategory()).getTicketCategory(), ticketRequest);
-        }
-
-        for (Section section : ticketRequestsPerSection.keySet()) {
-            int totalTicketsRequestedPerSection = 0;
-            final Map<TicketCategory, TicketRequest> ticketRequestsByCategories = ticketRequestsPerSection.get(section);
-            for (TicketRequest ticketRequest : ticketRequestsByCategories.values()) {
-                totalTicketsRequestedPerSection += ticketRequest.getQuantity();
-            }
-            List<Seat> seats = seatAllocationService.allocateSeats(section, performance, totalTicketsRequestedPerSection, true);
-            int seatCounter = 0;
-            for (TicketCategory ticketCategory : ticketRequestsByCategories.keySet()) {
-                final TicketRequest ticketRequest = ticketRequestsByCategories.get(ticketCategory);
-                final TicketPriceCategory ticketPriceCategory = priceCategoriesById.get(ticketRequest.getPriceCategory());
-                for (int i = 0; i < ticketRequest.getQuantity(); i++) {
-                    Ticket ticket = new Ticket(seats.get(seatCounter + i), ticketCategory, ticketPriceCategory.getPrice());
-                    getEntityManager().persist(ticket);
-                    booking.getTickets().add(ticket);
+            Set<Long> priceCategoryIds = new HashSet<Long>();
+            for (TicketRequest ticketRequest : bookingRequest.getTicketRequests()) {
+                if (priceCategoryIds.contains(ticketRequest.getPriceCategory())) {
+                    throw new RuntimeException("Duplicate price category id");
                 }
-                seatCounter += ticketRequest.getQuantity();
+                priceCategoryIds.add(ticketRequest.getPriceCategory());
             }
+            List<TicketPriceCategory> ticketPrices = (List<TicketPriceCategory>) getEntityManager().createQuery("select p from TicketPriceCategory p where p.id in :ids").setParameter("ids", priceCategoryIds).getResultList();
+
+            Map<Long, TicketPriceCategory> priceCategoriesById = new HashMap<Long, TicketPriceCategory>();
+
+            for (TicketPriceCategory loadedPriceCategory : ticketPrices) {
+                priceCategoriesById.put(loadedPriceCategory.getId(), loadedPriceCategory);
+            }
+
+            Booking booking = new Booking();
+            booking.setContactEmail(bookingRequest.getEmail());
+
+            Map<Section, Map<TicketCategory, TicketRequest>> ticketRequestsPerSection = new LinkedHashMap<Section, Map<TicketCategory, TicketRequest>>();
+            for (TicketRequest ticketRequest : bookingRequest.getTicketRequests()) {
+                final TicketPriceCategory priceCategory = priceCategoriesById.get(ticketRequest.getPriceCategory());
+                if (!ticketRequestsPerSection.containsKey(priceCategory.getSection())) {
+                    ticketRequestsPerSection.put(priceCategory.getSection(), new LinkedHashMap<TicketCategory, TicketRequest>());
+                }
+                ticketRequestsPerSection.get(priceCategory.getSection()).put(priceCategoriesById.get(ticketRequest.getPriceCategory()).getTicketCategory(), ticketRequest);
+            }
+
+            for (Section section : ticketRequestsPerSection.keySet()) {
+                int totalTicketsRequestedPerSection = 0;
+                final Map<TicketCategory, TicketRequest> ticketRequestsByCategories = ticketRequestsPerSection.get(section);
+                for (TicketRequest ticketRequest : ticketRequestsByCategories.values()) {
+                    totalTicketsRequestedPerSection += ticketRequest.getQuantity();
+                }
+                List<Seat> seats = seatAllocationService.allocateSeats(section, performance, totalTicketsRequestedPerSection, true);
+                int seatCounter = 0;
+                for (TicketCategory ticketCategory : ticketRequestsByCategories.keySet()) {
+                    final TicketRequest ticketRequest = ticketRequestsByCategories.get(ticketCategory);
+                    final TicketPriceCategory ticketPriceCategory = priceCategoriesById.get(ticketRequest.getPriceCategory());
+                    for (int i = 0; i < ticketRequest.getQuantity(); i++) {
+                        Ticket ticket = new Ticket(seats.get(seatCounter + i), ticketCategory, ticketPriceCategory.getPrice());
+                        getEntityManager().persist(ticket);
+                        booking.getTickets().add(ticket);
+                    }
+                    seatCounter += ticketRequest.getQuantity();
+                }
+            }
+            booking.setPerformance(performance);
+            booking.setCancellationCode("abc");
+            getEntityManager().persist(booking);
+            return Response.ok().entity(booking).type(MediaType.APPLICATION_JSON_TYPE).build();
+        } catch (ConstraintViolationException e) {
+            Map<String, Object> errors = new HashMap<String, Object>();
+            List<String> errorMessages = new ArrayList<String>();
+            for (ConstraintViolation<?> constraintViolation : e.getConstraintViolations()) {
+                errorMessages.add(constraintViolation.getMessage());
+            }
+            errors.put("errors", errorMessages);
+            return Response.status(Response.Status.BAD_REQUEST).entity(errors).build();
+        } catch (Exception e) {
+            Map<String, Object> errors = new HashMap<String, Object>();
+            errors.put("errors", Collections.singletonList(e.getMessage()));
+            return Response.status(Response.Status.BAD_REQUEST).entity(errors).build();
         }
-        booking.setPerformance(performance);
-        booking.setCancellationCode("abc");
-        getEntityManager().persist(booking);
-        return Response.ok().entity(booking).type(MediaType.APPLICATION_JSON_TYPE).build();
     }
 
     public static class BookingRequest {
