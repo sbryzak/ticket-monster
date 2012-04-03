@@ -58,6 +58,11 @@ public class MediaItem implements Serializable {
     }
 
     @Override
+    public String toString() {
+        return "[" + mediaType.getDescription() + "] " + url;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
