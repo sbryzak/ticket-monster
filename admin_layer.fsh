@@ -1,4 +1,4 @@
-@/* Example Forge Script - Generates a Point-of-sale Style Application */;  
+@/* Forge Script - Generates the administration view */;
 
 @/* Clear the screen */;
 clear;
