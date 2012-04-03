@@ -41,11 +41,9 @@ public class Show implements Serializable {
 
     @OneToMany(fetch = EAGER, mappedBy = "show", cascade = ALL)
     @OrderBy("date asc")
-    @NotEmpty
     private Set<Performance> performances = new HashSet<Performance>();
 
     @OneToMany(mappedBy = "show", cascade = ALL, fetch = EAGER)
-    @NotEmpty
     private Set<TicketPriceCategory> priceCategories = new HashSet<TicketPriceCategory>();
 
     public Long getId() {
