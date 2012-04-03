@@ -644,10 +644,9 @@ TicketMonster.Router = Backbone.Router.extend({
     events:function () {
         var events = new TicketMonster.Events;
         var eventsView = new TicketMonster.EventsCategoriesView({model:events, el:$("#content")})
-        events.bind("reset",
-                function () {
+        events.bind("reset", function () {
                     eventsView.render()
-                }).fetch()
+        }).fetch()
     },
     venues:function () {
         var venues = new TicketMonster.Venues;
