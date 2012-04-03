@@ -14,7 +14,7 @@
 
 <composite:implementation>
     <h:graphicImage value="#{cc.attrs.media.url}" rendered="#{!cc.attrs.media.cached}"/>
-    <h:graphicImage value="/rest/media/#{cc.attrs.media.url}" rendered="#{cc.attrs.media.cached}"/>
+    <h:graphicImage value="/rest/media/cache/#{cc.attrs.media.url}" rendered="#{cc.attrs.media.cached}"/>
 </composite:implementation>
 
 </body>
