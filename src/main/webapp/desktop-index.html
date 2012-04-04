@@ -103,7 +103,7 @@ TicketMonster.EventsCategoriesView = Backbone.View.extend({
 TicketMonster.VenueCitiesView = Backbone.View.extend({
     render:function () {
         applyTemplate($(this.el), $('#main-view'), {})
-        var venueSummaryView = new TicketMonster.VenueSummaryView();
+        var venueSummaryView = new TicketMonster.VenueSummaryView({model:this.model});
         $("#itemSummary").append(venueSummaryView.render().el)
         this.menuView = new TicketMonster.VenueMenuView({summaryView:venueSummaryView, model:this.model, el:$("#itemMenu")});
         this.menuView.render()
@@ -197,8 +197,8 @@ TicketMonster.VenueSummaryView = Backbone.View.extend({
             applyTemplate($(this.el), $("#venue-summary-view"), data.attributes)
         }
         else {
-            $(this.el).empty()
-            $(this.el).append("Click a link on the left")
+            applyTemplate($(this.el), $("#venue-carousel"), {models:this.model.models});
+            $(this.el).find('.item:first').addClass('active')
         }
         return this
     }
@@ -263,7 +263,9 @@ TicketMonster.EventDetailView = Backbone.View.extend({
             }), function (item) {
                 return item
             }));
+            applyTemplate($("#venueMedia"), $("#venue-media"), selectedShow.venue)
             $("#dayPicker").removeAttr('disabled')
+            $("#bookingWhen").show(100)
             $("#performanceTimes").removeAttr('disabled')
             _.each(times, function (time) {
                 var date = new Date(time)
@@ -271,8 +273,11 @@ TicketMonster.EventDetailView = Backbone.View.extend({
             })
             this.refreshTimes()
         } else {
+            $("#bookingWhen").hide(100)
             $("#bookingOption").hide()
             $("#dayPicker").empty()
+            $("#venueMedia").empty()
+            $("#eventVenueDescription").empty()
             $("#dayPicker").attr('disabled', true)
             $("#performanceTimes").empty()
             $("#performanceTimes").attr('disabled', true)
@@ -327,18 +332,20 @@ TicketMonster.VenueDetailView = Backbone.View.extend({
     refreshShows:function (event) {
         $("#dayPicker").empty()
         var selectedShowId = event.currentTarget.value;
-
         if (selectedShowId != 0) {
             var selectedShow = _.find(this.shows, function (show) {
                 return show.id == selectedShowId
             });
             this.selectedShow = selectedShow;
+            applyTemplate($("#venueEventDescription"), $("#venue-event-description"), {venue:selectedShow.venue});
             var times = _.uniq(_.sortBy(_.map(selectedShow.performances, function (performance) {
                 return (new Date(performance.date).withoutTimeOfDay()).getTime()
             }), function (item) {
                 return item
             }));
+            applyTemplate($("#eventMedia"), $("#venue-media"), selectedShow.event)
             $("#dayPicker").removeAttr('disabled')
+            $("#bookingWhen").show(100)
             $("#performanceTimes").removeAttr('disabled')
             _.each(times, function (time) {
                 var date = new Date(time)
@@ -346,12 +353,16 @@ TicketMonster.VenueDetailView = Backbone.View.extend({
             })
             this.refreshTimes()
         } else {
+            $("#bookingWhen").hide(100)
             $("#bookingOption").hide()
             $("#dayPicker").empty()
+            $("#eventMedia").empty()
+            $("#venueEventDescription").empty()
             $("#dayPicker").attr('disabled', true)
             $("#performanceTimes").empty()
             $("#performanceTimes").attr('disabled', true)
         }
+
     },
     refreshTimes:function () {
         var selectedDate = $("#dayPicker").val();
