@@ -54,8 +54,13 @@ Number.prototype.toZeroPaddedString = function(digits) {
 function renderTemplate(template, data) {
     return _.template(template.html(), (data == undefined) ? {} : data);
 }
+
 function applyTemplate(target, template, data) {
     return target.empty().append(renderTemplate(template, data))
+}
+
+function replaceWithTemplate(target, template, data) {
+    return target.replaceWith(renderTemplate(template, data))
 }
 
 

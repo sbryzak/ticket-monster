@@ -267,13 +267,13 @@ TicketMonster.EventDetailView = Backbone.View.extend({
             }));
             applyTemplate($("#venueMedia"), $("#venue-media"), selectedShow.venue)
             $("#dayPicker").removeAttr('disabled')
-            $("#bookingWhen").show(100)
             $("#performanceTimes").removeAttr('disabled')
             _.each(times, function (time) {
                 var date = new Date(time)
                 $("#dayPicker").append("<option value='" + date.toYMD() + "'>" + date.toPrettyStringWithoutTime() + "</option>")
             })
             this.refreshTimes()
+            $("#bookingWhen").show(100)
         } else {
             $("#bookingWhen").hide(100)
             $("#bookingOption").hide()
@@ -349,12 +349,12 @@ TicketMonster.VenueDetailView = Backbone.View.extend({
             }));
             applyTemplate($("#eventMedia"), $("#venue-media"), selectedShow.event)
             $("#dayPicker").removeAttr('disabled')
-            $("#bookingWhen").show(100)
             $("#performanceTimes").removeAttr('disabled')
             _.each(times, function (time) {
                 var date = new Date(time)
                 $("#dayPicker").append("<option value='" + date.toYMD() + "'>" + date.toPrettyStringWithoutTime() + "</option>")
             })
+            $("#bookingWhen").show(100)
             this.refreshTimes()
         } else {
             $("#bookingWhen").hide(100)
@@ -418,10 +418,28 @@ TicketMonster.BookingRowView = Backbone.View.extend({
     }
 })
 
+TicketMonster.TicketSummaryLineView = Backbone.View.extend({
+    tagName: 'tr',
+    events: {
+      "click i": "removeEntry"
+    },
+    render:function() {
+       applyTemplate($(this.el), $('#ticket-request-summary'), {ticketRequest:this.model.ticketRequest})
+       return this
+    },
+    removeEntry: function() {
+        this.model.tickets.splice(this.model.index, 1)
+    }
+})
+
 TicketMonster.TicketSummaryView = Backbone.View.extend({
     render:function () {
-        var bookingRequestsBySections = [];
+        var self = this
         applyTemplate($(this.el), $('#ticket-summary-view'), this.model.bookingRequest)
+        _.each(this.model.bookingRequest.tickets, function(ticketRequest, index, tickets) {
+            $('#ticketRequestSummary')
+                    .append(new TicketMonster.TicketSummaryLineView({model:{ticketRequest:ticketRequest, index:index, tickets:tickets, parentView:self}}).render().el);
+        });
     }
 })
 
@@ -532,7 +550,8 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
         "click input[name='submit']":"save",
         "change select":"refreshPrices",
         "keyup #email":"updateEmail",
-        "click input[name='add']":"addQuantities"
+        "click input[name='add']":"addQuantities",
+        "click i":"updateQuantities"
     },
     render:function () {
 
@@ -599,12 +618,28 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
     },
     addQuantities:function () {
         var self = this;
+
         _.each(this.ticketCategoriesView.model.models, function (model) {
             if (model.attributes.quantity != undefined) {
-                self.model.bookingRequest.tickets.push({priceCategory:model.attributes.priceCategory, quantity:model.attributes.quantity})
+                var found = false
+                _.each(self.model.bookingRequest.tickets, function(ticket) {
+                    if(ticket.priceCategory.id == model.attributes.priceCategory.id) {
+                        ticket.quantity += model.attributes.quantity
+                        found = true;
+                    }
+                });
+                if (!found) {
+                    self.model.bookingRequest.tickets.push({priceCategory:model.attributes.priceCategory, quantity:model.attributes.quantity})
+                }
             }
         });
-
+        this.ticketCategoriesView.model = null
+        $('option:selected', 'select').removeAttr('selected')
+        this.ticketCategoriesView.render()
+        this.selectorView.render();
+        this.updateQuantities();
+    },
+    updateQuantities: function() {
         // make sure that tickets are sorted by section and ticket category
         this.model.bookingRequest.tickets.sort(function (t1, t2) {
             if (t1.priceCategory.section.id != t2.priceCategory.section.id) {
@@ -615,19 +650,13 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
             }
         });
 
-        var totals = _.reduce(this.model.bookingRequest.tickets, function (totals, ticketRequest) {
+        this.model.bookingRequest.totals = _.reduce(this.model.bookingRequest.tickets, function (totals, ticketRequest) {
             return {
                 tickets:totals.tickets + ticketRequest.quantity,
                 price:totals.price + ticketRequest.quantity * ticketRequest.priceCategory.price
             };
         }, {tickets:0, price:0.0});
 
-        this.model.bookingRequest.totals = totals;
-
-        this.ticketCategoriesView.model = null
-        $('option:selected', 'select').removeAttr('selected')
-        this.ticketCategoriesView.render()
-        this.selectorView.render();
         this.ticketSummaryView.render();
         this.setCheckoutStatus()
     },

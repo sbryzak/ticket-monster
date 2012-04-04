@@ -283,9 +283,8 @@
 <script id="ticket-summary-view" type="text/template">
     <div class="span12">
 
-        <p/>
         <% if (tickets.length>0) { %>
-        <table class="table table-bordered table-condensed" style="background-color: #fffffa;">
+        <table class="table table-bordered table-condensed row-fluid" style="background-color: #fffffa;">
             <thead>
             <tr>
                 <th colspan="5"><strong>Requested tickets</strong></th>
@@ -298,26 +297,26 @@
                 <th></th>
             </tr>
             </thead>
-            <tbody>
-            <%_.each(tickets, function(ticketRequest) {%>
-            <tr>
-                <td><%= ticketRequest.priceCategory.section.name %></td>
-                <td><%= ticketRequest.priceCategory.ticketCategory.description %></td>
-                <td><%= ticketRequest.quantity %></td>
-                <td>$<%=ticketRequest.priceCategory.price%></td>
-                <td><i id="removeEntry" class="icon-trash"/></td>
-            </tr>
-            <% }); %>
-            <tr><td colspan="5" style="text-align: center;"><strong>Total count:</strong> <%= totals.tickets %><p/><strong>Total
-                price:</strong> $<%=totals.price%>
-            </td>
-            </tr>
+            <tbody id="ticketRequestSummary">
+
             </tbody>
         </table>
+        <p/>
+        <div class="row-fluid">
+            <div class="span5"><strong>Total ticket count:</strong> <%= totals.tickets %></div>
+            <div class="span5"><strong>Total price:</strong> $<%=totals.price%></div></div>
         <% } else { %>
-        No tickets requested yet.
+        No tickets requested.
         <% } %>
     </div>
+</script>
+
+<script id="ticket-request-summary" type="text/template">
+        <td><%= ticketRequest.priceCategory.section.name %></td>
+        <td><%= ticketRequest.priceCategory.ticketCategory.description %></td>
+        <td><%= ticketRequest.quantity %></td>
+        <td>$<%=ticketRequest.priceCategory.price%></td>
+        <td><i class="icon-trash"/></td>
 </script>
 
 <script id="booking-confirmation" type="text/template">
