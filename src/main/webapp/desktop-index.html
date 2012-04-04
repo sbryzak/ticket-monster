@@ -407,8 +407,7 @@ TicketMonster.BookingRowView = Backbone.View.extend({
     },
     delete:function (event) {
         if (confirm("Are you sure you want to delete booking " + this.model.get('id'))) {
-            var self = this
-            this.model.destroy()
+            this.model.destroy({wait:true})
         }
         event.stopPropagation()
         event.stopImmediatePropagation()
