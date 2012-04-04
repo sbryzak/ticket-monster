@@ -228,6 +228,7 @@ TicketMonster.EventDetailView = Backbone.View.extend({
         $(this.el).empty()
         applyTemplate($(this.el), $("#event-detail"), this.model.attributes)
         $("#bookingOption").hide()
+        $("#venueSelector").attr('disabled', true)
         $("#dayPicker").empty()
         $("#dayPicker").attr('disabled', true)
         $("#performanceTimes").empty()
@@ -239,6 +240,7 @@ TicketMonster.EventDetailView = Backbone.View.extend({
             $.each(shows, function (i, show) {
                 $("#venueSelector").append("<option value='" + show.id + "'>" + show.venue.address.city + " : " + show.venue.name + "</option>")
             })
+            $("#venueSelector").removeAttr('disabled')
             if ($("#venueSelector").val()) {
                 $("#venueSelector").change()
             }
@@ -303,12 +305,13 @@ TicketMonster.EventDetailView = Backbone.View.extend({
 TicketMonster.VenueDetailView = Backbone.View.extend({
     events:{
         "click input[name='bookButton']":"beginBooking",
-        "change select[id='venueSelector']":"refreshShows",
+        "change select[id='eventSelector']":"refreshShows",
         "change select[id='dayPicker']":"refreshTimes"
     },
     render:function () {
         $(this.el).empty()
         applyTemplate($(this.el), $("#venue-detail"), this.model.attributes)
+        $("#eventSelector").attr('disabled', true)
         $("#bookingOption").hide()
         $("#dayPicker").empty()
         $("#dayPicker").attr('disabled', true)
@@ -321,6 +324,7 @@ TicketMonster.VenueDetailView = Backbone.View.extend({
             $.each(shows, function (i, show) {
                 $("#eventSelector").append("<option value='" + show.id + "'>" + show.event.name + "</option>")
             })
+            $("#eventSelector").removeAttr('disabled')
             if ($("#eventSelector").val()) {
                 $("#eventSelector").change()
             }
@@ -636,7 +640,7 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
         }
         this.setCheckoutStatus()
     },
-    setCheckoutStatus: function() {
+    setCheckoutStatus:function () {
         if (this.model.bookingRequest.totals != undefined && this.model.bookingRequest.totals.tickets > 0 && this.model.bookingRequest.email != undefined && this.model.bookingRequest.email != '') {
             $('input[name="submit"]').removeAttr('disabled')
         }
