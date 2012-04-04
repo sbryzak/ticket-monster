@@ -527,6 +527,7 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
     events:{
         "click input[name='submit']":"save",
         "change select":"refreshPrices",
+        "keyup #email":"updateEmail",
         "click input[name='add']":"addQuantities"
     },
     render:function () {
@@ -567,7 +568,7 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
         bookingRequest.ticketRequests = _.map(this.model.bookingRequest.tickets, function (ticket) {
             return {priceCategory:ticket.priceCategory.id, quantity:ticket.quantity}
         });
-        bookingRequest.email = $("input[name='email']").val();
+        bookingRequest.email = this.model.bookingRequest.email;
         bookingRequest.performance = this.model.performanceId
         $.ajax({url:"rest/bookings",
             data:JSON.stringify(bookingRequest),
@@ -624,7 +625,24 @@ TicketMonster.CreateBookingView = Backbone.View.extend({
         this.ticketCategoriesView.render()
         this.selectorView.render();
         this.ticketSummaryView.render();
-        $('input[name="submit"]').removeAttr('disabled')
+        this.setCheckoutStatus()
+    },
+    updateEmail:function (event) {
+        if ($(event.currentTarget).is(':valid')) {
+            this.model.bookingRequest.email = event.currentTarget.value
+
+        } else {
+            delete this.model.bookingRequest.email
+        }
+        this.setCheckoutStatus()
+    },
+    setCheckoutStatus: function() {
+        if (this.model.bookingRequest.totals != undefined && this.model.bookingRequest.totals.tickets > 0 && this.model.bookingRequest.email != undefined && this.model.bookingRequest.email != '') {
+            $('input[name="submit"]').removeAttr('disabled')
+        }
+        else {
+            $('input[name="submit"]').attr('disabled', true)
+        }
     }
 });
 

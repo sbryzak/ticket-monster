@@ -220,24 +220,24 @@
         </div>
     </div>
     <div class="row-fluid">
-        <div class="span5">
-            <h3 class="page-header">Select tickets</h3>
+        <div class="span5 well">
+            <h4 class="page-header">Select tickets</h4>
             <div id="sectionSelectorPlaceholder" class="row-fluid"></div>
             <div id="ticketCategoriesViewPlaceholder" class="row-fluid"></div>
         </div>
 
-        <div id="request-summary" class="span6">
-            <h3 class="page-header">Summary and checkout</h3>
-
+        <div id="request-summary" class="span5 offset1 well">
+            <h4 class="page-header">Order summary</h4>
             <div id="ticketSummaryView" class="row-fluid"/>
-            <div class="row-fluid" style="padding-top:25px">
-                <div class="span4 well well-small">&nbsp;<input type='email' name="email" placeholder="Email" required/><input type='button'
-                                                                                                         class="btn btn-primary"
+            <h4 class="page-header">Checkout</h4>
+            <div class="row-fluid" >
+                <input type='email' id="email" placeholder="Email" required/>
+                <input type='button' class="btn btn-primary"
                                                                                                          name="submit"
                                                                                                          value="Checkout"
                                                                                                          style="margin-bottom:9px;"
                                                                                                          disabled="true"/>
-                </div>
+
             </div>
         </div>
     </div>
@@ -266,7 +266,6 @@
     <% }) %>
     <div class="control-group">
         <label class="control-label"/>
-
         <div class="controls">
             <input type="button" class="btn btn-primary" name="add" value="Add tickets"/>
         </div>
@@ -289,17 +288,22 @@
 </script>
 
 <script id="ticket-summary-view" type="text/template">
-    <div class="span4">
-        <h3>Requested tickets</h3>
+    <div class="span12">
+
         <p/>
         <% if (tickets.length>0) { %>
-        <table class="table table-bordered table-condensed">
+        <table class="table table-bordered table-condensed" style="background-color: #fffffa;">
             <thead>
-            <th>Section</th>
-            <th>Category</th>
-            <th>Quantity</th>
-            <th>Price</th>
-            <th></th>
+            <tr>
+                <th colspan="5"><strong>Requested tickets</strong></th>
+            </tr>
+            <tr>
+                <th>Section</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th></th>
+            </tr>
             </thead>
             <tbody>
             <%_.each(tickets, function(ticketRequest) {%>
@@ -318,7 +322,7 @@
             </tbody>
         </table>
         <% } else { %>
-        No tickets booked yet.
+        No tickets requested yet.
         <% } %>
     </div>
 </script>
