@@ -7,10 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0"/>
 
     <link rel="stylesheet" href="resources/css/jquery.mobile-1.1.0-rc.1.css"/>
-    <link rel="stylesheet" href="resources/css/jquery.mobile.datebox.css"/>
+    <link rel="stylesheet" href="resources/css/m.screen.css"/>
     <script type="text/javascript" src="resources/js/jquery-1.6.4.js"></script>
     <script type="text/javascript" src="resources/js/jquery.mobile-1.1.0-rc.1.js"></script>
-    <script type="text/javascript" src="resources/js/jquery.mobile.datebox.js"></script>
     <script type="text/javascript" src="resources/js/underscore.js"></script>
     <script type="text/javascript" src="resources/js/backbone.js"></script>
     <script type="text/javascript" src="resources/app/tm-utils.js"></script>
@@ -28,12 +27,6 @@
             }
         });
     </script>
-    <style type="text/css">
-        table { width:100%; }
-        table caption { text-align:left;  }
-        table thead th { text-align:left; border-bottom-width:1px; border-top-width:1px; }
-        table th, td { text-align:left; padding:6px;}
-    </style>
 </head>
 <body>
 
@@ -486,35 +479,46 @@ var preparePage = function () {
 
         },
         refreshPrices:function (event) {
-            var priceCategories = _.filter(this.model.show.priceCategories, function (item) {
-                return item.section.id == event.currentTarget.value
-            })
-            var models = new Array()
-            _.each(priceCategories, function (priceCategory) {
-                var model = new TicketMonster.PriceCategoryQuantity()
-                model.set('priceCategory', priceCategory)
-                models.push(model)
-            })
-            this.ticketCategoriesView.model = new TicketMonster.SectionQuantities(models);
-            this.ticketCategoriesView.render();
-            $(this.el).trigger('pagecreate')
+            if (event.currentTarget.value != "Choose a section") {
+                var priceCategories = _.filter(this.model.show.priceCategories, function (item) {
+                    return item.section.id == event.currentTarget.value
+                })
+                var models = new Array()
+                _.each(priceCategories, function (priceCategory) {
+                    var model = new TicketMonster.PriceCategoryQuantity()
+                    model.set('priceCategory', priceCategory)
+                    models.push(model)
+                })
+                $("#ticketCategoriesViewPlaceholder").show()
+                this.ticketCategoriesView.model = new TicketMonster.SectionQuantities(models);
+                this.ticketCategoriesView.render();
+                $(this.el).trigger('pagecreate')
+            } else {
+                $("#ticketCategoriesViewPlaceholder").hide()
+                this.ticketCategoriesView.model =  new TicketMonster.SectionQuantities([])
+                this.updateForm()
+            }
         },
         checkout: function() {
             this.model.bookingRequest.tickets.push(this.ticketCategoriesView.model)
-            this.model.performance =
-            new TicketMonster.ConfirmBookingView({model:this.model, el:$("#container")}).render()
+            this.model.performance = new TicketMonster.ConfirmBookingView({model:this.model, el:$("#container")}).render()
             $("#container").trigger('pagecreate')
         },
         updateForm:function () {
-            var total = 0;
-                _.each(this.ticketCategoriesView.model.models, function (model) {
+
+            var totals =  _.reduce(this.ticketCategoriesView.model.models, function (partial, model) {
                     if (model.attributes.quantity != undefined) {
-                        total += model.attributes.quantity
+                        partial.tickets += model.attributes.quantity
+                        partial.price += model.attributes.quantity * model.attributes.priceCategory.price
+                        return partial
                     }
-                })
+                }, {tickets:0, price:0.0})
             this.model.email = $("input[type='email']").val()
-            if (total >0 && $("input[type='email']").val()) {
+            this.model.bookingRequest.totals = totals
+            if (totals.tickets >0 && $("input[type='email']").val()) {
                 $('a[id="confirmBooking"]').removeClass('ui-disabled')
+            } else {
+                $('a[id="confirmBooking"]').addClass('ui-disabled')
             }
         }
     });
@@ -522,7 +526,8 @@ var preparePage = function () {
 
     TicketMonster.ConfirmBookingView = Backbone.View.extend({
         events:{
-            "click a[id='saveBooking']":"save"
+            "click a[id='saveBooking']":"save",
+            "click a[id='goBack']":"back"
         },
         render:function () {
             applyTemplate($(this.el), $("#confirm-booking"), this.model)
@@ -530,7 +535,11 @@ var preparePage = function () {
             this.ticketSummaryView.render();
             $(this.el).trigger('pagecreate')
         },
-        save:function (event) {
+        back: function() {
+            tmRouter.navigate('book/' + this.model.bookingRequest.show.id +'/' + this.model.bookingRequest.performance.id, true)
+
+        }
+        ,save:function (event) {
             var bookingRequest = {ticketRequests:[]};
             var self = this;
             _.each(this.model.bookingRequest.tickets, function (collection) {
