@@ -341,7 +341,7 @@ TicketMonster.VenueDetailView = Backbone.View.extend({
                 return show.id == selectedShowId
             });
             this.selectedShow = selectedShow;
-            applyTemplate($("#venueEventDescription"), $("#venue-event-description"), {venue:selectedShow.venue});
+            applyTemplate($("#venueEventDescription"), $("#venue-event-description"), {event:selectedShow.event});
             var times = _.uniq(_.sortBy(_.map(selectedShow.performances, function (performance) {
                 return (new Date(performance.date).withoutTimeOfDay()).getTime()
             }), function (item) {
