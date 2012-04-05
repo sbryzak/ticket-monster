@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="page" value="#{sectionBean.page}"/>
+		<f:event type="preRenderView" listener="#{sectionBean.paginate}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Search Section entities"/>
+
+	<ui:define name="header">
+		Section
+	</ui:define>
+
+	<ui:define name="subheader">
+		Search Section entities
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:form id="search">
+			<h:panelGroup styleClass="search">
+
+				<h:panelGrid columnClasses="label,component,required" columns="3">
+					<h:outputLabel for="sectionBeanSearchName" value="Name:"/>
+					<h:panelGroup>
+						<h:inputText id="sectionBeanSearchName" value="#{sectionBean.search.name}"/>
+						<h:message for="sectionBeanSearchName" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+					<h:outputLabel for="sectionBeanSearchDescription" value="Description:"/>
+					<h:panelGroup>
+						<h:inputText id="sectionBeanSearchDescription" value="#{sectionBean.search.description}"/>
+						<h:message for="sectionBeanSearchDescription" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+					<h:outputLabel for="sectionBeanSearchNumberOfRows" value="Number Of Rows:"/>
+					<h:panelGroup>
+						<rich:inputNumberSpinner cycled="false" id="sectionBeanSearchNumberOfRows" maxValue="999999999" value="#{sectionBean.search.numberOfRows}"/>
+						<h:message for="sectionBeanSearchNumberOfRows" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+					<h:outputLabel for="sectionBeanSearchRowCapacity" value="Row Capacity:"/>
+					<h:panelGroup>
+						<rich:inputNumberSpinner cycled="false" id="sectionBeanSearchRowCapacity" maxValue="999999999" value="#{sectionBean.search.rowCapacity}"/>
+						<h:message for="sectionBeanSearchRowCapacity" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+					<h:outputLabel for="sectionBeanSearchVenue" value="Venue:"/>
+					<h:panelGroup>
+						<h:selectOneMenu converter="#{venueBean.converter}" id="sectionBeanSearchVenue" value="#{sectionBean.search.venue}">
+							<f:selectItem/>
+							<f:selectItems value="#{venueBean.all}"/>
+						</h:selectOneMenu>
+						<h:message for="sectionBeanSearchVenue" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+				</h:panelGrid>
+				<h:panelGroup styleClass="buttons">
+					<h:commandLink value="Search" action="#{sectionBean.search}"/>
+					<h:commandLink value="Create New" action="#{sectionBean.create}"/>
+				</h:panelGroup>
+			</h:panelGroup>
+			
+			<h:dataTable id="sectionBeanPageItems" styleClass="data-table" value="#{sectionBean.pageItems}" var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Name"/>
+					</f:facet>
+					<h:link outcome="/admin/section/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemName" value="#{_item.name}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Description"/>
+					</f:facet>
+					<h:link outcome="/admin/section/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemDescription" value="#{_item.description}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Number Of Rows"/>
+					</f:facet>
+					<h:link outcome="/admin/section/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemNumberOfRows" value="#{_item.numberOfRows}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Row Capacity"/>
+					</f:facet>
+					<h:link outcome="/admin/section/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemRowCapacity" value="#{_item.rowCapacity}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Capacity"/>
+					</f:facet>
+					<h:link outcome="/admin/section/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemCapacity" value="#{_item.capacity}"/>
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<ui:include src="/resources/scaffold/paginator.xhtml">
+				<ui:param name="paginatorBean" value="#{sectionBean}"/>
+			</ui:include>
+		</h:form>
+			
+	</ui:define>
+
+</ui:composition>

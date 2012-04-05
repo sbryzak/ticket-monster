@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="id" value="#{eventBean.id}"/>
+		<f:event type="preRenderView" listener="#{eventBean.retrieve}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="View Event"/>
+
+	<ui:define name="header">
+		Event
+	</ui:define>
+
+	<ui:define name="subheader">
+		View existing Event
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:panelGrid columnClasses="label,component,required" columns="3">
+			<h:outputLabel for="eventBeanEventName" value="Name:"/>
+			<h:outputText id="eventBeanEventName" value="#{eventBean.event.name}"/>
+			<h:outputText/>
+			<h:outputLabel for="eventBeanEventPicture" value="Picture:"/>
+			<h:link id="eventBeanEventPicture" outcome="/admin/mediaItem/view" value="#{eventBean.event.picture}">
+				<f:param name="id" value="#{eventBean.event.picture.id}"/>
+			</h:link>
+			<h:outputText/>
+			<h:outputLabel for="eventBeanEventCategory" value="Category:"/>
+			<h:link id="eventBeanEventCategory" outcome="/admin/eventCategory/view" value="#{eventBean.event.category}">
+				<f:param name="id" value="#{eventBean.event.category.id}"/>
+			</h:link>
+			<h:outputText/>
+			<h:outputLabel for="eventBeanEventDescription" value="Description:"/>
+			<h:outputText id="eventBeanEventDescription" value="#{eventBean.event.description}"/>
+			<h:outputText/>
+			<h:outputLabel value="Major:"/>
+			<h:outputText styleClass="#{eventBean.event.major ? 'boolean-true' : 'boolean-false'}"/>
+			<h:outputText/>
+		</h:panelGrid>
+
+		<div class="buttons">
+			<h:link value="View All" outcome="search"/> 
+			<h:link value="Edit" outcome="create" includeViewParams="true"/>
+			<h:link value="Create New" outcome="create"/>
+		</div>
+	</ui:define>
+
+</ui:composition>

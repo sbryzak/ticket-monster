@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:forgeview="http://jboss.org/forge/view"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="id" value="#{venueBean.id}"/>
+		<f:event type="preRenderView" listener="#{venueBean.retrieve}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="View Venue"/>
+
+	<ui:define name="header">
+		Venue
+	</ui:define>
+
+	<ui:define name="subheader">
+		View existing Venue
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:panelGrid columnClasses="label,component,required" columns="3">
+			<h:outputLabel for="venueBeanVenueName" value="Name:"/>
+			<h:outputText id="venueBeanVenueName" value="#{venueBean.venue.name}"/>
+			<h:outputText/>
+			<h:outputLabel for="venueBeanVenueAddress" value="Address:"/>
+			<h:panelGrid columnClasses="label,component,required" columns="3" id="venueBeanVenueAddress" rendered="#{!empty venueBean.venue.address}">
+				<h:outputLabel for="venueBeanVenueAddressStreet" value="Street:"/>
+				<h:outputText id="venueBeanVenueAddressStreet" value="#{venueBean.venue.address.street}"/>
+				<h:outputText/>
+				<h:outputLabel for="venueBeanVenueAddressCity" value="City:"/>
+				<h:outputText id="venueBeanVenueAddressCity" value="#{venueBean.venue.address.city}"/>
+				<h:outputText/>
+				<h:outputLabel for="venueBeanVenueAddressCountry" value="Country:"/>
+				<h:outputText id="venueBeanVenueAddressCountry" value="#{venueBean.venue.address.country}"/>
+				<h:outputText/>
+			</h:panelGrid>
+			<h:outputText/>
+			<h:outputLabel for="venueBeanVenuePicture" value="Picture:"/>
+			<h:link id="venueBeanVenuePicture" outcome="/admin/mediaItem/view" value="#{venueBean.venue.picture}">
+				<f:param name="id" value="#{venueBean.venue.picture.id}"/>
+			</h:link>
+			<h:outputText/>
+			<h:outputLabel for="venueBeanVenueDescription" value="Description:"/>
+			<h:outputText id="venueBeanVenueDescription" value="#{venueBean.venue.description}"/>
+			<h:outputText/>
+			<h:outputLabel for="venueBeanVenueSections" value="Sections:"/>
+			<h:dataTable id="venueBeanVenueSections" styleClass="data-table" value="#{forgeview:asList(venueBean.venue.sections)}" var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Name"/>
+					</f:facet>
+					<h:link outcome="/admin/section/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemName" value="#{_item.name}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Description"/>
+					</f:facet>
+					<h:link outcome="/admin/section/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemDescription" value="#{_item.description}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Number Of Rows"/>
+					</f:facet>
+					<h:link outcome="/admin/section/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemNumberOfRows" value="#{_item.numberOfRows}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Row Capacity"/>
+					</f:facet>
+					<h:link outcome="/admin/section/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemRowCapacity" value="#{_item.rowCapacity}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Capacity"/>
+					</f:facet>
+					<h:link outcome="/admin/section/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemCapacity" value="#{_item.capacity}"/>
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<h:outputText/>
+			<h:outputLabel for="venueBeanVenueCapacity" value="Capacity:"/>
+			<h:outputText id="venueBeanVenueCapacity" value="#{venueBean.venue.capacity}"/>
+			<h:outputText/>
+		</h:panelGrid>
+
+		<div class="buttons">
+			<h:link value="View All" outcome="search"/> 
+			<h:link value="Edit" outcome="create" includeViewParams="true"/>
+			<h:link value="Create New" outcome="create"/>
+		</div>
+	</ui:define>
+
+</ui:composition>

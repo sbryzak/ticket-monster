@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:forgeview="http://jboss.org/forge/view"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="id" value="#{showBean.id}"/>
+		<f:event type="preRenderView" listener="#{showBean.retrieve}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="View Show"/>
+
+	<ui:define name="header">
+		Show
+	</ui:define>
+
+	<ui:define name="subheader">
+		View existing Show
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:panelGrid columnClasses="label,component,required" columns="3">
+			<h:outputLabel for="showBeanShowEvent" value="Event:"/>
+			<h:link id="showBeanShowEvent" outcome="/admin/event/view" value="#{showBean.show.event}">
+				<f:param name="id" value="#{showBean.show.event.id}"/>
+			</h:link>
+			<h:outputText/>
+			<h:outputLabel for="showBeanShowPerformances" value="Performances:"/>
+			<h:dataTable id="showBeanShowPerformances" styleClass="data-table" value="#{forgeview:asList(showBean.show.performances)}" var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Date"/>
+					</f:facet>
+					<h:link outcome="/admin/performance/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemDate" value="#{_item.date}">
+							<f:convertDateTime type="both"/>
+						</h:outputText>
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<h:outputText/>
+			<h:outputLabel for="showBeanShowVenue" value="Venue:"/>
+			<h:link id="showBeanShowVenue" outcome="/admin/venue/view" value="#{showBean.show.venue}">
+				<f:param name="id" value="#{showBean.show.venue.id}"/>
+			</h:link>
+			<h:outputText/>
+			<h:outputLabel for="showBeanShowPriceCategories" value="Price Categories:"/>
+			<h:dataTable id="showBeanShowPriceCategories" styleClass="data-table" value="#{forgeview:asList(showBean.show.priceCategories)}" var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Section"/>
+					</f:facet>
+					<h:link outcome="/admin/ticketPriceCategory/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemSection" value="#{_item.section}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Ticket Category"/>
+					</f:facet>
+					<h:link outcome="/admin/ticketPriceCategory/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemTicketCategory" value="#{_item.ticketCategory}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Price"/>
+					</f:facet>
+					<h:link outcome="/admin/ticketPriceCategory/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemPrice" value="#{_item.price}"/>
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<h:outputText/>
+		</h:panelGrid>
+
+		<div class="buttons">
+			<h:link value="View All" outcome="search"/> 
+			<h:link value="Edit" outcome="create" includeViewParams="true"/>
+			<h:link value="Create New" outcome="create"/>
+		</div>
+	</ui:define>
+
+</ui:composition>

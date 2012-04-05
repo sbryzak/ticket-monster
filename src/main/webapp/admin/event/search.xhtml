@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="page" value="#{eventBean.page}"/>
+		<f:event type="preRenderView" listener="#{eventBean.paginate}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Search Event entities"/>
+
+	<ui:define name="header">
+		Event
+	</ui:define>
+
+	<ui:define name="subheader">
+		Search Event entities
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:form id="search">
+			<h:panelGroup styleClass="search">
+
+				<h:panelGrid columnClasses="label,component,required" columns="3">
+					<h:outputLabel for="eventBeanSearchName" value="Name:"/>
+					<h:panelGroup>
+						<h:inputText id="eventBeanSearchName" maxLength="50" value="#{eventBean.search.name}"/>
+						<h:message for="eventBeanSearchName" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+					<h:outputLabel for="eventBeanSearchPicture" value="Picture:"/>
+					<h:panelGroup>
+						<h:selectOneMenu converter="#{mediaItemBean.converter}" id="eventBeanSearchPicture" value="#{eventBean.search.picture}">
+							<f:selectItem/>
+							<f:selectItems value="#{mediaItemBean.all}"/>
+						</h:selectOneMenu>
+						<h:message for="eventBeanSearchPicture" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+					<h:outputLabel for="eventBeanSearchCategory" value="Category:"/>
+					<h:panelGroup>
+						<h:selectOneMenu converter="#{eventCategoryBean.converter}" id="eventBeanSearchCategory" value="#{eventBean.search.category}">
+							<f:selectItems value="#{eventCategoryBean.all}"/>
+						</h:selectOneMenu>
+						<h:message for="eventBeanSearchCategory" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+					<h:outputLabel for="eventBeanSearchDescription" value="Description:"/>
+					<h:panelGroup>
+						<h:inputText id="eventBeanSearchDescription" maxLength="1000" value="#{eventBean.search.description}"/>
+						<h:message for="eventBeanSearchDescription" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+				</h:panelGrid>
+				<h:panelGroup styleClass="buttons">
+					<h:commandLink value="Search" action="#{eventBean.search}"/>
+					<h:commandLink value="Create New" action="#{eventBean.create}"/>
+				</h:panelGroup>
+			</h:panelGroup>
+			
+			<h:dataTable id="eventBeanPageItems" styleClass="data-table" value="#{eventBean.pageItems}" var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Name"/>
+					</f:facet>
+					<h:link outcome="/admin/event/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemName" value="#{_item.name}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Category"/>
+					</f:facet>
+					<h:link outcome="/admin/event/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemCategory" value="#{_item.category}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Description"/>
+					</f:facet>
+					<h:link outcome="/admin/event/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemDescription" value="#{_item.description}"/>
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<ui:include src="/resources/scaffold/paginator.xhtml">
+				<ui:param name="paginatorBean" value="#{eventBean}"/>
+			</ui:include>
+		</h:form>
+			
+	</ui:define>
+
+</ui:composition>

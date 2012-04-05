@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="id" value="#{ticketPriceCategoryBean.id}"/>
+		<f:event type="preRenderView" listener="#{ticketPriceCategoryBean.retrieve}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="View Ticket Price Category"/>
+
+	<ui:define name="header">
+		Ticket Price Category
+	</ui:define>
+
+	<ui:define name="subheader">
+		View existing Ticket Price Category
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:panelGrid columnClasses="label,component,required" columns="3">
+			<h:outputLabel for="ticketPriceCategoryBeanTicketPriceCategoryShow" value="Show:"/>
+			<h:link id="ticketPriceCategoryBeanTicketPriceCategoryShow" outcome="/admin/show/view" value="#{ticketPriceCategoryBean.ticketPriceCategory.show}">
+				<f:param name="id" value="#{ticketPriceCategoryBean.ticketPriceCategory.show.id}"/>
+			</h:link>
+			<h:outputText/>
+			<h:outputLabel for="ticketPriceCategoryBeanTicketPriceCategorySection" value="Section:"/>
+			<h:link id="ticketPriceCategoryBeanTicketPriceCategorySection" outcome="/admin/section/view" value="#{ticketPriceCategoryBean.ticketPriceCategory.section}">
+				<f:param name="id" value="#{ticketPriceCategoryBean.ticketPriceCategory.section.id}"/>
+			</h:link>
+			<h:outputText/>
+			<h:outputLabel for="ticketPriceCategoryBeanTicketPriceCategoryTicketCategory" value="Ticket Category:"/>
+			<h:link id="ticketPriceCategoryBeanTicketPriceCategoryTicketCategory" outcome="/admin/ticketCategory/view" value="#{ticketPriceCategoryBean.ticketPriceCategory.ticketCategory}">
+				<f:param name="id" value="#{ticketPriceCategoryBean.ticketPriceCategory.ticketCategory.id}"/>
+			</h:link>
+			<h:outputText/>
+			<h:outputLabel for="ticketPriceCategoryBeanTicketPriceCategoryPrice" value="Price:"/>
+			<h:outputText id="ticketPriceCategoryBeanTicketPriceCategoryPrice" value="#{ticketPriceCategoryBean.ticketPriceCategory.price}"/>
+			<h:outputText/>
+		</h:panelGrid>
+
+		<div class="buttons">
+			<h:link value="View All" outcome="search"/> 
+			<h:link value="Edit" outcome="create" includeViewParams="true"/>
+			<h:link value="Create New" outcome="create"/>
+		</div>
+	</ui:define>
+
+</ui:composition>

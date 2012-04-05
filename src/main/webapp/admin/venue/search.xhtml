@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:rich="http://richfaces.org/rich"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="page" value="#{venueBean.page}"/>
+		<f:event type="preRenderView" listener="#{venueBean.paginate}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Search Venue entities"/>
+
+	<ui:define name="header">
+		Venue
+	</ui:define>
+
+	<ui:define name="subheader">
+		Search Venue entities
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:form id="search">
+			<h:panelGroup styleClass="search">
+
+				<h:panelGrid columnClasses="label,component,required" columns="3">
+					<h:outputLabel for="venueBeanSearchName" value="Name:"/>
+					<h:panelGroup>
+						<h:inputText id="venueBeanSearchName" value="#{venueBean.search.name}"/>
+						<h:message for="venueBeanSearchName" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+					<h:outputLabel for="venueBeanSearchPicture" value="Picture:"/>
+					<h:panelGroup>
+						<h:selectOneMenu converter="#{mediaItemBean.converter}" id="venueBeanSearchPicture" value="#{venueBean.search.picture}">
+							<f:selectItem/>
+							<f:selectItems value="#{mediaItemBean.all}"/>
+						</h:selectOneMenu>
+						<h:message for="venueBeanSearchPicture" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+					<h:outputLabel for="venueBeanSearchDescription" value="Description:"/>
+					<h:panelGroup>
+						<h:inputText id="venueBeanSearchDescription" value="#{venueBean.search.description}"/>
+						<h:message for="venueBeanSearchDescription" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+					<h:outputLabel for="venueBeanSearchCapacity" value="Capacity:"/>
+					<h:panelGroup>
+						<rich:inputNumberSpinner cycled="false" id="venueBeanSearchCapacity" maxValue="999999999" value="#{venueBean.search.capacity}"/>
+						<h:message for="venueBeanSearchCapacity" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+				</h:panelGrid>
+				<h:panelGroup styleClass="buttons">
+					<h:commandLink value="Search" action="#{venueBean.search}"/>
+					<h:commandLink value="Create New" action="#{venueBean.create}"/>
+				</h:panelGroup>
+			</h:panelGroup>
+			
+			<h:dataTable id="venueBeanPageItems" styleClass="data-table" value="#{venueBean.pageItems}" var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Name"/>
+					</f:facet>
+					<h:link outcome="/admin/venue/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemName" value="#{_item.name}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Picture"/>
+					</f:facet>
+					<h:link outcome="/admin/venue/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemPicture" value="#{_item.picture}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Description"/>
+					</f:facet>
+					<h:link outcome="/admin/venue/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemDescription" value="#{_item.description}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Capacity"/>
+					</f:facet>
+					<h:link outcome="/admin/venue/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemCapacity" value="#{_item.capacity}"/>
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<ui:include src="/resources/scaffold/paginator.xhtml">
+				<ui:param name="paginatorBean" value="#{venueBean}"/>
+			</ui:include>
+		</h:form>
+			
+	</ui:define>
+
+</ui:composition>

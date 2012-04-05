@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:rich="http://richfaces.org/rich"	
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="id" value="#{ticketPriceCategoryBean.id}"/>
+		<f:event type="preRenderView" listener="#{ticketPriceCategoryBean.retrieve}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Create Ticket Price Category"/>
+
+	<ui:define name="header">
+		Ticket Price Category
+	</ui:define>
+
+	<ui:define name="subheader">
+		<c:choose>
+			<c:when test="#{!empty ticketPriceCategoryBean.id}">
+				Edit existing Ticket Price Category
+			</c:when>
+			<c:otherwise>
+				Create a new Ticket Price Category
+			</c:otherwise>
+		</c:choose>
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:form id="create">
+			<h:messages globalOnly="true" styleClass="error"/>
+
+			<h:panelGrid columnClasses="label,component,required" columns="3">
+				<h:outputLabel for="ticketPriceCategoryBeanTicketPriceCategoryShow" value="Show:"/>
+				<h:panelGroup>
+					<h:selectOneMenu converter="#{showBean.converter}" id="ticketPriceCategoryBeanTicketPriceCategoryShow" value="#{ticketPriceCategoryBean.ticketPriceCategory.show}">
+						<f:selectItem/>
+						<f:selectItems value="#{showBean.all}"/>
+					</h:selectOneMenu>
+					<h:message for="ticketPriceCategoryBeanTicketPriceCategoryShow" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText/>
+				<h:outputLabel for="ticketPriceCategoryBeanTicketPriceCategorySection" value="Section:"/>
+				<h:panelGroup>
+					<h:selectOneMenu converter="#{sectionBean.converter}" id="ticketPriceCategoryBeanTicketPriceCategorySection" value="#{ticketPriceCategoryBean.ticketPriceCategory.section}">
+						<f:selectItem/>
+						<f:selectItems value="#{sectionBean.all}"/>
+					</h:selectOneMenu>
+					<h:message for="ticketPriceCategoryBeanTicketPriceCategorySection" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText/>
+				<h:outputLabel for="ticketPriceCategoryBeanTicketPriceCategoryTicketCategory" value="Ticket Category:"/>
+				<h:panelGroup>
+					<h:selectOneMenu converter="#{ticketCategoryBean.converter}" id="ticketPriceCategoryBeanTicketPriceCategoryTicketCategory" value="#{ticketPriceCategoryBean.ticketPriceCategory.ticketCategory}">
+						<f:selectItem/>
+						<f:selectItems value="#{ticketCategoryBean.all}"/>
+					</h:selectOneMenu>
+					<h:message for="ticketPriceCategoryBeanTicketPriceCategoryTicketCategory" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText/>
+				<h:outputLabel for="ticketPriceCategoryBeanTicketPriceCategoryPrice" value="Price:"/>
+				<h:panelGroup>
+					<rich:inputNumberSpinner cycled="false" id="ticketPriceCategoryBeanTicketPriceCategoryPrice" maxValue="999999999" step="0.1" value="#{ticketPriceCategoryBean.ticketPriceCategory.price}"/>
+					<h:message for="ticketPriceCategoryBeanTicketPriceCategoryPrice" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText/>
+			</h:panelGrid>
+
+			<div class="buttons">
+				<h:commandLink value="Save" action="#{ticketPriceCategoryBean.update}"/>
+				<c:choose>
+					<c:when test="#{!empty ticketPriceCategoryBean.id}">
+						<h:link value="Cancel" outcome="view">
+							<f:param name="id" value="#{ticketPriceCategoryBean.id}"/>
+						</h:link>
+						<h:commandLink value="Delete" action="#{ticketPriceCategoryBean.delete}"/>
+					</c:when>
+					<c:otherwise>
+						<h:link value="Cancel" outcome="search"/>
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

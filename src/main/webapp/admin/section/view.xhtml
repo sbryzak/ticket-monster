@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="id" value="#{sectionBean.id}"/>
+		<f:event type="preRenderView" listener="#{sectionBean.retrieve}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="View Section"/>
+
+	<ui:define name="header">
+		Section
+	</ui:define>
+
+	<ui:define name="subheader">
+		View existing Section
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:panelGrid columnClasses="label,component,required" columns="3">
+			<h:outputLabel for="sectionBeanSectionName" value="Name:"/>
+			<h:outputText id="sectionBeanSectionName" value="#{sectionBean.section.name}"/>
+			<h:outputText/>
+			<h:outputLabel for="sectionBeanSectionDescription" value="Description:"/>
+			<h:outputText id="sectionBeanSectionDescription" value="#{sectionBean.section.description}"/>
+			<h:outputText/>
+			<h:outputLabel for="sectionBeanSectionNumberOfRows" value="Number Of Rows:"/>
+			<h:outputText id="sectionBeanSectionNumberOfRows" value="#{sectionBean.section.numberOfRows}"/>
+			<h:outputText/>
+			<h:outputLabel for="sectionBeanSectionRowCapacity" value="Row Capacity:"/>
+			<h:outputText id="sectionBeanSectionRowCapacity" value="#{sectionBean.section.rowCapacity}"/>
+			<h:outputText/>
+			<h:outputLabel for="sectionBeanSectionCapacity" value="Capacity:"/>
+			<h:outputText id="sectionBeanSectionCapacity" value="#{sectionBean.section.capacity}"/>
+			<h:outputText/>
+			<h:outputLabel for="sectionBeanSectionVenue" value="Venue:"/>
+			<h:link id="sectionBeanSectionVenue" outcome="/admin/venue/view" value="#{sectionBean.section.venue}">
+				<f:param name="id" value="#{sectionBean.section.venue.id}"/>
+			</h:link>
+			<h:outputText/>
+		</h:panelGrid>
+
+		<div class="buttons">
+			<h:link value="View All" outcome="search"/> 
+			<h:link value="Edit" outcome="create" includeViewParams="true"/>
+			<h:link value="Create New" outcome="create"/>
+		</div>
+	</ui:define>
+
+</ui:composition>
