@@ -17,17 +17,17 @@ richfaces setup;
 
 @/* Scaffold CRUD views for the entities that an admin would start drilling down into the data model from */;
 
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Venue;
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.TicketCategory;
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.TicketPriceCategory;
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Show;
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.EventCategory;
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Event;
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Section;
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Show;
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Performance;
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.EventCategory;
-scaffold from-entity org.jboss.jdf.example.ticketmonster.model.MediaItem;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Venue --targetDir admin;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.TicketCategory --targetDir admin;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.TicketPriceCategory --targetDir admin;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Show --targetDir admin;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.EventCategory --targetDir admin;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Event --targetDir admin;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Section --targetDir admin;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Show --targetDir admin;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.Performance --targetDir admin;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.EventCategory --targetDir admin;
+scaffold from-entity org.jboss.jdf.example.ticketmonster.model.MediaItem --targetDir admin;
 
 
 @/* Deploy this to JBoss AS 7 to see the result */;
