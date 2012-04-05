@@ -7,7 +7,7 @@ package org.jboss.jdf.example.ticketmonster.util;
  */
 public class AvailabilityUtils
 {
-   public static final String getAvailability(int capacity, int available)
+   public static String getAvailability(int capacity, int available)
    {
       double percent = (available * 1.0) / (capacity * 1.0) * 100.0;
       

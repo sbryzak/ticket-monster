@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:rich="http://richfaces.org/rich"	
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="id" value="#{sectionBean.id}"/>
+		<f:event type="preRenderView" listener="#{sectionBean.retrieve}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Create Section"/>
+
+	<ui:define name="header">
+		Section
+	</ui:define>
+
+	<ui:define name="subheader">
+		<c:choose>
+			<c:when test="#{!empty sectionBean.id}">
+				Edit existing Section
+			</c:when>
+			<c:otherwise>
+				Create a new Section
+			</c:otherwise>
+		</c:choose>
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:form id="create">
+			<h:messages globalOnly="true" styleClass="error"/>
+
+			<h:panelGrid columnClasses="label,component,required" columns="3">
+				<h:outputLabel for="sectionBeanSectionName" value="Name:"/>
+				<h:panelGroup>
+					<h:inputText id="sectionBeanSectionName" value="#{sectionBean.section.name}"/>
+					<h:message for="sectionBeanSectionName" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText/>
+				<h:outputLabel for="sectionBeanSectionDescription" value="Description:"/>
+				<h:panelGroup>
+					<h:inputText id="sectionBeanSectionDescription" value="#{sectionBean.section.description}"/>
+					<h:message for="sectionBeanSectionDescription" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText/>
+				<h:outputLabel for="sectionBeanSectionNumberOfRows" value="Number Of Rows:"/>
+				<h:panelGroup>
+					<rich:inputNumberSpinner cycled="false" id="sectionBeanSectionNumberOfRows" maxValue="999999999" value="#{sectionBean.section.numberOfRows}"/>
+					<h:message for="sectionBeanSectionNumberOfRows" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText/>
+				<h:outputLabel for="sectionBeanSectionRowCapacity" value="Row Capacity:"/>
+				<h:panelGroup>
+					<rich:inputNumberSpinner cycled="false" id="sectionBeanSectionRowCapacity" maxValue="999999999" value="#{sectionBean.section.rowCapacity}"/>
+					<h:message for="sectionBeanSectionRowCapacity" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText/>
+				<h:outputLabel for="sectionBeanSectionCapacity" value="Capacity:"/>
+				<h:outputText id="sectionBeanSectionCapacity" value="#{sectionBean.section.capacity}"/>
+				<h:outputText/>
+				<h:outputLabel for="sectionBeanSectionVenue" value="Venue:"/>
+				<h:panelGroup>
+					<h:selectOneMenu converter="#{venueBean.converter}" id="sectionBeanSectionVenue" value="#{sectionBean.section.venue}">
+						<f:selectItem/>
+						<f:selectItems value="#{venueBean.all}"/>
+					</h:selectOneMenu>
+					<h:message for="sectionBeanSectionVenue" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText/>
+			</h:panelGrid>
+
+			<div class="buttons">
+				<h:commandLink value="Save" action="#{sectionBean.update}"/>
+				<c:choose>
+					<c:when test="#{!empty sectionBean.id}">
+						<h:link value="Cancel" outcome="view">
+							<f:param name="id" value="#{sectionBean.id}"/>
+						</h:link>
+						<h:commandLink value="Delete" action="#{sectionBean.delete}"/>
+					</c:when>
+					<c:otherwise>
+						<h:link value="Cancel" outcome="search"/>
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

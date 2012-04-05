@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"	
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="id" value="#{eventBean.id}"/>
+		<f:event type="preRenderView" listener="#{eventBean.retrieve}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Create Event"/>
+
+	<ui:define name="header">
+		Event
+	</ui:define>
+
+	<ui:define name="subheader">
+		<c:choose>
+			<c:when test="#{!empty eventBean.id}">
+				Edit existing Event
+			</c:when>
+			<c:otherwise>
+				Create a new Event
+			</c:otherwise>
+		</c:choose>
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:form id="create">
+			<h:messages globalOnly="true" styleClass="error"/>
+
+			<h:panelGrid columnClasses="label,component,required" columns="3">
+				<h:outputLabel for="eventBeanEventName" value="Name:"/>
+				<h:panelGroup>
+					<h:inputText id="eventBeanEventName" maxLength="50" required="true" value="#{eventBean.event.name}"/>
+					<h:message for="eventBeanEventName" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText value="*"/>
+				<h:outputLabel for="eventBeanEventPicture" value="Picture:"/>
+				<h:panelGroup>
+					<h:selectOneMenu converter="#{mediaItemBean.converter}" id="eventBeanEventPicture" value="#{eventBean.event.picture}">
+						<f:selectItem/>
+						<f:selectItems value="#{mediaItemBean.all}"/>
+					</h:selectOneMenu>
+					<h:message for="eventBeanEventPicture" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText/>
+				<h:outputLabel for="eventBeanEventCategory" value="Category:"/>
+				<h:panelGroup>
+					<h:selectOneMenu converter="#{eventCategoryBean.converter}" id="eventBeanEventCategory" required="true" value="#{eventBean.event.category}">
+						<f:selectItems value="#{eventCategoryBean.all}"/>
+					</h:selectOneMenu>
+					<h:message for="eventBeanEventCategory" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText value="*"/>
+				<h:outputLabel for="eventBeanEventDescription" value="Description:"/>
+				<h:panelGroup>
+					<h:inputText id="eventBeanEventDescription" maxLength="1000" required="true" value="#{eventBean.event.description}"/>
+					<h:message for="eventBeanEventDescription" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText value="*"/>
+				<h:outputLabel for="eventBeanEventMajor" value="Major:"/>
+				<h:panelGroup>
+					<h:selectBooleanCheckbox id="eventBeanEventMajor" value="#{eventBean.event.major}"/>
+					<h:message for="eventBeanEventMajor" styleClass="error"/>
+				</h:panelGroup>
+				<h:outputText/>
+			</h:panelGrid>
+
+			<div class="buttons">
+				<h:commandLink value="Save" action="#{eventBean.update}"/>
+				<c:choose>
+					<c:when test="#{!empty eventBean.id}">
+						<h:link value="Cancel" outcome="view">
+							<f:param name="id" value="#{eventBean.id}"/>
+						</h:link>
+						<h:commandLink value="Delete" action="#{eventBean.delete}"/>
+					</c:when>
+					<c:otherwise>
+						<h:link value="Cancel" outcome="search"/>
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

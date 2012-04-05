@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite">
+<head>
+<title>Cached Image</title>
+</head>
+<body>
+
+<composite:interface>
+    <composite:attribute name="media" type="org.jboss.jdf.example.ticketmonster.services.MediaPath"/>
+</composite:interface>
+
+<composite:implementation>
+    <h:graphicImage value="#{cc.attrs.media.url}" rendered="#{!cc.attrs.media.cached}"/>
+    <h:graphicImage value="/rest/media/cache/#{cc.attrs.media.url}" rendered="#{cc.attrs.media.cached}"/>
+</composite:implementation>
+
+</body>
+</html>

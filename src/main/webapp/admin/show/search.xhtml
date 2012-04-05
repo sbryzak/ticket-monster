@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="page" value="#{showBean.page}"/>
+		<f:event type="preRenderView" listener="#{showBean.paginate}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Search Show entities"/>
+
+	<ui:define name="header">
+		Show
+	</ui:define>
+
+	<ui:define name="subheader">
+		Search Show entities
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:form id="search">
+			<h:panelGroup styleClass="search">
+
+				<h:panelGrid columnClasses="label,component,required" columns="3">
+					<h:outputLabel for="showBeanSearchEvent" value="Event:"/>
+					<h:panelGroup>
+						<h:selectOneMenu converter="#{eventBean.converter}" id="showBeanSearchEvent" value="#{showBean.search.event}">
+							<f:selectItem/>
+							<f:selectItems value="#{eventBean.all}"/>
+						</h:selectOneMenu>
+						<h:message for="showBeanSearchEvent" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+					<h:outputLabel for="showBeanSearchVenue" value="Venue:"/>
+					<h:panelGroup>
+						<h:selectOneMenu converter="#{venueBean.converter}" id="showBeanSearchVenue" value="#{showBean.search.venue}">
+							<f:selectItem/>
+							<f:selectItems value="#{venueBean.all}"/>
+						</h:selectOneMenu>
+						<h:message for="showBeanSearchVenue" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+				</h:panelGrid>
+				<h:panelGroup styleClass="buttons">
+					<h:commandLink value="Search" action="#{showBean.search}"/>
+					<h:commandLink value="Create New" action="#{showBean.create}"/>
+				</h:panelGroup>
+			</h:panelGroup>
+			
+			<h:dataTable id="showBeanPageItems" styleClass="data-table" value="#{showBean.pageItems}" var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Event"/>
+					</f:facet>
+					<h:link outcome="/admin/show/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemEvent" value="#{_item.event}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Venue"/>
+					</f:facet>
+					<h:link outcome="/admin/show/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemVenue" value="#{_item.venue}"/>
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<ui:include src="/resources/scaffold/paginator.xhtml">
+				<ui:param name="paginatorBean" value="#{showBean}"/>
+			</ui:include>
+		</h:form>
+			
+	</ui:define>
+
+</ui:composition>

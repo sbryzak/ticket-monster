@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="page" value="#{mediaItemBean.page}"/>
+		<f:event type="preRenderView" listener="#{mediaItemBean.paginate}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Search Media Item entities"/>
+
+	<ui:define name="header">
+		Media Item
+	</ui:define>
+
+	<ui:define name="subheader">
+		Search Media Item entities
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:form id="search">
+			<h:panelGroup styleClass="search">
+
+				<h:panelGrid columnClasses="label,component,required" columns="3">
+					<h:outputLabel for="mediaItemBeanSearchMediaType" value="Media Type:"/>
+					<h:panelGroup>
+						<h:selectOneMenu id="mediaItemBeanSearchMediaType" value="#{mediaItemBean.search.mediaType}">
+							<f:selectItem/>
+							<f:selectItem itemValue="IMAGE"/>
+						</h:selectOneMenu>
+						<h:message for="mediaItemBeanSearchMediaType" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+					<h:outputLabel for="mediaItemBeanSearchUrl" value="Url:"/>
+					<h:panelGroup>
+						<h:inputText id="mediaItemBeanSearchUrl" value="#{mediaItemBean.search.url}"/>
+						<h:message for="mediaItemBeanSearchUrl" styleClass="error"/>
+					</h:panelGroup>
+					<h:outputText/>
+				</h:panelGrid>
+				<h:panelGroup styleClass="buttons">
+					<h:commandLink value="Search" action="#{mediaItemBean.search}"/>
+					<h:commandLink value="Create New" action="#{mediaItemBean.create}"/>
+				</h:panelGroup>
+			</h:panelGroup>
+			
+			<h:dataTable id="mediaItemBeanPageItems" styleClass="data-table" value="#{mediaItemBean.pageItems}" var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Media Type"/>
+					</f:facet>
+					<h:link outcome="/admin/mediaItem/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemMediaType" value="#{_item.mediaType}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Url"/>
+					</f:facet>
+					<h:link outcome="/admin/mediaItem/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemUrl" value="#{_item.url}"/>
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<ui:include src="/resources/scaffold/paginator.xhtml">
+				<ui:param name="paginatorBean" value="#{mediaItemBean}"/>
+			</ui:include>
+		</h:form>
+			
+	</ui:define>
+
+</ui:composition>

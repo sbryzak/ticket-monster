@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="id" value="#{sectionAllocationBean.id}"/>
+		<f:event type="preRenderView" listener="#{sectionAllocationBean.retrieve}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="View Section Allocation"/>
+
+	<ui:define name="header">
+		Section Allocation
+	</ui:define>
+
+	<ui:define name="subheader">
+		View existing Section Allocation
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:panelGrid columnClasses="label,component,required" columns="3">
+			<h:outputLabel for="sectionAllocationBeanSectionAllocationPerformance" value="Performance:"/>
+			<h:link id="sectionAllocationBeanSectionAllocationPerformance" outcome="/admin/performance/view" value="#{sectionAllocationBean.sectionAllocation.performance}">
+				<f:param name="id" value="#{sectionAllocationBean.sectionAllocation.performance.id}"/>
+			</h:link>
+			<h:outputText/>
+			<h:outputLabel for="sectionAllocationBeanSectionAllocationSection" value="Section:"/>
+			<h:link id="sectionAllocationBeanSectionAllocationSection" outcome="/admin/section/view" value="#{sectionAllocationBean.sectionAllocation.section}">
+				<f:param name="id" value="#{sectionAllocationBean.sectionAllocation.section.id}"/>
+			</h:link>
+			<h:outputText/>
+		</h:panelGrid>
+
+		<div class="buttons">
+			<h:link value="View All" outcome="search"/> 
+			<h:link value="Edit" outcome="create" includeViewParams="true"/>
+			<h:link value="Create New" outcome="create"/>
+		</div>
+	</ui:define>
+
+</ui:composition>

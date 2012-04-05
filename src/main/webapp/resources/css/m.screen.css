@@ -66,33 +66,32 @@ span.success {
 }
 
 /* Member table styles */
-#mem_tbl {
+table {
    background-color: #E6E7E8;
    clear: both;
    width: 100%;
 }
 
-#mem_tbl td {
+td {
    height: 2em;
    padding-left: 6px;
    font-size: 11px;
 }
 
-#mem_tbl th {
+th {
    font-weight: normal;
    padding: 0 10px 0 5px;
    border-bottom: #999999 dotted 1px;
 }
 
-#mem_tbl thead {
-
+thead {
    font-weight: bold;
    color: #FFFFFF;
    background-color: black;
    text-align: left;
 }
 
-#mem_tbl tfoot {
+tfoot {
    height: 20px;
    font-weight: bold;
    background-color: #EAECEE;
@@ -100,11 +99,11 @@ span.success {
 }
 
 /* Using new CSS3 selectors for styling*/
-#members tr:nth-child(odd) {
+tbody tr:nth-child(odd) {
    background: #f4f3f3;
 }
 
-#members tr:nth-child(even) {
+tbody tr:nth-child(even) {
    background: #ffffff;
 }
 

@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/scaffold/pageTemplate.xhtml">
+
+	<f:metadata>
+		<f:viewParam name="page" value="#{sectionAllocationBean.page}"/>
+		<f:event type="preRenderView" listener="#{sectionAllocationBean.paginate}"/>
+	</f:metadata>
+
+	<ui:param name="pageTitle" value="Search Section Allocation entities"/>
+
+	<ui:define name="header">
+		Section Allocation
+	</ui:define>
+
+	<ui:define name="subheader">
+		Search Section Allocation entities
+	</ui:define>
+
+	<ui:define name="footer"/>
+
+	<ui:define name="main">
+		<h:form id="search">
+			<h:panelGroup styleClass="search">
+
+				<h:panelGrid columnClasses="label,component,required" columns="3"/>
+				<h:panelGroup styleClass="buttons">
+					<h:commandLink value="Search" action="#{sectionAllocationBean.search}"/>
+					<h:commandLink value="Create New" action="#{sectionAllocationBean.create}"/>
+				</h:panelGroup>
+			</h:panelGroup>
+			
+			<h:dataTable id="sectionAllocationBeanPageItems" styleClass="data-table" value="#{sectionAllocationBean.pageItems}" var="_item">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Performance"/>
+					</f:facet>
+					<h:link outcome="/admin/sectionAllocation/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemPerformance" value="#{_item.performance}"/>
+					</h:link>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Section"/>
+					</f:facet>
+					<h:link outcome="/admin/sectionAllocation/view">
+						<f:param name="id" value="#{_item.id}"/>
+						<h:outputText id="itemSection" value="#{_item.section}"/>
+					</h:link>
+				</h:column>
+			</h:dataTable>
+			<ui:include src="/resources/scaffold/paginator.xhtml">
+				<ui:param name="paginatorBean" value="#{sectionAllocationBean}"/>
+			</ui:include>
+		</h:form>
+			
+	</ui:define>
+
+</ui:composition>

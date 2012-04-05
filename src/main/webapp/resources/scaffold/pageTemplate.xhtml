@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<h:head>
+		<title>#{empty pageTitle ? '{#pageTitle}' : pageTitle}</title>
+		<link rel="icon" href="#{resource['favicon.ico']}" />
+		<h:outputStylesheet name="forge-style.css" />
+	</h:head>
+	
+	<h:body>	
+		<div id="wrapper">
+	
+			<div id="navigation">
+				<h:link id="homeLink" outcome="/admin/index.xhtml">
+					<img src="#{resource['forge-logo.png']}" alt="Forge... get hammered" border="0"/>
+				</h:link>
+				<ul>
+					<li>
+						<h:link outcome="/admin/event/search" value="Event"/>
+					</li>
+					<li>
+						<h:link outcome="/admin/eventCategory/search" value="Event Category"/>
+					</li>
+					<li>
+						<h:link outcome="/admin/mediaItem/search" value="Media Item"/>
+					</li>
+					<li>
+						<h:link outcome="/admin/performance/search" value="Performance"/>
+					</li>
+					<li>
+						<h:link outcome="/admin/section/search" value="Section"/>
+					</li>
+					<li>
+						<h:link outcome="/admin/sectionAllocation/search" value="Section Allocation"/>
+					</li>
+					<li>
+						<h:link outcome="/admin/show/search" value="Show"/>
+					</li>
+					<li>
+						<h:link outcome="/admin/ticketCategory/search" value="Ticket Category"/>
+					</li>
+					<li>
+						<h:link outcome="/admin/ticketPriceCategory/search" value="Ticket Price Category"/>
+					</li>
+					<li>
+						<h:link outcome="/admin/venue/search" value="Venue"/>
+					</li>
+				</ul>				
+			</div>
+		
+			<div id="content">
+				<h1><ui:insert name="header"/></h1>		
+				<h2><ui:insert name="subheader"/></h2>
+		
+				<ui:insert name="main"/>
+
+				<div id="footer">
+					Powered by <a href="http://jboss.org/forge">Forge</a>. Icons by the <a href="http://everaldo.com/crystal">Crystal Project</a>
+				</div>
+			</div>		
+		</div>		
+	</h:body>
+</html>

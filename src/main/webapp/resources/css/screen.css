@@ -9,10 +9,10 @@ body {
 
 #container {
    margin: 0 auto;
-   padding: 0 20px 10px 20px;
    border: 1px solid #666666;
-   width: 865px; /* subtract 40px from banner width for padding */
-   background: #FFFFFF url(../gfx/banner.png) no-repeat;
+   width: 940px; /* subtract 40px from banner width for padding */
+   background: #FFFFFF url(../gfx/banner.png) top center no-repeat;
+   background-size: 940px;
    padding-top: 110px;
 }
 
@@ -44,7 +44,7 @@ footer {
 }
 
 code {
-   font-size: 1.1em;
+   font-size: 0.9em;
 }
 
 a {
@@ -63,12 +63,6 @@ span.invalid {
    color: red;
 }
 
-fieldset {
-   padding: 1em;
-   font: 80%/1 sans-serif;
-   width: 400px;
-}
-
 label {
    float: left;
    width: 15%;
@@ -79,62 +73,9 @@ label {
    font-weight: bold;
 }
 
-legend {
-   padding: 0.2em 0.5em;
-   border: 1px solid;
-   text-align: right;
-}
-
 #register {
    float: left;
    margin-left: 85px;
 }
-
-/* Member table styles */
-#mem_tbl {
-   background-color: #E6E7E8;
-   clear: both;
-   width: 550px;
-}
-
-#mem_tbl td {
-   height: 2em;
-   padding-left: 6px;
-   font-size: 11px;
-}
-
-#mem_tbl th {
-   font-size: 12px;
-   font-weight: normal;
-   padding: 0 10px 0 5px;
-   border-bottom: #999999 dotted 1px;
-}
-
-#mem_tbl thead {
-   height: 31px;
-   font-size: 10px;
-   font-weight: bold;
-   color: #FFFFFF;
-   background-color: black;
-   text-align: left;
-}
-
-#mem_tbl tfoot {
-   height: 20px;
-   font-size: 10px;
-   font-weight: bold;
-   background-color: #EAECEE;
-   text-align: center;
-}
-
-/* Using new CSS3 selectors for styling*/
-#members tr:nth-child(odd) {
-   background: #f4f3f3;
-}
-
-#members tr:nth-child(even) {
-   background: #ffffff;
-}
-
 
 
