@@ -4,6 +4,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:tm="http://java.sun.com/jsf/composite/tm"
 	xmlns:forgeview="http://jboss.org/forge/view"
 	template="/resources/scaffold/pageTemplate.xhtml">
 
@@ -43,9 +44,7 @@
 			</h:panelGrid>
 			<h:outputText/>
 			<h:outputLabel for="venueBeanVenuePicture" value="Picture:"/>
-			<h:link id="venueBeanVenuePicture" outcome="/admin/mediaItem/view" value="#{venueBean.venue.picture}">
-				<f:param name="id" value="#{venueBean.venue.picture.id}"/>
-			</h:link>
+            <tm:image media="#{mediaManager.getPath(venueBean.venue.picture)}" />
 			<h:outputText/>
 			<h:outputLabel for="venueBeanVenueDescription" value="Description:"/>
 			<h:outputText id="venueBeanVenueDescription" value="#{venueBean.venue.description}"/>

@@ -4,6 +4,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:tm="http://java.sun.com/jsf/composite/tm"
+
 	template="/resources/scaffold/pageTemplate.xhtml">
 
 	<f:metadata>
@@ -28,11 +30,9 @@
 			<h:outputLabel for="eventBeanEventName" value="Name:"/>
 			<h:outputText id="eventBeanEventName" value="#{eventBean.event.name}"/>
 			<h:outputText/>
-			<h:outputLabel for="eventBeanEventPicture" value="Picture:"/>
-			<h:link id="eventBeanEventPicture" outcome="/admin/mediaItem/view" value="#{eventBean.event.picture}">
-				<f:param name="id" value="#{eventBean.event.picture.id}"/>
-			</h:link>
-			<h:outputText/>
+            <h:outputLabel for="eventBeanEventPicture" value="Picture:"/>
+            <tm:image media="#{mediaManager.getPath(eventBean.event.picture)}" />
+            <h:outputText/>
 			<h:outputLabel for="eventBeanEventCategory" value="Category:"/>
 			<h:link id="eventBeanEventCategory" outcome="/admin/eventCategory/view" value="#{eventBean.event.category}">
 				<f:param name="id" value="#{eventBean.event.category.id}"/>
