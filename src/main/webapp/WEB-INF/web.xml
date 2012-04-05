@@ -16,7 +16,4 @@
     <param-name>javax.faces.SKIP_COMMENTS</param-name>
     <param-value>true</param-value>
   </context-param>
-  <welcome-file-list>
-    <welcome-file>faces/index.xhtml</welcome-file>
-  </welcome-file-list>
 </web-app>
